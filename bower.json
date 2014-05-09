@@ -1,0 +1,30 @@
+{
+  "name": "angular-chart",
+  "version": "0.0.1",
+  "authors": [
+    "maxklenk"
+  ],
+  "description": "angular directive",
+  "keywords": [
+    "d3",
+    "nvd3",
+    "chart",
+    "charts",
+    "angular",
+    "angularjs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "main": ["angular-chart.js"],
+  "dependencies": {
+    "d3": "latest",
+    "nvd3": "latest",
+    "angular": "latest"
+  }
+}
