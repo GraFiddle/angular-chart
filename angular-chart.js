@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('angularChart', [])
-  .directive('chart',
+  .directive('angularchart',
 
     function () {
 
@@ -134,6 +134,10 @@ angular.module('angularChart', [])
 
             case 'discreteBarChart':
               scope.chart = nv.models.discreteBarChart();
+              break;
+
+            case 'multiBarChart':
+              scope.chart = nv.models.multiBarChart();
               break;
 
               // TODO: add more
