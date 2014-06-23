@@ -11,9 +11,7 @@ angular.module('angularChart', [])
       return {
         restrict: 'EA',
         scope: {
-          data: '=?',
           dataset: '=?',
-          metadata: '=?',
           options: '=?'
         },
         // controller: ['$scope', '$element', '$attrs',
@@ -28,10 +26,8 @@ angular.module('angularChart', [])
           if (!scope.options) {
             scope.options = {};
           }
-          if (!scope.data) {
-            scope.data = [];
-          }
-
+          
+          scope.data = [];
 
           // add id
           scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
@@ -64,27 +60,37 @@ angular.module('angularChart', [])
           };
 
           var generateData = function () {
-            var format = d3.time.format('%d.%m.%Y');
 
-            var xAxis = scope.metadata.schema[0].name;
+            var format = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ'); // '%d.%m.%Y'
 
-            var mapDateInt = function (xAxis, yAxis) {
+            var xAxis = scope.dataset.schema[0];
+
+            var mapDateNumber = function (xAxis, yAxis) {
               return function (line) {
                 return {
-                  x: format.parse(line.values[xAxis]),
-                  y: parseInt(line.values[yAxis])
+                  x: format.parse(line[xAxis]),
+                  y: line[yAxis]
                 };
               };
             };
 
-            for (var key in scope.metadata.schema) {
-              var col = scope.metadata.schema[key];
-              if (col.name !== xAxis) {
+            var mapNumberNumber = function (xAxis, yAxis) {
+              return function (line) {
+                return {
+                  x: line[xAxis],
+                  y: line[yAxis]
+                };
+              };
+            };
+
+            for (var key in scope.dataset.schema) {
+              var col = scope.dataset.schema[key];
+              if (col.name !== xAxis.name) {
+                var map = xAxis.type === 'date' ? mapDateNumber : mapNumberNumber;
                 var newLine = {
                   key: col.name,
-                  values: scope.dataset.map(mapDateInt(xAxis, col.name))
+                  values: scope.dataset.records.map(map(xAxis.name, col.name))
                 };
-
                 scope.data.push(newLine);
               }
             }
