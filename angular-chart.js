@@ -86,7 +86,7 @@ angular.module('angularChart', [])
             for (var key in scope.dataset.schema) {
               var col = scope.dataset.schema[key];
               if (col.name !== xAxis.name) {
-                var map = xAxis.type === 'date' ? mapDateNumber : mapNumberNumber;
+                var map = xAxis.type === 'datetime' ? mapDateNumber : mapNumberNumber;
                 var newLine = {
                   key: col.name,
                   values: scope.dataset.records.map(map(xAxis.name, col.name))
