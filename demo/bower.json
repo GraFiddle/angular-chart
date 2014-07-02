@@ -1,0 +1,10 @@
+{
+  "name": "angular-chart-demo",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "latest",
+    "angular-chart": "https://github.com/maxklenk/angular-chart.git#develop",
+    "json-tree": "latest"
+  },
+  "devDependencies": {}
+}
