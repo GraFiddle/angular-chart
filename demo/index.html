@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>angular-chart Demo App</title>
 
-    <link href="bower_components/nvd3/nv.d3.css" rel="stylesheet">
+    <link href="bower_components/c3/c3.css" rel="stylesheet">
 
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/d3/d3.js"></script>
-    <script src="bower_components/nvd3/nv.d3.js"></script>
+    <script src="bower_components/c3/c3.js"></script>
     <script src="../angular-chart.js"></script>
 
     <script src="bower_components/json-tree/json-tree.js"></script>
@@ -21,10 +21,9 @@
   <body style="padding: 20px">
     <h1 style="margin-bottom: 20px">angular-chart Demo App</h1>
     <div ng-controller="Controller">
-      <angularchart 
+      <angularchart
         dataset="dataset"
         options="options">
-        <svg style="height: 400px"></svg>
       </angularchart>
 
       <h2>dataset</h2>
