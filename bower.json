@@ -23,8 +23,7 @@
   ],
   "main": ["angular-chart.js"],
   "dependencies": {
-    "d3": "latest",
-    "c3": "latest",
-    "angular": "latest"
+    "c3": "0.2.4",
+    "angular": "1.2.18"
   }
 }
