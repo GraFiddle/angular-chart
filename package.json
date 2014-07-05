@@ -30,6 +30,6 @@
     "karma-jasmine": "0.1",
     "karma-chrome-launcher": "0.1",
     "karma-firefox-launcher": "0.1",
-    "karma-coveralls": "~0.1.4"
+    "coveralls": "~2.8.0"
   }
 }

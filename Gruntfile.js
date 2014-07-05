@@ -8,7 +8,7 @@ module.exports = function (grunt) {
   // default task
   grunt.registerTask('default', ['jshint', 'karma']);
 
-
+  // perform test in Firefox on travis ci
   var testConfig = function(configFile, customOptions) {
     var options = { configFile: configFile, keepalive: true };
     var travisOptions = process.env.TRAVIS && { browsers: ['Firefox'], reporters: 'dots' };
@@ -34,6 +34,5 @@ module.exports = function (grunt) {
     }
 
   });
-
 
 };
