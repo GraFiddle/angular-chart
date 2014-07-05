@@ -21,6 +21,14 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "grunt": "~0.4.5",
-    "grunt-contrib-jshint": "~0.10.0"
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-karma": "0.7.0",
+    "matchdep": "~0.1",
+    "karma": "~0.10",
+    "karma-coverage": "~0.1",
+    "load-grunt-tasks": "~0.2",
+    "karma-jasmine": "0.1",
+    "karma-chrome-launcher": "0.1",
+    "karma-firefox-launcher": "0.1"
   }
 }

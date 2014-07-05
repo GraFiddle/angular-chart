@@ -19,11 +19,18 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "demo",
+    "Gruntfile.js",
+    "package.json"
   ],
-  "main": ["angular-chart.js"],
+  "main": [
+    "angular-chart.js"
+  ],
   "dependencies": {
-    "c3": "0.2.4",
-    "angular": "1.2.18"
+    "c3": "~0.2.x",
+    "angular": "~1.2.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.x"
   }
 }
