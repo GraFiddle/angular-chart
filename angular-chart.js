@@ -25,7 +25,7 @@ angular.module('angularChart', [])
           if (!scope.options) {
             scope.options = {};
           }
-          
+
           scope.data = [];
 
           var chart;
@@ -95,16 +95,16 @@ angular.module('angularChart', [])
 
           // };
 
-          var tickFormat = {
-            toFixed: function (fixed) {
-              return function (d) {
-                return d.toFixed(fixed);
-              };
-            },
-            toDate: function (d) {
-              return d3.time.format('%x')(new Date(d));
-            }
-          };
+          // var tickFormat = {
+          //   toFixed: function (fixed) {
+          //     return function (d) {
+          //       return d.toFixed(fixed);
+          //     };
+          //   },
+          //   toDate: function (d) {
+          //     return d3.time.format('%x')(new Date(d));
+          //   }
+          // };
 
           var loadChart = function () {
             if (chart && configuration) {
@@ -149,11 +149,11 @@ angular.module('angularChart', [])
 
             // Add lines
             //
-            rows.forEach(function(element) {
+            rows.forEach(function (element) {
               // TODO exists check? ERROR
               configuration.data.keys.value.push(element.name);
 
-              if(element.type) {
+              if (element.type) {
                 // TODO valid type ERROR
                 configuration.data.types[element.name] = element.type;
               }
@@ -168,7 +168,7 @@ angular.module('angularChart', [])
               }
 
               // is Datetime?
-              scope.dataset.schema.forEach(function(element) {
+              scope.dataset.schema.forEach(function (element) {
                 if (element.name === xAxis.name) {
                   if (element.type === 'datetime') {
                     if (!element.format) {
@@ -182,7 +182,7 @@ angular.module('angularChart', [])
               });
             }
 
-           
+
             chart = c3.generate(configuration);
 
             // merge options
