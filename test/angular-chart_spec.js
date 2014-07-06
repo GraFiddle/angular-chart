@@ -22,22 +22,39 @@ describe('angularChart', function () {
       }, {
         'name': 'sales',
         'type': 'double'
+      }, {
+        'name': 'dayString',
+        'type': 'string'
       }],
       'records': [{
         'day': '2013-01-02T00:00:00',
-        'sales': 13461.295202
+        'sales': 13461.295202,
+        'dayString': 'Monday'
       }, {
         'day': '2013-01-03T00:00:00',
-        'sales': 23461.295202
+        'sales': 23461.295202,
+        'dayString': 'Tuesday'
       }, {
         'day': '2013-01-04T00:00:00',
-        'sales': 33461.295202
+        'sales': 33461.295202,
+        'dayString': 'Wednesday'
       }, {
         'day': '2013-01-05T00:00:00',
-        'sales': 43461.295202
+        'sales': 43461.295202,
+        'dayString': 'Thursday'
       }]
     };
-    scope.options = {};
+    scope.options = {
+        rows: [{
+          name: 'sales',
+          type: 'bar'
+        }],
+        xAxis: {
+          name: 'day',
+          displayFormat: '%Y-%m-%d %H:%M:%S'
+        },
+        yAxis: {}
+      };
 
     scope.addData = function () {
       scope.dataset.records.push({
@@ -49,12 +66,10 @@ describe('angularChart', function () {
     scope.addOptions = function () {
       scope.options = {
         rows: [{
-          name: 'sales',
-          type: 'bar'
+          name: 'sales'
         }],
         xAxis: {
-          name: 'day',
-          displayFormat: '%Y-%m-%d %H:%M:%S'
+          name: 'dayString'
         },
         yAxis: {}
       };
@@ -156,12 +171,20 @@ describe('angularChart', function () {
       //console.log(element);
     });
 
+    it('no datetime format provided data', function () {
+      delete scope.dataset.schema[0].format;
+      scope.$apply();
+
+      //console.log(element);
+    });
+
     it('watch options', function () {
       scope.addOptions();
       scope.$apply();
 
       //console.log(element);
     });
+
 
   });
 

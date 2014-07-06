@@ -50,11 +50,9 @@ angular.module('angularChart', [])
           // reload the charts data
           //
           scope.loadChart = function () {
-            if (scope.chart && scope.configuration) {
-              scope.chart.load(
-                scope.configuration.data
-              );
-            }
+            scope.chart.load(
+              scope.configuration.data
+            );
           };
 
           // generate or update chart with options
@@ -68,7 +66,7 @@ angular.module('angularChart', [])
               scope.configuration.data.json = scope.dataset.records;
             }
 
-              
+
             // Add lines
             //
             if (!scope.options.rows) {
@@ -87,31 +85,29 @@ angular.module('angularChart', [])
 
             // Add x-axis
             //
-            if (!scope.options.xAxis) {
+            if (!scope.options.xAxis || !scope.options.xAxis.name) {
               console.error('no xAxis provided');
             } else {
-              if (scope.options.xAxis.name) {
-                scope.configuration.data.keys.x = scope.options.xAxis.name;
-                if (scope.options.xAxis.displayFormat) {
-                  scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
-                }
-
-                // is Datetime?
-                scope.dataset.schema.forEach(function (element) {
-                  if (element.name === scope.options.xAxis.name) {
-                    if (element.type === 'datetime') {
-                      if (!element.format) {
-                        return console.error('For data of the type "datetime" a format has to be defined.');
-                      }
-                      scope.configuration.axis.x.type = 'timeseries';
-                      scope.configuration.data.x_format = element.format;
-                    } else if (element.type === 'string') {
-                      scope.configuration.axis.x.type = 'category';
-                    }
-                    return;
-                  }
-                });
+              scope.configuration.data.keys.x = scope.options.xAxis.name;
+              if (scope.options.xAxis.displayFormat) {
+                scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
               }
+
+              // is Datetime?
+              scope.dataset.schema.forEach(function (element) {
+                if (element.name === scope.options.xAxis.name) {
+                  if (element.type === 'datetime') {
+                    if (!element.format) {
+                      return console.error('For data of the type "datetime" a format has to be defined.');
+                    }
+                    scope.configuration.axis.x.type = 'timeseries';
+                    scope.configuration.data.x_format = element.format;
+                  } else if (element.type === 'string') {
+                    scope.configuration.axis.x.type = 'category';
+                  }
+                  return;
+                }
+              });
             }
 
             scope.chart = c3.generate(scope.configuration);
@@ -131,11 +127,18 @@ angular.module('angularChart', [])
           // watcher of changes in options
           //
           scope.startDatasetWatcher = function () {
-            scope.$watch('dataset', function (newValue, oldValue) {
+            scope.$watch('dataset.records', function (newValue, oldValue) {
               if (newValue === oldValue) { // skip the first run of $watch
                 return;
               }
               scope.loadChart();
+            }, true); // checks for changes inside data
+
+            scope.$watch('dataset.schema', function (newValue, oldValue) {
+              if (newValue === oldValue) { // skip the first run of $watch
+                return;
+              }
+              scope.updateChart();
             }, true); // checks for changes inside data
           };
 

@@ -6,7 +6,8 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   // default task
-  grunt.registerTask('default', ['jshint', 'karma']);
+  grunt.registerTask('default', ['jshint', 'karma:unit']);
+  grunt.registerTask('watch', ['karma:watch']);
 
   // perform test in Firefox on travis ci
   var testConfig = function(configFile, customOptions) {
@@ -20,6 +21,11 @@ module.exports = function (grunt) {
     karma: {
       unit: {
         options: testConfig('test/karma.conf.js')
+      },
+      watch: {
+        options: testConfig('test/karma.conf.js'),
+        singleRun: false,
+        autoWatch: true
       }
     },
 
