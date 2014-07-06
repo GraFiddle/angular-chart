@@ -1,7 +1,7 @@
 'use strict';
 
 /*global beforeEach, afterEach, describe, it, inject, expect, module, angular*/
-describe('uiCalendar', function () {
+describe('angularChart', function () {
 
   var scope, $compile, $controller;
 
@@ -60,7 +60,81 @@ describe('uiCalendar', function () {
       };
     };
 
+    scope.getElementScope = function (element) {
+      return element.scope().$$childTail;
+    };
+
   }));
+
+  describe('scope initialization', function () {
+
+    it('requires a valid dataset object', function () {
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+      }).not.toThrow();
+      expect(function () {
+        $compile('<angularchart dataset options="options"></angularchart>')(scope);
+      }).toThrow();
+      expect(function () {
+        $compile('<angularchart options="options"></angularchart>')(scope);
+      }).toThrow();
+      expect(function () {
+        $compile('<angularchart dataset="nonObject" options="options"></angularchart>')(scope);
+      }).toThrow();
+      expect(function () {
+        scope.nonResourceObject = {};
+        $compile('<angularchart dataset="nonResourceObject" options="options"></angularchart>')(scope);
+      }).toThrow();
+    });
+
+    it('not requires the optional options object', function () {
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+      }).not.toThrow();
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options></angularchart>')(scope);
+      }).not.toThrow();
+      expect(function () {
+        $compile('<angularchart dataset="dataset"></angularchart>')(scope);
+      }).not.toThrow();
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options="nonObject"></angularchart>')(scope);
+      }).not.toThrow();
+      expect(function () {
+        scope.nonResourceObject = {};
+        $compile('<angularchart dataset="dataset" options="nonResourceObject"></angularchart>')(scope);
+      }).not.toThrow();
+    });
+
+    it('should attach methods to the scope', function () {
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+      var elementScope = scope.getElementScope(element);
+
+      expect(elementScope.addIdentifier).toBeDefined();
+      expect(elementScope.loadChart).toBeDefined();
+      expect(elementScope.updateChart).toBeDefined();
+      expect(elementScope.startOptionsWatcher).toBeDefined();
+      expect(elementScope.startDatasetWatcher).toBeDefined();
+    });
+
+    it('should not modify the parent scope', function () {
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+
+      expect(scope.addIdentifier).not.toBeDefined();
+      expect(scope.loadChart).not.toBeDefined();
+      expect(scope.updateChart).not.toBeDefined();
+      expect(scope.startOptionsWatcher).not.toBeDefined();
+      expect(scope.startDatasetWatcher).not.toBeDefined();
+    });
+
+    it('should have equal object in both scopes', function () {
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+      var elementScope = scope.getElementScope(element);
+
+      expect(scope.options).toEqual(elementScope.options);
+      expect(scope.dataset).toEqual(elementScope.dataset);
+    });
+  });
 
   describe('first test calls', function () {
 
