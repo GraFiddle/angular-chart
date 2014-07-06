@@ -5,14 +5,13 @@ angular.module('angularChart', [])
 
     function () {
 
-      var nv = window.nv;
-      var d3 = window.d3;
+      var c3 = window.c3;
 
       return {
         restrict: 'EA',
         scope: {
-          dataset: '=?',
-          options: '=?'
+          dataset: '=',
+          options: '='
         },
         // controller: ['$scope', '$element', '$attrs',
         //   function ($scope, $element, $attrs) {
@@ -22,198 +21,133 @@ angular.module('angularChart', [])
 
         link: function (scope, element, attrs) {
 
-          // optional bindings
-          if (!scope.options) {
-            scope.options = {};
-          }
-          
-          scope.data = [];
-
-          // add id
-          scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
-          angular.element(element).attr('data-chartid', scope.options.dataAttributeChartID);
-          if (d3.select('[data-chartid=' + scope.options.dataAttributeChartID + '] svg').empty()) {
-            d3.select('[data-chartid=' + scope.options.dataAttributeChartID + ']').append('svg');
-          }
-
-          // all supported configurations
-          var defaultOptions = {
-            chartType: 'lineChart',
-            transitionDuration: 200,
-            margin: {
-              left: 70 // to show yAxis-Label TODO: Apply if Label is set
-            },
-            xAxis: {
-              axisLabel: 'xAxis',
-              tickFormat: function (d) {
-                return d;
+          scope.options = scope.options ? scope.options : {};
+          scope.chart = null;
+          scope.configuration = {
+            data: {
+              keys: {
+                value: []
               },
-              axisLabelDistance: 30 // reduce distance to Numbers TODO match with Format
+              types: {}
             },
-            yAxis: {
-              axisLabel: 'yAxis',
-              tickFormat: function (d) {
-                return d;
-              },
-              axisLabelDistance: 30
-            }
-          };
 
-          var generateData = function () {
-            var format = d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ'); // '%d.%m.%Y'
-
-            var xAxis = scope.dataset.schema[0];
-
-            var mapDateNumber = function (xAxis, yAxis) {
-              return function (line) {
-                return {
-                  x: format.parse(line[xAxis]),
-                  y: line[yAxis]
-                };
-              };
-            };
-
-            var mapNumberNumber = function (xAxis, yAxis) {
-              return function (line) {
-                return {
-                  x: line[xAxis],
-                  y: line[yAxis]
-                };
-              };
-            };
-
-            for (var key in scope.dataset.schema) {
-              var col = scope.dataset.schema[key];
-              if (col.name !== xAxis.name) {
-                var map = xAxis.type === 'date' ? mapDateNumber : mapNumberNumber;
-                var newLine = {
-                  key: col.name,
-                  values: scope.dataset.records.map(map(xAxis.name, col.name))
-                };
-                scope.data.push(newLine);
+            axis: {
+              x: {
+                tick: {}
               }
             }
-
-            defaultOptions.xAxis.tickFormat = tickFormat.toDate;
-
           };
 
-          var tickFormat = {
-            toFixed: function (fixed) {
-              return function (d) {
-                return d.toFixed(fixed);
-              };
-            },
-            toDate: function (d) {
-              return d3.time.format('%x')(new Date(d));
+
+          // add unique identifier for each chart
+          //
+          scope.addIdentifier = function () {
+            scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
+            angular.element(element).attr('id', scope.options.dataAttributeChartID);
+            scope.configuration.bindto = '#' + scope.options.dataAttributeChartID;
+          };
+
+          // reload the charts data
+          //
+          scope.loadChart = function () {
+            scope.chart.load(
+              scope.configuration.data
+            );
+          };
+
+          // generate or update chart with options
+          //
+          scope.updateChart = function () {
+
+            // Add data
+            if (!scope.dataset || !scope.dataset.records) {
+              console.error('No data provided.');
+            } else {
+              scope.configuration.data.json = scope.dataset.records;
             }
-          };
 
 
-          var updateChart = function () {
+            // Add lines
+            //
+            if (!scope.options.rows) {
+              console.error('The rows to display have to be defined.');
+            } else {
+              scope.options.rows.forEach(function (element) {
+                // TODO exists check? ERROR
+                scope.configuration.data.keys.value.push(element.name);
 
-            // merge options
-            for (var key in defaultOptions) {
-              if (!scope.options.hasOwnProperty(key)) {
-                scope.options[key] = defaultOptions[key];
-              } else if (typeof scope.options[key] === 'object') {
-                // check inside objects
-                for (var subkey in defaultOptions[key]) {
-                  if (!scope.options[key].hasOwnProperty(subkey)) {
-                    scope.options[key][subkey] = defaultOptions[key][subkey];
-                  }
+                if (element.type) {
+                  // TODO valid type ERROR
+                  scope.configuration.data.types[element.name] = element.type;
                 }
-              }
+              });
             }
 
-
-            // apply options
-            switch (scope.options.chartType) {
-            case 'lineChart':
-              scope.chart = nv.models.lineChart();
-              break;
-
-            case 'lineWithFocusChart':
-              scope.chart = nv.models.lineWithFocusChart();
-              break;
-
-            case 'discreteBarChart':
-              scope.chart = nv.models.discreteBarChart();
-              break;
-
-            case 'multiBarChart':
-              scope.chart = nv.models.multiBarChart();
-              break;
-
-              // TODO: add more
-
-            default:
-              scope.chart = nv.models.lineChart();
-            }
-
-            scope.chart.margin(scope.options.margin);
-
-
-            scope.chart.xAxis
-              .axisLabel(scope.options.xAxis.axisLabel)
-              .tickFormat(scope.options.xAxis.tickFormat)
-              .axisLabelDistance(scope.options.xAxis.axisLabelDistance);
-            scope.chart.yAxis
-              .axisLabel(scope.options.yAxis.axisLabel)
-              .tickFormat(scope.options.yAxis.tickFormat)
-              .axisLabelDistance(scope.options.yAxis.axisLabelDistance); // reduce distance to Numbers TODO match with Format
-
-            // chart specific options
-            if (scope.options.chartType === 'lineChart') {
-              scope.chart.useVoronoi(false); // solves error: https://github.com/novus/nvd3/issues/402
-            }
-
-            if (scope.options.chartType === 'lineWithFocusChart') {
-              if (scope.chart.useVoronoi) { // added in my fork
-                scope.chart.useVoronoi(false); // solves error: https://github.com/novus/nvd3/issues/402
+            // Add x-axis
+            //
+            if (!scope.options.xAxis || !scope.options.xAxis.name) {
+              console.error('no xAxis provided');
+            } else {
+              scope.configuration.data.keys.x = scope.options.xAxis.name;
+              if (scope.options.xAxis.displayFormat) {
+                scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
               }
 
-              scope.chart.x2Axis
-                .axisLabel(scope.options.xAxis.axisLabel)
-                .tickFormat(scope.options.xAxis.tickFormat)
-                .axisLabelDistance(scope.options.xAxis.axisLabelDistance);
-              scope.chart.y2Axis
-                .axisLabel(scope.options.yAxis.axisLabel)
-                .tickFormat(scope.options.yAxis.tickFormat)
-                .axisLabelDistance(scope.options.yAxis.axisLabelDistance);
+              // is Datetime?
+              scope.dataset.schema.forEach(function (element) {
+                if (element.name === scope.options.xAxis.name) {
+                  if (element.type === 'datetime') {
+                    if (!element.format) {
+                      return console.error('For data of the type "datetime" a format has to be defined.');
+                    }
+                    scope.configuration.axis.x.type = 'timeseries';
+                    scope.configuration.data.x_format = element.format;
+                  } else if (element.type === 'string') {
+                    scope.configuration.axis.x.type = 'category';
+                  }
+                  return;
+                }
+              });
             }
 
-            // draw
-            d3.select('[data-chartid=' + scope.options.dataAttributeChartID + '] svg')
-              .datum(scope.data)
-              .call(scope.chart);
-            nv.utils.windowResize(scope.chart.update);
+            scope.chart = c3.generate(scope.configuration);
+          };
+
+          // watcher of changes in options
+          //
+          scope.startOptionsWatcher = function () {
+            scope.$watch('options', function (newValue, oldValue) {
+              if (newValue === oldValue) { // skip the first run of $watch
+                return;
+              }
+              scope.updateChart();
+            }, true); // checks for changes inside options
+          };
+
+          // watcher of changes in options
+          //
+          scope.startDatasetWatcher = function () {
+            scope.$watch('dataset.records', function (newValue, oldValue) {
+              if (newValue === oldValue) { // skip the first run of $watch
+                return;
+              }
+              scope.loadChart();
+            }, true); // checks for changes inside data
+
+            scope.$watch('dataset.schema', function (newValue, oldValue) {
+              if (newValue === oldValue) { // skip the first run of $watch
+                return;
+              }
+              scope.updateChart();
+            }, true); // checks for changes inside data
           };
 
 
-
-          // watcher
-          scope.$watch('options', function (newValue, oldValue) {
-            if (newValue === oldValue) { // Skip the first run of $watch
-              return;
-            }
-            updateChart();
-          }, true); // checks for changes inside options
-
-          scope.$watch('data', function (newValue, oldValue) {
-            if (newValue === oldValue) { // Skip the first run of $watch
-              return;
-            }
-            updateChart();
-          }, true); // checks for changes inside data
-
-
-
-          // init
-          if (scope.data.length < 1) {
-            generateData();
-          }
-          updateChart();
+          // startup
+          scope.addIdentifier();
+          scope.updateChart();
+          scope.startOptionsWatcher();
+          scope.startDatasetWatcher();
         }
       };
     }

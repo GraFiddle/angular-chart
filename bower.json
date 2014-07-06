@@ -1,13 +1,13 @@
 {
   "name": "angular-chart",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "authors": [
     "maxklenk"
   ],
   "description": "angular directive",
   "keywords": [
     "d3",
-    "nvd3",
+    "c3",
     "chart",
     "charts",
     "angular",
@@ -19,12 +19,18 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "demo",
+    "Gruntfile.js",
+    "package.json"
   ],
-  "main": ["angular-chart.js"],
+  "main": [
+    "angular-chart.js"
+  ],
   "dependencies": {
-    "d3": "latest",
-    "nvd3": "latest",
-    "angular": "latest"
+    "c3": "~0.2.x",
+    "angular": "~1.2.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.x"
   }
 }
