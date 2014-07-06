@@ -3,7 +3,7 @@
 // Contents of: test/karma.conf.js
 module.exports = function (config) {
   config.set({
-    basePath: '..',
+    basePath: '../',
     files: [
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
@@ -23,9 +23,17 @@ module.exports = function (config) {
       'angular-chart.js': 'coverage'
     },
 
+    plugins : [
+            'karma-chrome-launcher',
+            'karma-firefox-launcher',
+            'karma-phantomjs-launcher',
+            'karma-jasmine',
+            'karma-coverage'
+            ],
+
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit'
-    reporters: ['progress', 'coverage'],
+    reporters: ['coverage'],
 
     coverageReporter: {
       type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
