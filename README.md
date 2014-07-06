@@ -1,4 +1,4 @@
-# angular-chart [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=replaceWithC3)](https://travis-ci.org/maxklenk/angular-chart) [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=replaceWithC3)](https://coveralls.io/r/maxklenk/angular-chart?branch=replaceWithC3) [![Dependency Status](https://gemnasium.com/maxklenk/angular-chart.svg)](https://gemnasium.com/maxklenk/angular-chart)
+# angular-chart [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=develop)](https://travis-ci.org/maxklenk/angular-chart) [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop) [![Dependency Status](https://gemnasium.com/maxklenk/angular-chart.svg)](https://gemnasium.com/maxklenk/angular-chart)
 
 angular-chart is a [AngularJS](https://github.com/angular/angular.js) directive, which is build on top of [c3](https://github.com/masayuki0812/c3) a [d3](https://github.com/mbostock/d3)-based chart library.
 
@@ -81,7 +81,7 @@ grunt
 
 ## Contributing
 
-Please submit all pull requests the against develop branch. Make sure it passes the CI [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=replaceWithC3)](https://travis-ci.org/maxklenk/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=replaceWithC3)](https://coveralls.io/r/maxklenk/angular-chart?branch=replaceWithC3). Thanks!
+Please submit all pull requests the against develop branch. Make sure it passes the CI [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=develop)](https://travis-ci.org/maxklenk/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop). Thanks!
 
 ## Authors
 
