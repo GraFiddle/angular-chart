@@ -1,4 +1,4 @@
-# angular-chart [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=develop)](https://travis-ci.org/maxklenk/angular-chart) [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop) [![Dependency Status](https://gemnasium.com/maxklenk/angular-chart.svg)](https://gemnasium.com/maxklenk/angular-chart)
+# angular-chart [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=master)](https://travis-ci.org/maxklenk/angular-chart) [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=master)](https://coveralls.io/r/maxklenk/angular-chart?branch=master) [![Dependency Status](https://gemnasium.com/maxklenk/angular-chart.svg)](https://gemnasium.com/maxklenk/angular-chart)
 
 angular-chart is a [AngularJS](https://github.com/angular/angular.js) directive, which is build on top of [c3](https://github.com/masayuki0812/c3) a [d3](https://github.com/mbostock/d3)-based chart library.
 
