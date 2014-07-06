@@ -4,12 +4,18 @@
 module.exports = function (config) {
   config.set({
     basePath: '../',
+
     files: [
+      // libraries
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/d3/d3.js',
       'bower_components/c3/c3.js',
+
+      // the directive
       'angular-chart.js',
+
+      // test
       'test/*_spec.js'
     ],
 
@@ -23,7 +29,7 @@ module.exports = function (config) {
       'angular-chart.js': 'coverage'
     },
 
-    plugins : [
+    plugins: [
       'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-phantomjs-launcher',

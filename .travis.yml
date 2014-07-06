@@ -15,4 +15,3 @@ script:
 
 after_success:
   - 'grunt coverage'
-  - 'grunt coverage2'
