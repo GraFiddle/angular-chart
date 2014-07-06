@@ -15,7 +15,7 @@ module.exports = function (grunt) {
   // perform test in Firefox on travis ci
   var testConfig = function(configFile, customOptions) {
     var options = { configFile: configFile, keepalive: true };
-    var travisOptions = process.env.TRAVIS && { browsers: ['Firefox'], reporters: 'dots' };
+    var travisOptions = process.env.TRAVIS && { browsers: ['Firefox'] };
     return grunt.util._.extend(options, customOptions, travisOptions);
   };
 
@@ -32,7 +32,7 @@ module.exports = function (grunt) {
       },
       coverage: {
         options: testConfig('test/karma.conf.js'),
-        browsers: ['PhantomJS']
+        browsers: ['Firefox']
       }
     },
 
