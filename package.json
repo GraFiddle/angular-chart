@@ -1,0 +1,34 @@
+{
+  "name": "angular-chart",
+  "version": "0.0.1",
+  "description": "C3-based reusable chart directive",
+  "main": "angular-chart.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/maxklenk/angular-chart.git"
+  },
+  "keywords": [
+    "d3",
+    "c3",
+    "chart",
+    "graph"
+  ],
+  "author": "Max Klenk",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "load-grunt-tasks": "~0.6",
+    "grunt": "~0.4",
+    "grunt-contrib-jshint": "~0.10",
+    "grunt-karma": "~0.8",
+    "grunt-karma-coveralls": "~2.5",
+    "karma": "~0.12",
+    "karma-coverage": "~0.2",
+    "karma-jasmine": "~0.2",
+    "karma-chrome-launcher": "~0.1",
+    "karma-firefox-launcher": "~0.1"
+  }
+}
