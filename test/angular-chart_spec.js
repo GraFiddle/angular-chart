@@ -185,6 +185,25 @@ describe('angularChart', function () {
       //console.log(element);
     });
 
+    it('watch selections', function () {
+      var elementScope = scope.getElementScope(element);
+
+      // chart selection
+      elementScope.configuration.data.onselected({}, {});
+      
+      // chart unselection
+      elementScope.configuration.data.onunselected({}, {});
+
+      // external selection
+      scope.options.selected.push({id: 'test', index: 3});
+      scope.$apply();
+      scope.options.selected.push({id: 'test', index: 4});
+      scope.$apply();
+
+      // external unselection
+      scope.options.selected = scope.options.selected.splice(0,1);
+      scope.$apply();
+    });
 
   });
 

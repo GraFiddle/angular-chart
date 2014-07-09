@@ -29,9 +29,22 @@ angular.module('angularChart', [])
                 value: []
               },
               types: {},
-              names: []
+              names: [],
+              selection: {
+                enabled: true,
+                multiple: false,
+              },
+              onselected: function (d, element) {
+                if (!scope.avoidSelections) {
+                  scope.addSelected(d);
+                }
+              },
+              onunselected: function (d, element) {
+                if (!scope.avoidSelections) {
+                  scope.removeSelected(d);
+                }
+              }
             },
-
             axis: {
               x: {
                 tick: {}
@@ -41,7 +54,6 @@ angular.module('angularChart', [])
               position: 'right'
             }
           };
-
 
           // add unique identifier for each chart
           //
@@ -99,6 +111,11 @@ angular.module('angularChart', [])
             if (!scope.options.xAxis || !scope.options.xAxis.name) {
               console.error('no xAxis provided');
             } else {
+              // key selection changed?
+              if (scope.configuration.data.keys.x !== null && scope.configuration.data.keys.x !== scope.options.xAxis.name) {
+                scope.options.selected = [];
+              }
+
               scope.configuration.data.keys.x = scope.options.xAxis.name;
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
@@ -133,13 +150,88 @@ angular.module('angularChart', [])
             element.append(el);
           };
 
+          // Selections
+          //
+          scope.avoidSelections = false;
+          scope.options.selected = scope.options.selected ? scope.options.selected : [];
+
+          // handle chart event onselection 
+          scope.addSelected = function (selection) {
+            scope.$apply(
+              scope.options.selected.push(selection)
+            );
+          };
+
+          // handle chart event onunselection
+          scope.removeSelected = function (selection) {
+            scope.$apply(
+              scope.options.selected = scope.options.selected.filter(function (selected) {
+                return selected.id !== selection.id || selected.index !== selection.index;
+              })
+            );
+          };
+
+          // select elements inside the chart
+          scope.performSelections = function (selections) {
+            scope.avoidSelections = true;
+            selections.forEach(function (selection) {
+              scope.chart.select([selection.id], [selection.index]);
+            });
+            scope.avoidSelections = false;
+          };
+
+          // unselect elements inside the chart
+          scope.performUnselections = function (selections) {
+            scope.avoidSelections = true;
+            selections.forEach(function (selection) {
+              scope.chart.unselect([selection.id], [selection.index]);
+            });
+            scope.avoidSelections = false;
+          };
+
+
           // watcher of changes in options
           //
           scope.startOptionsWatcher = function () {
+
             scope.$watch('options', function (newValue, oldValue) {
               if (newValue === oldValue) { // skip the first run of $watch
                 return;
               }
+
+              oldValue.selected = oldValue.selected ? oldValue.selected : [];
+              newValue.selected = newValue.selected ? newValue.selected : [];
+
+              // newSelections
+              var newSelections = newValue.selected.filter(function (elm) {
+                var isNew = true;
+                oldValue.selected.forEach(function (old) {
+                  if (old.id === elm.id && old.index === elm.index) {
+                    isNew = false;
+                    return;
+                  }
+                });
+                return isNew;
+              });
+              if (newSelections.length > 0) {
+                return scope.performSelections(newSelections);
+              }
+
+              // removedSelections
+              var removedSelections = oldValue.selected.filter(function (elm) {
+                var isOld = true;
+                newValue.selected.forEach(function (old) {
+                  if (old.id === elm.id && old.index === elm.index) {
+                    isOld = false;
+                    return;
+                  }
+                });
+                return isOld;
+              });
+              if (removedSelections.length > 0) {
+                return scope.performUnselections(removedSelections);
+              }
+
               scope.updateChart();
             }, true); // checks for changes inside options
           };
@@ -166,9 +258,9 @@ angular.module('angularChart', [])
           // startup
           scope.addIdentifier();
           scope.updateChart();
+          scope.performSelections(scope.options.selected);
           scope.startOptionsWatcher();
           scope.startDatasetWatcher();
-
 
         }
       };
