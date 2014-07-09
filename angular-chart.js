@@ -28,7 +28,8 @@ angular.module('angularChart', [])
               keys: {
                 value: []
               },
-              types: {}
+              types: {},
+              names: []
             },
 
             axis: {
@@ -82,6 +83,10 @@ angular.module('angularChart', [])
                 // TODO exists check? ERROR
                 scope.configuration.data.keys.value.push(element.name);
 
+                // data label
+                scope.configuration.data.names[element.name] = element.label ? element.label : element.name;
+
+                // chart type
                 if (element.type) {
                   // TODO valid type ERROR
                   scope.configuration.data.types[element.name] = element.type;
