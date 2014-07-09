@@ -3,7 +3,7 @@
 angular.module('angularChart', [])
   .directive('angularchart',
 
-    function () {
+    function ($compile) {
 
       var c3 = window.c3;
 
@@ -35,6 +35,9 @@ angular.module('angularChart', [])
               x: {
                 tick: {}
               }
+            },
+            legend: {
+              position: 'right'
             }
           };
 
@@ -45,6 +48,8 @@ angular.module('angularChart', [])
             scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
             angular.element(element).attr('id', scope.options.dataAttributeChartID);
             scope.configuration.bindto = '#' + scope.options.dataAttributeChartID;
+
+            angular.element(element).attr('style', 'display: block');
           };
 
           // reload the charts data
@@ -72,6 +77,7 @@ angular.module('angularChart', [])
             if (!scope.options.rows) {
               console.error('The rows to display have to be defined.');
             } else {
+              scope.configuration.data.keys.value = [];
               scope.options.rows.forEach(function (element) {
                 // TODO exists check? ERROR
                 scope.configuration.data.keys.value.push(element.name);
@@ -111,6 +117,15 @@ angular.module('angularChart', [])
             }
 
             scope.chart = c3.generate(scope.configuration);
+            scope.chooseXAxis();
+          };
+
+          // Choose x-axis
+          scope.chooseXAxis = function () {
+            var el = angular.element('<span/>');
+            el.append('<select ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
+            $compile(el)(scope);
+            element.append(el);
           };
 
           // watcher of changes in options
@@ -148,7 +163,8 @@ angular.module('angularChart', [])
           scope.updateChart();
           scope.startOptionsWatcher();
           scope.startDatasetWatcher();
+
+
         }
       };
-    }
-);
+    });
