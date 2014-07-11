@@ -23,13 +23,18 @@
     <div ng-controller="Controller">
       <angularchart
         dataset="dataset"
-        options="options">
+        options="options1">
+      </angularchart>
+      <angularchart
+        dataset="dataset"
+        options="options2">
       </angularchart>
 
       <h2>dataset</h2>
       <json-tree json='dataset'></json-tree>
       <h2>options</h2>
-      <json-tree json='options'></json-tree>
+      <json-tree json='options1'></json-tree>
+      <json-tree json='options2'></json-tree>
     </div>
   </body>
 </html>  
