@@ -32,14 +32,13 @@ module.exports = function (config) {
     plugins: [
       'karma-chrome-launcher',
       'karma-firefox-launcher',
-      'karma-phantomjs-launcher',
       'karma-jasmine',
       'karma-coverage'
     ],
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit'
-    reporters: ['coverage'],
+    reporters: ['dots', 'coverage'],
 
     coverageReporter: {
       type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
