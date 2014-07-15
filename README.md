@@ -69,6 +69,64 @@ Then you are ready to use the directive in your view:
 </div>
 ```
 
+### Options
+
+The following attributes define the chart itself and how to display the data.
+
+---
+#### rows : Object (required)
+Defines the columns which should be displayed in the chart. Each row can contain the following:
+
+---
+##### rows.name : String (required)
+The column name which identifies the value in each record.
+
+---
+##### rows.type : String
+Possible values: `line, spline, bar, scatter`
+
+
+---
+#### type : String
+Possible values: `line, spline, bar, scatter, bar, donut`
+Defines which kind of chart should be rendered. The value will be the default for `rows.type`.
+
+
+---
+#### xAxis : Object (required)
+Defines which column to use and how to display it:
+
+---
+##### xAxis.name : String (required)
+The column name which identifies which value should be shown on the xAxis.
+
+---
+##### xAxis.displayFormat : String | Function
+If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
+Sample: `function (x) { return x.getFullYear(); }`
+
+
+---
+#### selected : Array
+Contains an array with all selected points of the chart:
+
+Multichart (line, spline, bar, scatter):
+```
+{
+  value: VALUE,
+  id: COLUMN_NAME,
+  index: X_AXIS_INDEX
+}
+```
+
+Pie-, Dountchart:
+```
+{
+  id: COLUMN_NAME,
+  values: [ALL_COLUMN_VALUES]
+}
+```
+
 
 ## Development [![Stories in Ready](https://badge.waffle.io/maxklenk/angular-chart.png?label=ready&title=Ready)](https://waffle.io/maxklenk/angular-chart) [![Gitter chat](https://badges.gitter.im/maxklenk/angular-chart.png)](https://gitter.im/maxklenk/angular-chart)
 
