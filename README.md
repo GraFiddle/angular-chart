@@ -107,7 +107,19 @@ Sample: `function (x) { return x.getFullYear(); }`
 
 
 ---
-#### selected : Array
+#### selection : Object
+Defines which Items can be selected and are currently selected.
+
+---
+##### selection.enabled : Boolean
+Allows selection of chart elements. Default: `false` 
+
+---
+##### selection.multiple : Boolean
+Allows selection of multiple chart elements if selection is enabled at all. Default: `false` 
+
+---
+##### selection.selected : Array
 Contains an array with all selected points of the chart:
 
 Multichart (line, spline, bar, scatter):
@@ -119,7 +131,7 @@ Multichart (line, spline, bar, scatter):
 }
 ```
 
-Pie-, Dountchart:
+Pie-, Dountchart: _(Currently adding a selection in the Array will not add the selection in the chart)_
 ```
 {
   id: COLUMN_NAME,

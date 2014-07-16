@@ -47,12 +47,14 @@ describe('angularChart', function () {
     scope.options = {
         rows: [{
           name: 'sales',
-          type: 'bar'
+          type: 'bar',
+          label: 'sold'
         }],
         xAxis: {
           name: 'day',
           displayFormat: '%Y-%m-%d %H:%M:%S'
         },
+        type: 'line',
         yAxis: {}
       };
 
@@ -185,7 +187,17 @@ describe('angularChart', function () {
       //console.log(element);
     });
 
+    it('pie chart', function () {
+      scope.options.type = 'pie';
+      scope.$apply();
+    });
+
     it('watch selections', function () {
+      scope.options.selection = {
+        enabled: true
+      };
+      scope.$apply();
+
       var elementScope = scope.getElementScope(element);
 
       // chart selection
