@@ -195,13 +195,13 @@ describe('angularChart', function () {
       elementScope.configuration.data.onunselected({}, {});
 
       // external selection
-      scope.options.selected.push({id: 'test', index: 3});
+      scope.options.selection.selected.push({id: 'test', index: 3});
       scope.$apply();
-      scope.options.selected.push({id: 'test', index: 4});
+      scope.options.selection.selected.push({id: 'test', index: 4});
       scope.$apply();
 
       // external unselection
-      scope.options.selected = scope.options.selected.splice(0,1);
+      scope.options.selection.selected = scope.options.selection.selected.splice(0,1);
       scope.$apply();
     });
 

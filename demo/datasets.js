@@ -25,7 +25,7 @@ var dataset = {
     'type': 'string'
   }],
   'records': [{
-    'day': '2013-01-02T00:00:00',
+    'day': '2013-01-08T00:00:00',
     'sales': 13461.295202,
     'income': 12365.053,
     'customers': 22,

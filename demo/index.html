@@ -20,21 +20,13 @@
   </head>
   <body style="padding: 20px">
     <h1 style="margin-bottom: 20px">angular-chart Demo App</h1>
-    <div ng-controller="Controller">
-      <angularchart
-        dataset="dataset"
-        options="options1">
-      </angularchart>
-      <angularchart
-        dataset="dataset"
-        options="options2">
-      </angularchart>
 
-      <h2>dataset</h2>
-      <json-tree json='dataset'></json-tree>
-      <h2>options</h2>
-      <json-tree json='options1'></json-tree>
-      <json-tree json='options2'></json-tree>
-    </div>
+    <ul>
+      <li><a href="chart_multi.html">Multi Chart</a></li>
+      <li><a href="chart_pie.html">Pie/Donut Chart</a></li>
+      <li><a href="interaction_selection_multi.html">Selection - Multi Chart</a></li>
+      <li><a href="interaction_selection_pie.html">Selection - Pie Chart</a></li>
+    </ul>
+
   </body>
 </html>  
