@@ -54,8 +54,7 @@ describe('angularChart', function () {
           name: 'day',
           displayFormat: '%Y-%m-%d %H:%M:%S'
         },
-        type: 'line',
-        yAxis: {}
+        type: 'line'
       };
 
     scope.addData = function () {
@@ -72,8 +71,7 @@ describe('angularChart', function () {
         }],
         xAxis: {
           name: 'dayString'
-        },
-        yAxis: {}
+        }
       };
     };
 
