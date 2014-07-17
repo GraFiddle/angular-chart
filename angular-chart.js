@@ -77,7 +77,7 @@ angular.module('angularChart', [])
 
             // Add data
             if (!scope.dataset || !scope.dataset.records) {
-              console.error('No data provided.');
+              throw 'No data provided. The dataset has to contains a records array.';
             } else {
               scope.configuration.data.json = scope.dataset.records;
             }
@@ -93,7 +93,7 @@ angular.module('angularChart', [])
             // Add lines
             //
             if (!scope.options.rows) {
-              console.error('The rows to display have to be defined.');
+              console.warn('The rows to display have to be defined.');
             } else {
               scope.configuration.data.keys.value = [];
               scope.options.rows.forEach(function (element) {
@@ -115,7 +115,7 @@ angular.module('angularChart', [])
             // Add x-axis
             //
             if (!scope.options.xAxis || !scope.options.xAxis.name) {
-              console.error('no xAxis provided');
+              console.warn('No xAxis provided.');
             } else {
               // key selection changed?
               if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.name) {
@@ -132,7 +132,7 @@ angular.module('angularChart', [])
                 if (element.name === scope.options.xAxis.name) {
                   if (element.type === 'datetime') {
                     if (!element.format) {
-                      return console.error('For data of the type "datetime" a format has to be defined.');
+                      return console.warn('For data of the type "datetime" a format has to be defined.');
                     }
                     scope.configuration.axis.x.type = 'timeseries';
                     scope.configuration.data.x_format = element.format;
@@ -179,7 +179,7 @@ angular.module('angularChart', [])
 
             // handle chart event onselection 
             addSelected: function (selection) {
-              if (this.avoidSelections) {
+              if (!this.avoidSelections) {
                 scope.$apply(
                   scope.options.selection.selected.push(selection)
                 );
@@ -188,7 +188,7 @@ angular.module('angularChart', [])
 
             // handle chart event onunselection
             removeSelected: function (selection) {
-              if (this.avoidSelections) {
+              if (!this.avoidSelections) {
                 scope.$apply(
                   scope.options.selection.selected = scope.options.selection.selected.filter(function (selected) {
                     return selected.id !== selection.id || selected.index !== selection.index;
