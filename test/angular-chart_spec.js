@@ -1,6 +1,6 @@
 'use strict';
 
-/*global beforeEach, afterEach, describe, it, inject, expect, module, angular*/
+/*global beforeEach, afterEach, describe, it, inject, expect, spyOn, module, angular*/
 describe('angularChart', function () {
 
   var scope, $compile, $controller;
@@ -45,16 +45,17 @@ describe('angularChart', function () {
       }]
     };
     scope.options = {
-        rows: [{
-          name: 'sales',
-          type: 'bar'
-        }],
-        xAxis: {
-          name: 'day',
-          displayFormat: '%Y-%m-%d %H:%M:%S'
-        },
-        yAxis: {}
-      };
+      rows: [{
+        name: 'sales',
+        type: 'bar',
+        label: 'sold'
+      }],
+      xAxis: {
+        name: 'day',
+        displayFormat: '%Y-%m-%d %H:%M:%S'
+      },
+      type: 'line'
+    };
 
     scope.addData = function () {
       scope.dataset.records.push({
@@ -70,8 +71,7 @@ describe('angularChart', function () {
         }],
         xAxis: {
           name: 'dayString'
-        },
-        yAxis: {}
+        }
       };
     };
 
@@ -151,7 +151,7 @@ describe('angularChart', function () {
     });
   });
 
-  describe('first test calls', function () {
+  describe('The basic functionality: ', function () {
 
     var element;
 
@@ -160,49 +160,193 @@ describe('angularChart', function () {
       scope.$apply();
     });
 
-    it('basic chart', function () {
-      //console.log(element);
+    it('Creating basic chart', function () {
+      expect(element.html()).not.toBe(null);
     });
 
-    it('watch data', function () {
+    it('Watching dataset changes', function () {
       scope.addData();
       scope.$apply();
 
-      //console.log(element);
+      expect(element.html()).not.toBe(null);
     });
 
-    it('no datetime format provided data', function () {
-      delete scope.dataset.schema[0].format;
-      scope.$apply();
-
-      //console.log(element);
-    });
-
-    it('watch options', function () {
+    it('Watching options changes', function () {
       scope.addOptions();
       scope.$apply();
 
-      //console.log(element);
+      expect(element.html()).not.toBe(null);
     });
 
-    it('watch selections', function () {
-      var elementScope = scope.getElementScope(element);
+    it('Warning if no datetime format is provided', function () {
+      spyOn(console, 'warn');
 
-      // chart selection
-      elementScope.configuration.data.onselected({}, {});
-      
-      // chart unselection
-      elementScope.configuration.data.onunselected({}, {});
-
-      // external selection
-      scope.options.selected.push({id: 'test', index: 3});
+      // remove format
+      delete scope.dataset.schema[0].format;
       scope.$apply();
-      scope.options.selected.push({id: 'test', index: 4});
+
+      expect(element.html()).not.toBe(null);
+      expect(console.warn).toHaveBeenCalled();
+    });
+
+    it('Creating a pie chart', function () {
+      scope.options.type = 'pie';
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+    });
+
+    it('Creating a line chart with Double xAxis', function () {
+      scope.options.type = 'line';
+      scope.options.xAxis.name = 'sales';
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+    });
+
+  });
+
+
+  describe('Selections: ', function () {
+
+    var element, elementScope;
+
+    beforeEach(function () {
+      scope.options.selection = {
+        enabled: true
+      };
+
+      element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+      elementScope = scope.getElementScope(element);
+    });
+
+    it('Runs with selections enabled', function () {
+      expect(element.html()).not.toBe(null);
+    });
+
+    it('watch add selections', function () {
+      scope.options.selection.selected = [];
+
+      // add external selection
+      scope.options.selection.selected.push({
+        id: 'test',
+        index: 3
+      });
       scope.$apply();
 
       // external unselection
-      scope.options.selected = scope.options.selected.splice(0,1);
+      scope.options.selection.selected = scope.options.selection.selected.splice(0, 1);
       scope.$apply();
+    });
+
+    it('watch add multiple selections at once', function () {
+      scope.options.selection.selected = [];
+
+      // add external selection
+      scope.options.selection.selected.push({
+        id: 'test',
+        index: 3
+      });
+      scope.options.selection.selected.push({
+        id: 'test',
+        index: 4
+      });
+      scope.$apply();
+
+      // external unselection
+      scope.options.selection.selected = scope.options.selection.selected.splice(0, 1);
+      scope.$apply();
+    });
+
+    it('watch remove selections', function () {
+      scope.options.selection.selected = [];
+
+      // add external selection
+      scope.options.selection.selected.push({
+        id: 'test',
+        index: 3
+      });
+      scope.$apply();
+
+      scope.options.selection.selected.push({
+        id: 'test',
+        index: 4
+      });
+      scope.$apply();
+
+      // external unselection
+      scope.options.selection.selected = scope.options.selection.selected.splice(1, 1);
+      scope.$apply();
+    });
+
+    it('watch view selections', function () {
+      expect(scope.options.selection.selected.length).toBe(0);
+
+      // chart selection
+      elementScope.configuration.data.onselected({}, {});
+      expect(element.html()).not.toBe(null);
+
+      expect(scope.options.selection.selected.length).toBe(1);
+    });
+
+    it('watch view selections, if not disabled', function () {
+      expect(scope.options.selection.selected.length).toBe(0);
+
+      // avoid selections
+      elementScope.selections.avoidSelections = true;
+
+      // chart selection
+      elementScope.configuration.data.onselected({}, {});
+
+      // was not added
+      expect(scope.options.selection.selected.length).toBe(0);
+      elementScope.selections.avoidSelections = false;
+    });
+
+    it('watch view unselections without existing selections', function () {
+      // chart unselection
+      elementScope.configuration.data.onunselected({}, {});
+      expect(element.html()).not.toBe(null);
+    });
+
+    it('watch view unselections with existing selections', function () {
+      // add external selection
+      scope.options.selection.selected.push({
+        id: 'test',
+        index: 3
+      });
+      scope.$apply();
+      expect(scope.options.selection.selected.length).toBe(1);
+
+      // chart unselection
+      elementScope.configuration.data.onunselected({
+        id: 'test',
+        index: 3
+      }, {});
+      expect(scope.options.selection.selected.length).toBe(0);
+    });
+
+    it('watch view selections, if not disabled', function () {
+      // add selection
+      scope.options.selection.selected.push({
+        id: 'test',
+        index: 3
+      });
+      scope.$apply();
+      expect(scope.options.selection.selected.length).toBe(1);
+
+      // avoid selections
+      elementScope.selections.avoidSelections = true;
+
+      // chart unselection
+      elementScope.configuration.data.onunselected({
+        id: 'test',
+        index: 3
+      }, {});
+
+      // was not added
+      expect(scope.options.selection.selected.length).toBe(1);
+      elementScope.selections.avoidSelections = false;
     });
 
   });

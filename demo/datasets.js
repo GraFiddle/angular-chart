@@ -25,7 +25,7 @@ var dataset = {
     'type': 'string'
   }],
   'records': [{
-    'day': '2013-01-02T00:00:00',
+    'day': '2013-01-08T00:00:00',
     'sales': 13461.295202,
     'income': 12365.053,
     'customers': 22,
@@ -67,4 +67,31 @@ var dataset = {
     'units': 52,
     'dayString': 'Samstag'
   }]
+};
+
+var emptyDataset = {
+  'metadata': {
+    'name': 'empty-demo-dataset'
+  },
+  'schema': [{
+    'name': 'day',
+    'type': 'datetime',
+    'format': '%Y-%m-%dT%H:%M:%S'
+  }, {
+    'name': 'sales',
+    'type': 'double'
+  }, {
+    'name': 'income',
+    'type': 'double'
+  }, {
+    'name': 'customers',
+    'type': 'int'
+  }, {
+    'name': 'units',
+    'type': 'int'
+  }, {
+    'name': 'dayString',
+    'type': 'string'
+  }],
+  'records': []
 };

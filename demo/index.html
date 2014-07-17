@@ -4,37 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>angular-chart Demo App</title>
-
-    <link href="bower_components/c3/c3.css" rel="stylesheet">
-
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/d3/d3.js"></script>
-    <script src="bower_components/c3/c3.js"></script>
-    <script src="../angular-chart.js"></script>
-
-    <script src="bower_components/json-tree/json-tree.js"></script>
-    <link rel="stylesheet" href="bower_components/json-tree/json-tree.css">
-
-    <script src="app.js"></script>
-    <script src="dataset.js"></script>
   </head>
   <body style="padding: 20px">
     <h1 style="margin-bottom: 20px">angular-chart Demo App</h1>
-    <div ng-controller="Controller">
-      <angularchart
-        dataset="dataset"
-        options="options1">
-      </angularchart>
-      <angularchart
-        dataset="dataset"
-        options="options2">
-      </angularchart>
 
-      <h2>dataset</h2>
-      <json-tree json='dataset'></json-tree>
-      <h2>options</h2>
-      <json-tree json='options1'></json-tree>
-      <json-tree json='options2'></json-tree>
-    </div>
+    <ul>
+      <li><a href="chart_multi.html">Multi Chart</a></li>
+      <li><a href="chart_pie.html">Pie/Donut Chart</a></li>
+      <li><a href="interaction_selection_multi.html">Selection - Multi Chart</a></li>
+      <li><a href="interaction_selection_pie.html">Selection - Pie Chart</a></li>
+      <li><a href="no_data.html">Without data</a></li>
+    </ul>
+
   </body>
 </html>  
