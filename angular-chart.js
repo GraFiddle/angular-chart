@@ -154,21 +154,30 @@ angular.module('angularChart', [])
 
             scope.chart = c3.generate(scope.configuration);
             scope.chooseXAxis();
+            scope.chooseChartType();
           };
 
 
           // Choose x-axis
           //
           scope.chooseXAxis = function () {
-            if (scope.options.type === 'pie' || scope.options.type === 'donut') {
-              return;
-            }
             var el = angular.element('<span/>');
-            el.append('<select ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
+            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
             $compile(el)(scope);
             element.append(el);
 
             angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+          };
+
+          // Choose chart-type
+          //
+          scope.chooseChartType = function () {
+            var el = angular.element('<span/>');
+            el.attr('style', 'float: right');
+            el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
+            el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
+            $compile(el)(scope);
+            element.prepend(el);
           };
 
 
@@ -268,6 +277,18 @@ angular.module('angularChart', [])
 
               if (scope.selections.watchOptions(newValue, oldValue)) {
                 return;
+              }
+
+              // change whole chart type
+              if (oldValue.type !== newValue.type) {
+                scope.chart.transform(newValue.type);
+                if (['pie', 'donut'].indexOf(newValue.type) >= 0) {
+                  scope.options.rows.forEach(function(row) {
+                    if (['pie', 'donut'].indexOf(row.type) < 0) {
+                      delete row.type;
+                    }
+                  });
+                }
               }
 
               scope.updateChart();
