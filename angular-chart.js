@@ -154,17 +154,26 @@ angular.module('angularChart', [])
 
             scope.chart = c3.generate(scope.configuration);
             scope.chooseXAxis();
+            scope.chooseChartType();
           };
 
 
           // Choose x-axis
           //
           scope.chooseXAxis = function () {
-            if (scope.options.type === 'pie' || scope.options.type === 'donut') {
-              return;
-            }
             var el = angular.element('<span/>');
-            el.append('<select ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
+            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
+            $compile(el)(scope);
+            element.append(el);
+
+            angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+          };
+
+          // Choose chart-type
+          //
+          scope.chooseChartType = function () {
+            var el = angular.element('<span/>');
+            el.append('<select ng-model="options.type" style="margin-left: 42%"><option value="line" ng-selected="!options.type || \'line\' === options.type">Multi Chart</option><option value="pie" ng-selected="\'pie\' === options.type">Pie Chart</option></select>');
             $compile(el)(scope);
             element.append(el);
 
@@ -270,6 +279,19 @@ angular.module('angularChart', [])
                 return;
               }
 
+              // change whole chart type
+              if (oldValue.type !== newValue.type) {
+                scope.chart.transform(newValue.type);
+                if (['pie', 'donut'].indexOf(newValue.type) >= 0) {
+                  scope.options.rows.forEach(function(row) {
+                    if (['pie', 'donut'].indexOf(row.type) < 0) {
+                      delete row.type;
+                    }
+                  });
+                }
+              }
+
+              console.log('update', newValue);
               scope.updateChart();
             }, true); // checks for changes inside options
           };
