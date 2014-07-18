@@ -173,11 +173,11 @@ angular.module('angularChart', [])
           //
           scope.chooseChartType = function () {
             var el = angular.element('<span/>');
-            el.append('<select ng-model="options.type" style="margin-left: 42%"><option value="line" ng-selected="!options.type || \'line\' === options.type">Multi Chart</option><option value="pie" ng-selected="\'pie\' === options.type">Pie Chart</option></select>');
+            el.attr('style', 'float: right');
+            el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
+            el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
             $compile(el)(scope);
-            element.append(el);
-
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+            element.prepend(el);
           };
 
 
@@ -291,7 +291,6 @@ angular.module('angularChart', [])
                 }
               }
 
-              console.log('update', newValue);
               scope.updateChart();
             }, true); // checks for changes inside options
           };
