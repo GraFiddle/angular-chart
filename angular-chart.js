@@ -46,6 +46,9 @@ angular.module('angularChart', [])
             },
             legend: {
               position: 'right'
+            },
+            subchart: {
+              show: false
             }
           };
 
@@ -150,6 +153,12 @@ angular.module('angularChart', [])
             if (scope.options.selection && scope.options.selection.enabled) {
               scope.configuration.data.selection.enabled = scope.options.selection.enabled;
               scope.configuration.data.selection.multiple = scope.options.selection.multiple;
+            }
+
+            // SubChart
+            //
+            if (scope.options.subchart && scope.options.subchart.show) {
+              scope.configuration.subchart.show = scope.options.subchart.show;
             }
 
             scope.chart = c3.generate(scope.configuration);
