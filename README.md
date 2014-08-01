@@ -105,6 +105,13 @@ The column name which identifies which value should be shown on the xAxis.
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
+---
+#### subchart : Object
+Defines the subchart.
+
+---
+##### show : boolean
+If `true` a subchart for zooming is displayed.
 
 ---
 #### selection : Object

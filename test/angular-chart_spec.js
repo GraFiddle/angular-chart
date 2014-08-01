@@ -204,6 +204,15 @@ describe('angularChart', function () {
       expect(element.html()).not.toBe(null);
     });
 
+    it('Creating a line chart with subchart', function () {
+      scope.options.subchart = {
+        show: true
+      };
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+    });
+
   });
 
 
