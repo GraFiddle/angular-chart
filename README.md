@@ -106,6 +106,10 @@ If the xAxis displays a timestamp the format of if can be defined by passing a S
 Sample: `function (x) { return x.getFullYear(); }`
 
 ---
+#### colors : Object
+Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
+
+---
 #### subchart : Object
 Defines the subchart.
 
