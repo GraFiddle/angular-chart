@@ -32,6 +32,7 @@ angular.module('angularChart', [])
               types: {},
               names: [],
               selection: {},
+              groups: [],
               onselected: function (d, element) {
                 scope.selections.addSelected(d);
               },
@@ -153,6 +154,12 @@ angular.module('angularChart', [])
             if (scope.options.selection && scope.options.selection.enabled) {
               scope.configuration.data.selection.enabled = scope.options.selection.enabled;
               scope.configuration.data.selection.multiple = scope.options.selection.multiple;
+            }
+
+            // Groups
+            //
+            if (scope.options.groups) {
+              scope.configuration.data.groups = scope.options.groups;
             }
 
             // SubChart
