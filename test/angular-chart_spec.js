@@ -204,6 +204,22 @@ describe('angularChart', function () {
       expect(element.html()).not.toBe(null);
     });
 
+    it('Creating a chart without xAxis by default', function () {
+      scope.options.type = 'line';
+      scope.options.xAxis.name = 'sales';
+      scope.$apply();
+      expect(element.html()).not.toContain('</span>');
+    });
+
+    it('Creating a chart with xAxis selector', function () {
+      scope.options.type = 'line';
+      scope.options.xAxis.name = 'sales';
+      scope.options.xAxisSelector = true;
+      scope.$apply();
+
+      expect(element.html()).toContain('</span>');
+    });
+
     it('Creating a line chart with subchart', function () {
       scope.options.subchart = {
         show: true

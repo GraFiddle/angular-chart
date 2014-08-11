@@ -106,6 +106,11 @@ If the xAxis displays a timestamp the format of if can be defined by passing a S
 Sample: `function (x) { return x.getFullYear(); }`
 
 ---
+##### xAxisSelector : boolean
+Shows the dropdown to choose which xAxis you want to use. Default: `false`
+
+---
+
 #### subchart : Object
 Defines the subchart.
 

@@ -169,7 +169,7 @@ angular.module('angularChart', [])
           // Choose x-axis
           //
           scope.chooseXAxis = function () {
-            if (scope.options.type === 'pie' || scope.options.type === 'donut') {
+            if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.xAxisSelector) {
               return;
             }
             var el = angular.element('<span/>');
