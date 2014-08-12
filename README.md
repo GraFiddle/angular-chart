@@ -110,6 +110,10 @@ Sample: `function (x) { return x.getFullYear(); }`
 Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_stacked.html).
 
 ---
+#### colors : Object
+Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
+
+---
 #### subchart : Object
 Defines the subchart.
 

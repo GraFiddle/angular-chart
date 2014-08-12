@@ -31,6 +31,7 @@ angular.module('angularChart', [])
               },
               types: {},
               names: [],
+              colors: {},
               selection: {},
               groups: [],
               onselected: function (d, element) {
@@ -149,6 +150,11 @@ angular.module('angularChart', [])
               });
             }
 
+            // Colors
+            //
+            if (scope.options.colors) {
+              scope.configuration.data.colors = scope.options.colors;
+            }
 
             // Selection
             //
