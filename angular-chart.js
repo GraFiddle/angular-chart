@@ -38,7 +38,8 @@ angular.module('angularChart', [])
               },
               onunselected: function (d, element) {
                 scope.selections.removeSelected(d);
-              }
+              },
+              onclick: angular.noop
             },
             axis: {
               x: {
@@ -160,6 +161,12 @@ angular.module('angularChart', [])
             //
             if (scope.options.groups) {
               scope.configuration.data.groups = scope.options.groups;
+            }
+
+            // onclick
+            //
+            if (scope.options.onclick) {
+              scope.configuration.data.onclick = scope.options.onclick;
             }
 
             // SubChart
