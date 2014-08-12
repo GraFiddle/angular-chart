@@ -149,6 +149,15 @@ describe('angularChart', function () {
       expect(scope.options).toEqual(elementScope.options);
       expect(scope.dataset).toEqual(elementScope.dataset);
     });
+
+    it('should register onclick handler', function () {
+      var handler = function () {};
+      scope.options.onclick = handler;
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+
+      var elementScope = scope.getElementScope(element);
+      expect(elementScope.configuration.data.onclick).toBe(handler);
+    });
   });
 
   describe('The basic functionality: ', function () {
