@@ -213,6 +213,13 @@ describe('angularChart', function () {
       expect(element.html()).not.toBe(null);
     });
 
+    it('Stacks 2 bar charts', function () {
+      scope.options.groups = [['sales', 'income']];
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+    });
+
   });
 
 
