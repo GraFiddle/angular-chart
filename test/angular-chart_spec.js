@@ -158,6 +158,17 @@ describe('angularChart', function () {
       var elementScope = scope.getElementScope(element);
       expect(elementScope.configuration.data.onclick).toBe(handler);
     });
+
+    it('should set custom color', function () {
+      var colors = {
+        sales: '#ff0000'
+      };
+      scope.options.colors = colors;
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+
+      var elementScope = scope.getElementScope(element);
+      expect(elementScope.configuration.data.colors).toBe(colors);
+    });
   });
 
   describe('The basic functionality: ', function () {
