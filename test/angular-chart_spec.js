@@ -149,6 +149,26 @@ describe('angularChart', function () {
       expect(scope.options).toEqual(elementScope.options);
       expect(scope.dataset).toEqual(elementScope.dataset);
     });
+
+    it('should register onclick handler', function () {
+      var handler = function () {};
+      scope.options.onclick = handler;
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+
+      var elementScope = scope.getElementScope(element);
+      expect(elementScope.configuration.data.onclick).toBe(handler);
+    });
+
+    it('should set custom color', function () {
+      var colors = {
+        sales: '#ff0000'
+      };
+      scope.options.colors = colors;
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+
+      var elementScope = scope.getElementScope(element);
+      expect(elementScope.configuration.data.colors).toBe(colors);
+    });
   });
 
   describe('The basic functionality: ', function () {
@@ -207,6 +227,22 @@ describe('angularChart', function () {
     it('Creating a line chart with Double xAxis', function () {
       scope.options.type = 'line';
       scope.options.xAxis.name = 'sales';
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+    });
+
+    it('Creating a line chart with subchart', function () {
+      scope.options.subchart = {
+        show: true
+      };
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+    });
+
+    it('Stacks 2 bar charts', function () {
+      scope.options.groups = [['sales', 'income']];
       scope.$apply();
 
       expect(element.html()).not.toBe(null);

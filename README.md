@@ -105,6 +105,21 @@ The column name which identifies which value should be shown on the xAxis.
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
+---
+#### groups : Object
+Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_stacked.html).
+
+---
+#### colors : Object
+Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
+
+---
+#### subchart : Object
+Defines the subchart.
+
+---
+##### show : boolean
+If `true` a subchart for zooming is displayed.
 
 ---
 #### selection : Object
@@ -139,6 +154,12 @@ Pie-, Dountchart: _(Currently adding a selection in the Array will not add the s
 }
 ```
 
+---
+##### onclick : function
+Triggered when you click on a data point.
+Sample: `function(d, element) { console.log('Point at', d.x, 'of the serie', d.name 'has been clicked; corresponding htmlElement:', element) };`
+
+---
 
 ## Development [![Stories in Ready](https://badge.waffle.io/maxklenk/angular-chart.png?label=ready&title=Ready)](https://waffle.io/maxklenk/angular-chart) [![Gitter chat](https://badges.gitter.im/maxklenk/angular-chart.png)](https://gitter.im/maxklenk/angular-chart)
 

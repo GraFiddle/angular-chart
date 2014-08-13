@@ -31,13 +31,16 @@ angular.module('angularChart', [])
               },
               types: {},
               names: [],
+              colors: {},
               selection: {},
+              groups: [],
               onselected: function (d, element) {
                 scope.selections.addSelected(d);
               },
               onunselected: function (d, element) {
                 scope.selections.removeSelected(d);
-              }
+              },
+              onclick: angular.noop
             },
             axis: {
               x: {
@@ -46,6 +49,9 @@ angular.module('angularChart', [])
             },
             legend: {
               position: 'right'
+            },
+            subchart: {
+              show: false
             }
           };
 
@@ -55,8 +61,7 @@ angular.module('angularChart', [])
             scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
             angular.element(element).attr('id', scope.options.dataAttributeChartID);
             scope.configuration.bindto = '#' + scope.options.dataAttributeChartID;
-
-            // angular.element(element).attr('style', 'display: block;');
+            angular.element(element).attr('style', 'display: block;');
           };
 
           // reload the charts data
@@ -144,12 +149,35 @@ angular.module('angularChart', [])
               });
             }
 
+            // Colors
+            //
+            if (scope.options.colors) {
+              scope.configuration.data.colors = scope.options.colors;
+            }
 
             // Selection
             //
             if (scope.options.selection && scope.options.selection.enabled) {
               scope.configuration.data.selection.enabled = scope.options.selection.enabled;
               scope.configuration.data.selection.multiple = scope.options.selection.multiple;
+            }
+
+            // Groups
+            //
+            if (scope.options.groups) {
+              scope.configuration.data.groups = scope.options.groups;
+            }
+
+            // onclick
+            //
+            if (scope.options.onclick) {
+              scope.configuration.data.onclick = scope.options.onclick;
+            }
+
+            // SubChart
+            //
+            if (scope.options.subchart && scope.options.subchart.show) {
+              scope.configuration.subchart.show = scope.options.subchart.show;
             }
 
             scope.chart = c3.generate(scope.configuration);
