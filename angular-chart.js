@@ -61,8 +61,7 @@ angular.module('angularChart', [])
             scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
             angular.element(element).attr('id', scope.options.dataAttributeChartID);
             scope.configuration.bindto = '#' + scope.options.dataAttributeChartID;
-
-            // angular.element(element).attr('style', 'display: block;');
+            angular.element(element).attr('style', 'display: block;');
           };
 
           // reload the charts data
