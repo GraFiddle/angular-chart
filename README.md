@@ -106,6 +106,10 @@ If the xAxis displays a timestamp the format of if can be defined by passing a S
 Sample: `function (x) { return x.getFullYear(); }`
 
 ---
+##### yAxis.label : String
+Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
+
+---
 #### groups : Object
 Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_stacked.html).
 

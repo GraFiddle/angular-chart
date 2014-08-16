@@ -45,6 +45,9 @@ angular.module('angularChart', [])
             axis: {
               x: {
                 tick: {}
+              },
+              y: {
+                label: ''
               }
             },
             legend: {
@@ -178,6 +181,12 @@ angular.module('angularChart', [])
             //
             if (scope.options.subchart && scope.options.subchart.show) {
               scope.configuration.subchart.show = scope.options.subchart.show;
+            }
+
+            // Y label
+            //
+            if (scope.options.yAxis && scope.options.yAxis.label) {
+              scope.configuration.axis.y.label = scope.options.yAxis.label;
             }
 
             scope.chart = c3.generate(scope.configuration);
