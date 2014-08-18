@@ -169,6 +169,17 @@ describe('angularChart', function () {
       var elementScope = scope.getElementScope(element);
       expect(elementScope.configuration.data.colors).toBe(colors);
     });
+
+    it('should add label on y-axis', function () {
+      var yAxis = {
+        label: 'yAxis label'
+      };
+      scope.options.yAxis = yAxis;
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+
+      var elementScope = scope.getElementScope(element);
+      expect(elementScope.configuration.axis.y.label).toBe(yAxis.label);
+    });
   });
 
   describe('The basic functionality: ', function () {
@@ -210,6 +221,14 @@ describe('angularChart', function () {
     });
 
     it('Creating a pie chart', function () {
+      scope.options.type = 'pie';
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+    });
+
+    it('Creating a pie chart with defined rows', function () {
+      scope.options.rows[0].type = 'pie';
       scope.options.type = 'pie';
       scope.$apply();
 
