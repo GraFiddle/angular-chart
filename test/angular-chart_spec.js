@@ -169,6 +169,17 @@ describe('angularChart', function () {
       var elementScope = scope.getElementScope(element);
       expect(elementScope.configuration.data.colors).toBe(colors);
     });
+
+    it('should add label on y-axis', function () {
+      var yAxis = {
+        label: 'yAxis label'
+      };
+      scope.options.yAxis = yAxis;
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+
+      var elementScope = scope.getElementScope(element);
+      expect(elementScope.configuration.axis.y.label).toBe(yAxis.label);
+    });
   });
 
   describe('The basic functionality: ', function () {
