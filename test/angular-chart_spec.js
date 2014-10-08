@@ -214,7 +214,7 @@ describe('angularChart', function () {
     it('Creating a chart with xAxis selector', function () {
       scope.options.type = 'line';
       scope.options.xAxis.name = 'sales';
-      scope.options.xAxisSelector = true;
+      scope.options.xAxis.selector = true;
       scope.$apply();
 
       expect(element.html()).toContain('</span>');
