@@ -198,7 +198,10 @@ angular.module('angularChart', [])
           // Choose x-axis
           //
           scope.chooseXAxis = function () {
-            var el = angular.element('<span/>');
+            if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.xAxis || !scope.options.xAxis.selector) {
+              return;
+            }
+            var el = angular.element('<span class="chooseXAxis"/>');
             el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
             $compile(el)(scope);
             element.append(el);
