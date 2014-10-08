@@ -105,6 +105,11 @@ The column name which identifies which value should be shown on the xAxis.
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
+
+---
+##### xAxis.selector : boolean
+Shows the dropdown to choose which xAxis you want to use. Default: `false`
+
 ---
 ##### yAxis.label : String
 Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
@@ -118,6 +123,7 @@ Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_st
 Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
 
 ---
+
 #### subchart : Object
 Defines the subchart.
 

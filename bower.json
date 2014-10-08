@@ -1,6 +1,6 @@
 {
   "name": "angular-chart",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "authors": [
     "maxklenk"
   ],
@@ -27,7 +27,7 @@
     "angular-chart.js"
   ],
   "dependencies": {
-    "c3": "~0.2.x",
+    "c3": "~0.3.x",
     "angular": "~1.2.x"
   },
   "devDependencies": {
