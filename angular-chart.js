@@ -143,7 +143,7 @@ angular.module('angularChart', [])
                       return console.warn('For data of the type "datetime" a format has to be defined.');
                     }
                     scope.configuration.axis.x.type = 'timeseries';
-                    scope.configuration.data.x_format = element.format;
+                    scope.configuration.data.xFormat = element.format;
                   } else if (element.type === 'string') {
                     scope.configuration.axis.x.type = 'category';
                   }
