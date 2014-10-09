@@ -2,9 +2,10 @@
   "name": "angular-chart-demo",
   "version": "0.0.1",
   "dependencies": {
-    "angular": "latest",
-    "angular-chart": "latest",
-    "json-tree": "latest"
+    "angular": "~1.2.x",
+    "angular-chart": "~0.1.x",
+    "angular-ui-ace": "bower",
+    "bootstrap": "~3.x.x"
   },
   "devDependencies": {}
 }

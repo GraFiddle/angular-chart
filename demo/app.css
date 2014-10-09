@@ -1,0 +1,19 @@
+body {
+	padding-top: 50px;
+	padding-bottom: 20px;
+}
+.ace_editor {
+	height: 400px;
+	font-size: 16px;
+}
+.navbar-inverse .navbar-nav>li>a {
+	color: #CCC;
+}
+.navbar-inverse .navbar-brand {
+	color: #CCC;
+}
+.jumbotron {
+	padding-top: 10px;
+	padding-bottom: 30px;
+	margin-bottom: 0;
+}
