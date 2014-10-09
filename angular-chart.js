@@ -6,6 +6,7 @@ angular.module('angularChart', [])
     function ($compile) {
 
       var c3 = window.c3;
+      var d3 = window.d3;
 
       return {
         restrict: 'EA',
@@ -51,6 +52,7 @@ angular.module('angularChart', [])
               }
             },
             legend: {
+              show: true,
               position: 'right'
             },
             subchart: {
@@ -192,10 +194,25 @@ angular.module('angularChart', [])
               scope.configuration.axis.y.label = scope.options.yAxis.label;
             }
 
+            // Legend
+            //
+            if (scope.options.legend) {
+              if (scope.options.legend.selector === undefined) {
+                scope.configuration.legend.show = scope.options.legend.show;
+              } else {
+                scope.configuration.legend.show = !scope.options.legend.selector;
+              }
+            } else {
+              scope.configuration.legend.show = true;
+            }
+
             scope.chart = c3.generate(scope.configuration);
             scope.chooseXAxis();
             scope.chooseChartType();
             scope.toggleSubchartLink();
+            if (scope.options.legend && scope.options.legend.selector) {
+              scope.customLegend();
+            }
           };
 
 
@@ -248,6 +265,34 @@ angular.module('angularChart', [])
             element.append(el);
 
             angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+          };
+
+          // Add custom Legend
+          //
+          scope.customLegend = function () {
+            var legend = angular.element('<div class="customLegend"/>');
+            element.prepend(legend);
+            scope.options.rows.forEach(function (row) {
+              legend.append('<div><span data-id="' + row.name + '">' + row.name + '</span></div>');
+            });
+
+            d3.selectAll('.customLegend span')
+              .each(function () {
+                var id = d3.select(this).attr('data-id');
+                d3.select(this).style('background-color', scope.chart.color(id));
+              })
+              .on('mouseover', function () {
+                var id = d3.select(this).attr('data-id');
+                scope.chart.focus(id);
+              })
+              .on('mouseout', function () {
+                var id = d3.select(this).attr('data-id');
+                scope.chart.revert();
+              })
+              .on('click', function () {
+                var id = d3.select(this).attr('data-id');
+                scope.chart.toggle(id);
+              });
           };
 
           // Selections

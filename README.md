@@ -123,17 +123,28 @@ Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_st
 Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
 
 ---
-
 #### subchart : Object
 Defines the subchart like [in this example](http://c3js.org/samples/options_subchart.html).
 
 ---
-##### selector : boolean
+##### subchart.selector : boolean
 If `true` a subchart toggle button is displayed.
 
 ---
-##### show : boolean
+##### subchart.show : boolean
 If `true` a subchart for zooming is displayed.
+
+---
+#### legend : Object
+Defines the legend.
+
+---
+##### subchart.selector : boolean
+If `true` a custom legend is displayed. Default: `false` 
+
+---
+##### subchart.show : boolean
+If `flase` the default legend is hidden. Default: `true` 
 
 ---
 #### selection : Object

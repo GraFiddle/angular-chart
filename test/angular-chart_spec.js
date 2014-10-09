@@ -4,6 +4,7 @@
 describe('angularChart', function () {
 
   var scope, $compile, $controller;
+  var d3 = window.d3;
 
   beforeEach(module('angularChart'));
   beforeEach(inject(function (_$rootScope_, _$compile_, _$controller_) {
@@ -77,6 +78,18 @@ describe('angularChart', function () {
 
     scope.getElementScope = function (element) {
       return element.scope().$$childTail;
+    };
+
+    scope.fireEvent = function (element, event) {
+      if (element.fireEvent) {
+        element.fireEvent('on' + event);
+      } else {
+        var evObj = document.createEvent('Events');
+
+        evObj.initEvent(event, true, false);
+
+        element.dispatchEvent(evObj);
+      }
     };
 
   }));
@@ -187,7 +200,9 @@ describe('angularChart', function () {
     var element;
 
     beforeEach(function () {
-      element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+      var chartContainer = d3.select('body').append('div').attr('class', 'testContainer');
+      chartContainer.append('angularchart').attr('dataset', 'dataset').attr('options', 'options');
+      element = $compile(chartContainer.select('angularchart')[0][0])(scope);
       scope.$apply();
     });
 
@@ -302,8 +317,36 @@ describe('angularChart', function () {
       expect(scope.options.subchart.show).toBe(false);
     });
 
+    it('Creating a line chart with custom legend', function () {
+      scope.options.legend = {
+        selector: true
+      };
+      scope.$apply();
+      expect(element.html()).not.toBe(null);
+      expect(element.html()).toContain('customLegend');
+
+      // fire events
+      d3.selectAll('.customLegend span')
+        .each(function () {
+          scope.fireEvent(this, 'click');
+          scope.fireEvent(this, 'mouseover');
+          scope.fireEvent(this, 'mouseout');
+        });
+    });
+
+    it('Creating a line chart without legend', function () {
+      scope.options.legend = {
+        show: false
+      };
+      scope.$apply();
+      expect(element.html()).not.toBe(null);
+      expect(element.html()).not.toContain('customLegend');
+    });
+
     it('Stacks 2 bar charts', function () {
-      scope.options.groups = [['sales', 'income']];
+      scope.options.groups = [
+        ['sales', 'income']
+      ];
       scope.$apply();
 
       expect(element.html()).not.toBe(null);
@@ -321,7 +364,10 @@ describe('angularChart', function () {
         enabled: true
       };
 
-      element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+      var chartContainer = d3.select('body').append('div').attr('class', 'testContainer');
+      chartContainer.append('angularchart').attr('dataset', 'dataset').attr('options', 'options');
+      element = $compile(chartContainer.select('angularchart')[0][0])(scope);
+
       elementScope = scope.getElementScope(element);
     });
 
