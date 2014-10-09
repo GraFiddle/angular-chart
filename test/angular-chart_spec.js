@@ -259,6 +259,7 @@ describe('angularChart', function () {
       expect(element.html()).toContain('chooseXAxis');
     });
 
+
     it('Creating a line chart with subchart', function () {
       scope.options.subchart = {
         show: true
@@ -266,6 +267,39 @@ describe('angularChart', function () {
       scope.$apply();
 
       expect(element.html()).not.toBe(null);
+      expect(element.html()).not.toContain('toggleSubchart');
+      // expect(element.html()).toContain('subchart');
+    });
+
+    it('Creating a line chart with subchart toggle and without subchart', function () {
+      scope.options.subchart = {
+        selector: true
+      };
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+      expect(element.html()).toContain('toggleSubchart');
+
+      // toggle show subchart
+      var elementScope = scope.getElementScope(element);
+      elementScope.toggleSubchart();
+      expect(scope.options.subchart.show).toBe(true);
+    });
+
+    it('Creating a line chart with subchart toggle and with subchart', function () {
+      scope.options.subchart = {
+        selector: true,
+        show: true
+      };
+      scope.$apply();
+
+      expect(element.html()).not.toBe(null);
+      expect(element.html()).toContain('toggleSubchart');
+
+      // toggle show subchart
+      var elementScope = scope.getElementScope(element);
+      elementScope.toggleSubchart();
+      expect(scope.options.subchart.show).toBe(false);
     });
 
     it('Stacks 2 bar charts', function () {

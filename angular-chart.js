@@ -55,6 +55,9 @@ angular.module('angularChart', [])
             },
             subchart: {
               show: false
+            },
+            zoom: {
+              enabled: false
             }
           };
 
@@ -179,7 +182,7 @@ angular.module('angularChart', [])
 
             // SubChart
             //
-            if (scope.options.subchart && scope.options.subchart.show) {
+            if (scope.options.subchart) {
               scope.configuration.subchart.show = scope.options.subchart.show;
             }
 
@@ -192,6 +195,7 @@ angular.module('angularChart', [])
             scope.chart = c3.generate(scope.configuration);
             scope.chooseXAxis();
             scope.chooseChartType();
+            scope.toggleSubchartLink();
           };
 
 
@@ -220,6 +224,31 @@ angular.module('angularChart', [])
             element.prepend(el);
           };
 
+          // Toggle Subchart
+          //
+          scope.toggleSubchart = function () {
+            scope.options.subchart.show = !scope.options.subchart.show;
+          };
+
+          // Add Toggle Subchart Links
+          //
+          scope.toggleSubchartLink = function () {
+            if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.subchart || !scope.options.subchart.selector) {
+              return;
+            }
+            var el = angular.element('<span class="toggleSubchart"/>');
+            if (scope.options.subchart.show) {
+              // hide subchart
+              el.append('<a  ng-click="toggleSubchart()" style="margin-left: 90%">hide subchart</a>');
+            } else {
+              // show subchart
+              el.append('<a  ng-click="toggleSubchart()" style="margin-left: 90%">show subchart</a>');
+            }
+            $compile(el)(scope);
+            element.append(el);
+
+            angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+          };
 
           // Selections
           //
@@ -323,7 +352,7 @@ angular.module('angularChart', [])
               if (oldValue.type !== newValue.type) {
                 scope.chart.transform(newValue.type);
                 if (['pie', 'donut'].indexOf(newValue.type) >= 0) {
-                  scope.options.rows.forEach(function(row) {
+                  scope.options.rows.forEach(function (row) {
                     if (['pie', 'donut'].indexOf(row.type) < 0) {
                       delete row.type;
                     }

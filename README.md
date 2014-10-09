@@ -125,7 +125,11 @@ Defines the colors like [in this example](http://c3js.org/samples/data_color.htm
 ---
 
 #### subchart : Object
-Defines the subchart.
+Defines the subchart like [in this example](http://c3js.org/samples/options_subchart.html).
+
+---
+##### selector : boolean
+If `true` a subchart toggle button is displayed.
 
 ---
 ##### show : boolean
