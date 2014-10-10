@@ -17,3 +17,11 @@ body {
 	padding-bottom: 30px;
 	margin-bottom: 0;
 }
+.alerts {
+	position: absolute; 
+	left: 50%;
+}
+.alert {
+	position: relative;
+	left: -50%;
+}

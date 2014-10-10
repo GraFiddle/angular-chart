@@ -1,7 +1,9 @@
 'use strict';
 
 var optionsArray = [{
-  name: 'default',
+  id: 1,
+  name: 'Multichart',
+  description: 'You can combine line, spline, bar, area and scatter charts in a single chart.',
   options: {
     rows: [{
       name: 'income',
@@ -15,31 +17,53 @@ var optionsArray = [{
     }, {
       name: 'units',
       type: 'bar',
+    }]
+  }
+}, {
+  id: 2,
+  name: 'Timeseries',
+  description: 'The xAxis displayFormat can be defined to timeseries.',
+  options: {
+    rows: [{
+      name: 'income'
     }],
     xAxis: {
-      name: 'dayString',
+      name: 'day',
+      displayFormat: '%Y-%m-%d'
     }
   }
 }, {
-  name: 'first',
+  id: 3,
+  name: 'xAxis Selector',
+  description: 'The xAxis selector allows the user to choose the xAxis.',
   options: {
     rows: [{
-      name: 'sales',
-      type: 'line'
+      name: 'sales'
+    },{
+      name: 'income'
     }],
     xAxis: {
-      name: 'dayString',
+      name: 'day',
+      displayFormat: '%Y-%m-%d',
+      selector: true
     }
   }
 }, {
-  name: 'second',
+  id: 4,
+  name: 'Axis Labels',
+  description: 'The xAxis selector allows the user to choose the xAxis.',
   options: {
     rows: [{
-      name: 'income',
-      type: 'spline'
+      name: 'sales'
+    },{
+      name: 'income'
     }],
     xAxis: {
       name: 'dayString',
+      label: 'Weekday'
+    },
+    yAxis: {
+      label: 'Amount'
     }
   }
 }];

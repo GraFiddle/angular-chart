@@ -43,7 +43,13 @@
   <!-- Main jumbotron -->
   <div class="jumbotron chart">
     <div class="container">
-      <angularChart options="optionsObject" dataset="dataObject"></angularChart>
+      <div class="alerts">
+        <div ng-show="showInfo" class="alert alert-info" role="alert">
+          <strong>{{optionsObject.name}}</strong> {{optionsObject.description}}
+        </div>
+      </div>
+      
+      <angularChart options="optionsObject.options" dataset="dataObject"></angularChart>
     </div>
   </div>
 
@@ -57,14 +63,14 @@
 
       <div class="col-sm-4">
         <ul class="nav nav-pills nav-stacked">
-          <li ng-repeat="options in optionsArray" ng-class="{'active': optionsName === options.name}" >
+          <li ng-repeat="options in optionsArray" ng-class="{'active': options.id === optionsObject.id}" >
             <a href="" ng-click="loadOptions(options)" >{{options.name}}</a>
           </li>
         </ul>
       </div>
 
       <div class="col-sm-8">
-        <div ng-model="optionsString" ui-ace="optionsAceConfig"></div>
+        <div ng-model="optionsObject.string" ui-ace="optionsAceConfig"></div>
       </div>
 
     </div>

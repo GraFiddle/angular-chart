@@ -83,7 +83,8 @@ The column name which identifies the value in each record.
 
 ---
 ##### rows.type : String
-Possible values: `line, spline, bar, scatter`
+Possible values: `line, spline, bar, scatter, area`
+
 
 
 ---
@@ -92,12 +93,13 @@ Possible values: `line, spline, bar, scatter, bar, donut`
 Defines which kind of chart should be rendered. The value will be the default for `rows.type`.
 
 
+
 ---
-#### xAxis : Object (required)
+#### xAxis : Object
 Defines which column to use and how to display it:
 
 ---
-##### xAxis.name : String (required)
+##### xAxis.name : String
 The column name which identifies which value should be shown on the xAxis.
 
 ---
@@ -105,22 +107,32 @@ The column name which identifies which value should be shown on the xAxis.
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
-
 ---
 ##### xAxis.selector : boolean
 Shows the dropdown to choose which xAxis you want to use. Default: `false`
+
+
+---
+#### yAxis : Object
+Defines yAxis display.
 
 ---
 ##### yAxis.label : String
 Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
+
+
 ---
 #### groups : Object
 Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_stacked.html).
 
+
+
 ---
 #### colors : Object
 Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
+
+
 
 ---
 #### subchart : Object
@@ -134,17 +146,21 @@ If `true` a subchart toggle button is displayed.
 ##### subchart.show : boolean
 If `true` a subchart for zooming is displayed.
 
+
+
 ---
 #### legend : Object
 Defines the legend.
 
 ---
-##### subchart.selector : boolean
+##### legend.selector : boolean
 If `true` a custom legend is displayed. Default: `false` 
 
 ---
-##### subchart.show : boolean
+##### legend.show : boolean
 If `flase` the default legend is hidden. Default: `true` 
+
+
 
 ---
 #### selection : Object
@@ -161,6 +177,8 @@ Allows selection of multiple chart elements if selection is enabled at all. Defa
 ---
 ##### selection.selected : Array
 Contains an array with all selected points of the chart:
+
+
 
 Multichart (line, spline, bar, scatter):
 ```

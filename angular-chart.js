@@ -52,8 +52,7 @@ angular.module('angularChart', [])
               }
             },
             legend: {
-              show: true,
-              position: 'right'
+              show: true
             },
             subchart: {
               show: false
@@ -127,12 +126,17 @@ angular.module('angularChart', [])
 
             // Add x-axis
             //
-            if (!scope.options.xAxis || !scope.options.xAxis.name) {
-              console.warn('No xAxis provided.');
-            } else {
+            if (scope.options.xAxis && scope.options.xAxis.name) {
               // key selection changed?
               if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.name) {
                 scope.options.selection.selected = [];
+              }
+
+              // label
+              if (scope.options.xAxis.label) {
+                scope.configuration.axis.x.label = scope.options.xAxis.label;
+              } else {
+                scope.configuration.axis.x.label = '';
               }
 
               scope.configuration.data.keys.x = scope.options.xAxis.name;
@@ -227,7 +231,7 @@ angular.module('angularChart', [])
             $compile(el)(scope);
             element.append(el);
 
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: 30px');
           };
 
           // Choose chart-type
@@ -264,7 +268,7 @@ angular.module('angularChart', [])
             $compile(el)(scope);
             element.append(el);
 
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: 30px');
           };
 
           // Add custom Legend

@@ -343,6 +343,13 @@ describe('angularChart', function () {
       expect(element.html()).not.toContain('customLegend');
     });
 
+    it('Chart with xAxis label', function () {
+      scope.options.xAxis.label = 'theLabel';
+      scope.$apply();
+      expect(element.html()).not.toBe(null);
+      // ToDo expect(element.html()).toContain(scope.options.xAxis.label);
+    });
+
     it('Stacks 2 bar charts', function () {
       scope.options.groups = [
         ['sales', 'income']
