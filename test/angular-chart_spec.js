@@ -350,6 +350,14 @@ describe('angularChart', function () {
       // ToDo expect(element.html()).toContain(scope.options.xAxis.label);
     });
 
+
+    it('Chart with type selector', function () {
+      scope.options.typeSelector = true;
+      scope.$apply();
+      expect(element.html()).not.toBe(null);
+      // ToDo expect(element.html()).toContain(scope.options.xAxis.label);
+    });
+
     it('Stacks 2 bar charts', function () {
       scope.options.groups = [
         ['sales', 'income']

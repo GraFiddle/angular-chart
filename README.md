@@ -92,6 +92,10 @@ Possible values: `line, spline, bar, scatter, area`
 Possible values: `line, spline, bar, scatter, bar, donut`
 Defines which kind of chart should be rendered. The value will be the default for `rows.type`.
 
+---
+#### typeSelector : boolean
+When `true` a selector to switch between multi and pie charts is displayed. Default: `false`
+
 
 
 ---

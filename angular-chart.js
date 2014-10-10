@@ -61,6 +61,7 @@ angular.module('angularChart', [])
               enabled: false
             }
           };
+          var marginBottom = 0;
 
           // add unique identifier for each chart
           //
@@ -210,6 +211,8 @@ angular.module('angularChart', [])
               scope.configuration.legend.show = true;
             }
 
+            marginBottom = 0;
+
             scope.chart = c3.generate(scope.configuration);
             scope.chooseXAxis();
             scope.chooseChartType();
@@ -217,6 +220,8 @@ angular.module('angularChart', [])
             if (scope.options.legend && scope.options.legend.selector) {
               scope.customLegend();
             }
+
+            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: ' + marginBottom + 'px');
           };
 
 
@@ -231,18 +236,20 @@ angular.module('angularChart', [])
             $compile(el)(scope);
             element.append(el);
 
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: 30px');
+            marginBottom = 30;
           };
 
           // Choose chart-type
           //
           scope.chooseChartType = function () {
-            var el = angular.element('<span/>');
-            el.attr('style', 'float: right');
-            el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
-            el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
-            $compile(el)(scope);
-            element.prepend(el);
+            if (scope.options.typeSelector) {
+              var el = angular.element('<span/>');
+              el.attr('style', 'float: right');
+              el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
+              el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
+              $compile(el)(scope);
+              element.prepend(el);
+            }
           };
 
           // Toggle Subchart
@@ -268,7 +275,6 @@ angular.module('angularChart', [])
             $compile(el)(scope);
             element.append(el);
 
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: 30px');
           };
 
           // Add custom Legend

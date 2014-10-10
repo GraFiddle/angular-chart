@@ -24,4 +24,7 @@ body {
 .alert {
 	position: relative;
 	left: -50%;
+	z-index: 1;
+	background-color: rgba(217, 237, 247, 0.8);
+	margin-top: 10px;
 }
