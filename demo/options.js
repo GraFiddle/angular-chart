@@ -66,4 +66,21 @@ var optionsArray = [{
       label: 'Amount'
     }
   }
+}, {
+  id: 5,
+  name: 'Subchart',
+  description: '',
+  options: {
+    rows: [{
+      name: 'sales'
+    },{
+      name: 'income'
+    }],
+    subchart: {
+            selector: true,
+            show: true
+          }
+  }
 }];
+
+

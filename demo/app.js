@@ -30,7 +30,7 @@ angular.module('angular-chart-demo', ['angularChart', 'ui.ace'])
     // hide info again
     $scope.timeout = $timeout(function () {
       $scope.showInfo = false;
-    }, 3000);
+    }, 4000);
   };
 
   $scope.loadData = function (data) {

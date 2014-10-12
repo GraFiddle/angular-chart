@@ -1,86 +1,25 @@
 'use strict';
 
 /*global beforeEach, afterEach, describe, it, inject, expect, spyOn, module, angular*/
-describe('angularChart', function () {
+describe('angularChart:', function () {
 
-  var scope, $compile, $controller;
+  var $scope, $compile, $controller;
   var d3 = window.d3;
+  var dataArray = window.dataArray;
+  var optionsArray = window.optionsArray;
 
   beforeEach(module('angularChart'));
   beforeEach(inject(function (_$rootScope_, _$compile_, _$controller_) {
-    scope = _$rootScope_.$new();
+    $scope = _$rootScope_.$new();
     $compile = _$compile_;
     $controller = _$controller_;
 
-    scope.dataset = {
-      'metadata': {
-        'name': 'demo-dataset'
-      },
-      'schema': [{
-        'name': 'day',
-        'type': 'datetime',
-        'format': '%Y-%m-%dT%H:%M:%S'
-      }, {
-        'name': 'sales',
-        'type': 'double'
-      }, {
-        'name': 'dayString',
-        'type': 'string'
-      }],
-      'records': [{
-        'day': '2013-01-02T00:00:00',
-        'sales': 13461.295202,
-        'dayString': 'Monday'
-      }, {
-        'day': '2013-01-03T00:00:00',
-        'sales': 23461.295202,
-        'dayString': 'Tuesday'
-      }, {
-        'day': '2013-01-04T00:00:00',
-        'sales': 33461.295202,
-        'dayString': 'Wednesday'
-      }, {
-        'day': '2013-01-05T00:00:00',
-        'sales': 43461.295202,
-        'dayString': 'Thursday'
-      }]
-    };
-    scope.options = {
-      rows: [{
-        name: 'sales',
-        type: 'bar',
-        label: 'sold'
-      }],
-      xAxis: {
-        name: 'day',
-        displayFormat: '%Y-%m-%d %H:%M:%S'
-      },
-      type: 'line'
-    };
 
-    scope.addData = function () {
-      scope.dataset.records.push({
-        'day': '2013-01-06T00:00:00',
-        'sales': 53461.295202
-      });
-    };
-
-    scope.addOptions = function () {
-      scope.options = {
-        rows: [{
-          name: 'sales'
-        }],
-        xAxis: {
-          name: 'dayString'
-        }
-      };
-    };
-
-    scope.getElementScope = function (element) {
+    $scope.getElementScope = function (element) {
       return element.scope().$$childTail;
     };
 
-    scope.fireEvent = function (element, event) {
+    $scope.fireEvent = function (element, event) {
       if (element.fireEvent) {
         element.fireEvent('on' + event);
       } else {
@@ -94,49 +33,54 @@ describe('angularChart', function () {
 
   }));
 
-  describe('scope initialization', function () {
+  describe('$scope initialization', function () {
+
+    beforeEach(function () {
+      $scope.dataset = JSON.parse(JSON.stringify(dataArray[0].data));
+      $scope.options = JSON.parse(JSON.stringify(optionsArray[0].options));
+    });
 
     it('requires a valid dataset object', function () {
       expect(function () {
-        $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
       }).not.toThrow();
       expect(function () {
-        $compile('<angularchart dataset options="options"></angularchart>')(scope);
+        $compile('<angularchart dataset options="options"></angularchart>')($scope);
       }).toThrow();
       expect(function () {
-        $compile('<angularchart options="options"></angularchart>')(scope);
+        $compile('<angularchart options="options"></angularchart>')($scope);
       }).toThrow();
       expect(function () {
-        $compile('<angularchart dataset="nonObject" options="options"></angularchart>')(scope);
+        $compile('<angularchart dataset="nonObject" options="options"></angularchart>')($scope);
       }).toThrow();
       expect(function () {
-        scope.nonResourceObject = {};
-        $compile('<angularchart dataset="nonResourceObject" options="options"></angularchart>')(scope);
+        $scope.nonResourceObject = {};
+        $compile('<angularchart dataset="nonResourceObject" options="options"></angularchart>')($scope);
       }).toThrow();
     });
 
     it('not requires the optional options object', function () {
       expect(function () {
-        $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
       }).not.toThrow();
       expect(function () {
-        $compile('<angularchart dataset="dataset" options></angularchart>')(scope);
+        $compile('<angularchart dataset="dataset" options></angularchart>')($scope);
       }).not.toThrow();
       expect(function () {
-        $compile('<angularchart dataset="dataset"></angularchart>')(scope);
+        $compile('<angularchart dataset="dataset"></angularchart>')($scope);
       }).not.toThrow();
       expect(function () {
-        $compile('<angularchart dataset="dataset" options="nonObject"></angularchart>')(scope);
+        $compile('<angularchart dataset="dataset" options="nonObject"></angularchart>')($scope);
       }).not.toThrow();
       expect(function () {
-        scope.nonResourceObject = {};
-        $compile('<angularchart dataset="dataset" options="nonResourceObject"></angularchart>')(scope);
+        $scope.nonResourceObject = {};
+        $compile('<angularchart dataset="dataset" options="nonResourceObject"></angularchart>')($scope);
       }).not.toThrow();
     });
 
-    it('should attach methods to the scope', function () {
-      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
-      var elementScope = scope.getElementScope(element);
+    it('should attach methods to the $scope', function () {
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      var elementScope = $scope.getElementScope(element);
 
       expect(elementScope.addIdentifier).toBeDefined();
       expect(elementScope.loadChart).toBeDefined();
@@ -145,376 +89,640 @@ describe('angularChart', function () {
       expect(elementScope.startDatasetWatcher).toBeDefined();
     });
 
-    it('should not modify the parent scope', function () {
-      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
+    it('should not modify the parent $scope', function () {
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
 
-      expect(scope.addIdentifier).not.toBeDefined();
-      expect(scope.loadChart).not.toBeDefined();
-      expect(scope.updateChart).not.toBeDefined();
-      expect(scope.startOptionsWatcher).not.toBeDefined();
-      expect(scope.startDatasetWatcher).not.toBeDefined();
+      expect($scope.addIdentifier).not.toBeDefined();
+      expect($scope.loadChart).not.toBeDefined();
+      expect($scope.updateChart).not.toBeDefined();
+      expect($scope.startOptionsWatcher).not.toBeDefined();
+      expect($scope.startDatasetWatcher).not.toBeDefined();
     });
 
-    it('should have equal object in both scopes', function () {
-      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
-      var elementScope = scope.getElementScope(element);
+    it('should have equal object in both $scopes', function () {
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      var elementScope = $scope.getElementScope(element);
 
-      expect(scope.options).toEqual(elementScope.options);
-      expect(scope.dataset).toEqual(elementScope.dataset);
+      expect($scope.options).toEqual(elementScope.options);
+      expect($scope.dataset).toEqual(elementScope.dataset);
     });
 
-    it('should register onclick handler', function () {
-      var handler = function () {};
-      scope.options.onclick = handler;
-      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
-
-      var elementScope = scope.getElementScope(element);
-      expect(elementScope.configuration.data.onclick).toBe(handler);
-    });
-
-    it('should set custom color', function () {
-      var colors = {
-        sales: '#ff0000'
-      };
-      scope.options.colors = colors;
-      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
-
-      var elementScope = scope.getElementScope(element);
-      expect(elementScope.configuration.data.colors).toBe(colors);
-    });
-
-    it('should add label on y-axis', function () {
-      var yAxis = {
-        label: 'yAxis label'
-      };
-      scope.options.yAxis = yAxis;
-      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')(scope);
-
-      var elementScope = scope.getElementScope(element);
-      expect(elementScope.configuration.axis.y.label).toBe(yAxis.label);
-    });
   });
 
-  describe('The basic functionality: ', function () {
+  describe('#', function () {
 
-    var element;
+    var chartContainer;
+    var chartElement;
+    var elementScope;
 
     beforeEach(function () {
-      var chartContainer = d3.select('body').append('div').attr('class', 'testContainer');
+      $scope.dataset = JSON.parse(JSON.stringify(dataArray[0].data));
+      $scope.options = JSON.parse(JSON.stringify(optionsArray[0].options));
+
+      // create DOM elements
+      chartContainer = d3.select('body').append('div').attr('class', 'testContainer');
+      // add directive to DOM
       chartContainer.append('angularchart').attr('dataset', 'dataset').attr('options', 'options');
-      element = $compile(chartContainer.select('angularchart')[0][0])(scope);
-      scope.$apply();
+      // select chart
+      chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
+      // get elements scope
+      elementScope = $scope.getElementScope(chartElement);
     });
 
-    it('Creating basic chart', function () {
-      expect(element.html()).not.toBe(null);
-    });
+    describe('watch', function () {
 
-    it('Watching dataset changes', function () {
-      scope.addData();
-      scope.$apply();
+      it('dataset changes.', function () {
 
-      expect(element.html()).not.toBe(null);
-    });
+        var newData = {
+          'day': '2013-01-06T00:00:00',
+          'sales': 53461.295202
+        };
+        $scope.dataset.records.push(newData);
+        $scope.$apply();
+      });
 
-    it('Watching options changes', function () {
-      scope.addOptions();
-      scope.$apply();
+      it('options changes.', function () {
 
-      expect(element.html()).not.toBe(null);
-    });
+        var xAxis = {
+          name: 'dayString'
+        };
+        $scope.options.xAxis = xAxis;
+        $scope.$apply();
+      });
 
-    it('Warning if no datetime format is provided', function () {
-      spyOn(console, 'warn');
-
-      // remove format
-      delete scope.dataset.schema[0].format;
-      scope.$apply();
-
-      expect(element.html()).not.toBe(null);
-      expect(console.warn).toHaveBeenCalled();
-    });
-
-    it('Creating a pie chart', function () {
-      scope.options.type = 'pie';
-      scope.$apply();
-
-      expect(element.html()).not.toBe(null);
-    });
-
-    it('Creating a pie chart with defined rows', function () {
-      scope.options.rows[0].type = 'pie';
-      scope.options.type = 'pie';
-      scope.$apply();
-
-      expect(element.html()).not.toBe(null);
-    });
-
-    it('Creating a line chart with Double xAxis', function () {
-      scope.options.type = 'line';
-      scope.options.xAxis.name = 'sales';
-      scope.$apply();
-
-      expect(element.html()).not.toBe(null);
-    });
-
-    it('Creating a chart without xAxis by default', function () {
-      scope.options.type = 'line';
-      scope.options.xAxis.name = 'sales';
-      scope.$apply();
-      expect(element.html()).not.toContain('chooseXAxis');
-    });
-
-    it('Creating a chart with xAxis selector', function () {
-      scope.options.type = 'line';
-      scope.options.xAxis.name = 'sales';
-      scope.options.xAxis.selector = true;
-      scope.$apply();
-
-      expect(element.html()).toContain('chooseXAxis');
     });
 
 
-    it('Creating a line chart with subchart', function () {
-      scope.options.subchart = {
-        show: true
-      };
-      scope.$apply();
+    describe('options', function () {
 
-      expect(element.html()).not.toBe(null);
-      expect(element.html()).not.toContain('toggleSubchart');
-      // expect(element.html()).toContain('subchart');
-    });
+      describe('. onclick', function () {
 
-    it('Creating a line chart with subchart toggle and without subchart', function () {
-      scope.options.subchart = {
-        selector: true
-      };
-      scope.$apply();
+        it('- Chart should register onclick handler.', function () {
+          // check configuration before
+          expect(elementScope.configuration.data.onclick).toBe(angular.noop);
 
-      expect(element.html()).not.toBe(null);
-      expect(element.html()).toContain('toggleSubchart');
+          // set option
+          var handler = function () {};
+          $scope.options.onclick = handler;
+          $scope.$apply();
 
-      // toggle show subchart
-      var elementScope = scope.getElementScope(element);
-      elementScope.toggleSubchart();
-      expect(scope.options.subchart.show).toBe(true);
-    });
-
-    it('Creating a line chart with subchart toggle and with subchart', function () {
-      scope.options.subchart = {
-        selector: true,
-        show: true
-      };
-      scope.$apply();
-
-      expect(element.html()).not.toBe(null);
-      expect(element.html()).toContain('toggleSubchart');
-
-      // toggle show subchart
-      var elementScope = scope.getElementScope(element);
-      elementScope.toggleSubchart();
-      expect(scope.options.subchart.show).toBe(false);
-    });
-
-    it('Creating a line chart with custom legend', function () {
-      scope.options.legend = {
-        selector: true
-      };
-      scope.$apply();
-      expect(element.html()).not.toBe(null);
-      expect(element.html()).toContain('customLegend');
-
-      // fire events
-      d3.selectAll('.customLegend span')
-        .each(function () {
-          scope.fireEvent(this, 'click');
-          scope.fireEvent(this, 'mouseover');
-          scope.fireEvent(this, 'mouseout');
+          // check configuration change
+          expect(elementScope.configuration.data.onclick).toBe(handler);
         });
-    });
 
-    it('Creating a line chart without legend', function () {
-      scope.options.legend = {
-        show: false
-      };
-      scope.$apply();
-      expect(element.html()).not.toBe(null);
-      expect(element.html()).not.toContain('customLegend');
-    });
-
-    it('Chart with xAxis label', function () {
-      scope.options.xAxis.label = 'theLabel';
-      scope.$apply();
-      expect(element.html()).not.toBe(null);
-      // ToDo expect(element.html()).toContain(scope.options.xAxis.label);
-    });
+      });
 
 
-    it('Chart with type selector', function () {
-      scope.options.typeSelector = true;
-      scope.$apply();
-      expect(element.html()).not.toBe(null);
-      // ToDo expect(element.html()).toContain(scope.options.xAxis.label);
-    });
+      describe('. colors', function () {
 
-    it('Stacks 2 bar charts', function () {
-      scope.options.groups = [
-        ['sales', 'income']
-      ];
-      scope.$apply();
+        it('- Chart should set custom color for row.', function () {
+          // check configuration before
+          expect(elementScope.configuration.data.colors.sales).not.toBe('#ff0000');
 
-      expect(element.html()).not.toBe(null);
+          // set option
+          var colors = {
+            sales: '#ff0000'
+          };
+          $scope.options.colors = colors;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.colors.sales).toBe(colors.sales);
+        });
+
+      });
+
+
+      describe('. yAxis', function () {
+
+        describe('. label', function () {
+
+          it('- Chart should add label on y-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y.label).toBe('');
+
+            // set option
+            var yAxis = {
+              label: 'yAxis label'
+            };
+            $scope.options.yAxis = yAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y.label).toBe(yAxis.label);
+          });
+
+        });
+
+      });
+
+      describe('Rows/Type', function () {
+
+        // ToDo: add expect
+        describe('- Pie Chart', function () {
+
+          it('should be created.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.axis.y.label).toBe('');
+
+            // set option
+            var type = 'pie';
+
+            $scope.options.type = type;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.axis.y.label).toBe(type);
+          });
+
+          it('should be created and changed.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.axis.y.label).toBe('');
+
+            // set option
+            var type = 'pie';
+
+            $scope.options.type = type;
+            $scope.$apply();
+
+            type = 'line';
+
+            $scope.options.type = type;
+            $scope.$apply();
+
+            type = 'pie';
+
+            $scope.options.type = type;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.axis.y.label).toBe(type);
+          });
+
+          it('should be created in rows.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.axis.y.label).toBe('');
+
+            // set option
+            var type = 'pie';
+            var rows = [{
+              type: 'pie'
+            }];
+
+            $scope.options.type = type;
+            $scope.options.rows = rows;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.axis.y.label).toBe(type);
+          });
+
+        });
+
+        describe('- Type Selector', function () {
+
+          it('should not be added by default.', function () {
+            // check configuration before
+            expect(chartElement.html()).not.toContain('chooseChartType');
+          });
+
+          it('should be added.', function () {
+            // check configuration before
+            expect(chartElement.html()).not.toContain('chooseChartType');
+
+            // set option
+            var typeSelector = true;
+
+            $scope.options.typeSelector = typeSelector;
+            $scope.$apply();
+
+            // check configuration change
+            expect(chartElement.html()).toContain('chooseChartType');
+          });
+
+        });
+
+      });
+
+      describe('. xAxis', function () {
+
+        describe('. name', function () {
+
+          it('- Chart should add defined x-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.data.keys.x).toBe('');
+
+            // set option
+            var xAxis = {
+              name: 'dayString'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+          });
+
+          it('- Chart should change defined x-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.data.keys.x).toBe('');
+
+            // set option
+            var xAxis = {
+              name: 'dayString'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+
+            // set option
+            xAxis = {
+              name: 'day'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+          });
+
+          it('- Chart should use default format for timestamps.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.data.keys.x).toBe('');
+
+            // set option
+            delete $scope.dataset.schema[0].format;
+            var xAxis = {
+              name: 'day'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+          });
+
+        });
+
+        describe('. displayFormat', function () {
+
+          // ToDo: add expect
+          it('- Chart should add x-axis with specific format.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.axis.x.label).toBe('');
+
+            // set option
+            var xAxis = {
+              name: 'day',
+              displayFormat: '%Y-%m-%d'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.axis.x.label).toBe(xAxis.label);
+          });
+
+        });
+
+        describe('. label', function () {
+
+          it('- Chart should add label on x-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.label).toBe('');
+
+            // set option
+            var xAxis = {
+              label: 'xAxis label'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.label).toBe(xAxis.label);
+          });
+
+        });
+
+        describe('. selector', function () {
+
+          it('- Chart should not add choose xAxis selector by default.', function () {
+            // check configuration before
+            expect(chartElement.html()).not.toContain('chooseXAxis');
+          });
+
+          it('- Chart should add choose xAxis selector.', function () {
+            // check configuration before
+            expect(chartElement.html()).not.toContain('chooseXAxis');
+
+            // set option
+            var xAxis = {
+              selector: true
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(chartElement.html()).toContain('chooseXAxis');
+          });
+
+        });
+
+      });
+
+      describe('. groups', function () {
+
+        it('- Chart should stack two bar charts.', function () {
+          // check configuration before
+          expect(elementScope.configuration.data.groups.length).toBe(0);
+
+          // set option
+          var groups = [
+            ['sales', 'income']
+          ];
+          $scope.options.groups = groups;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.groups).toBe(groups);
+        });
+
+      });
+
+      describe('. legend', function () {
+
+        describe('. selector', function () {
+
+          it('- Chart should hide default legend.', function () {
+            // check configuration before
+            expect(elementScope.configuration.legend.show).toBe(true);
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.legend.show).toBe(false);
+          });
+
+          it('- Chart should add customLegend.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.$apply();
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Chart should add events on legend.', function () {
+            // check  before
+            // ToDo
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.$apply();
+
+            // fire events
+            d3.selectAll('.customLegend span')
+              .each(function () {
+                $scope.fireEvent(this, 'click');
+                $scope.fireEvent(this, 'mouseover');
+                $scope.fireEvent(this, 'mouseout');
+              });
+
+            // check change
+            // ToDo
+          });
+
+        });
+
+        describe('. show', function () {
+
+          it('- Chart should hide default legend.', function () {
+            // check configuration before
+            expect(elementScope.configuration.legend.show).toBe(true);
+
+            // set option
+            var legend = {
+              show: false
+            };
+            $scope.options.legend = legend;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.legend.show).toBe(false);
+          });
+
+        });
+
+      });
+
+      // ToDo: Review
+      describe('. subchart', function () {
+
+        it('Creating a line chart with subchart toggle', function () {
+          $scope.options.subchart = {
+            selector: true
+          };
+          $scope.$apply();
+
+          expect(chartElement.html()).not.toBe(null);
+          expect(chartElement.html()).toContain('toggleSubchart');
+        });
+
+        it('Creating a line chart with subchart toggle and with subchart', function () {
+          $scope.options.subchart = {
+            selector: true,
+            show: true
+          };
+          $scope.$apply();
+
+          expect(chartElement.html()).not.toBe(null);
+          expect(chartElement.html()).toContain('toggleSubchart');
+
+          // toggle show subchart
+          var elementScope = $scope.getElementScope(chartElement);
+          elementScope.toggleSubchart();
+          expect($scope.options.subchart.show).toBe(false);
+        });
+
+        it('Creating a line chart with custom legend', function () {
+          $scope.options.legend = {
+            selector: true
+          };
+          $scope.$apply();
+          expect(chartElement.html()).not.toBe(null);
+          expect(chartElement.html()).toContain('customLegend');
+
+          // fire events
+          d3.selectAll('.customLegend span')
+            .each(function () {
+              $scope.fireEvent(this, 'click');
+              $scope.fireEvent(this, 'mouseover');
+              $scope.fireEvent(this, 'mouseout');
+            });
+        });
+
+      });
+
+      // ToDo: Review
+      describe('. selection', function () {
+
+        beforeEach(function () {
+          $scope.options.selection = {
+            enabled: true
+          };
+          $scope.$apply();
+        });
+
+        it('Runs with selections enabled', function () {
+          expect(chartElement.html()).not.toBe(null);
+        });
+
+        it('watch add selections', function () {
+          $scope.options.selection.selected = [];
+
+          // add external selection
+          $scope.options.selection.selected.push({
+            id: 'test',
+            index: 3
+          });
+          $scope.$apply();
+
+          // external unselection
+          $scope.options.selection.selected = $scope.options.selection.selected.splice(0, 1);
+          $scope.$apply();
+        });
+
+        it('watch add multiple selections at once', function () {
+          $scope.options.selection.selected = [];
+
+          // add external selection
+          $scope.options.selection.selected.push({
+            id: 'test',
+            index: 3
+          });
+          $scope.options.selection.selected.push({
+            id: 'test',
+            index: 4
+          });
+          $scope.$apply();
+
+          // external unselection
+          $scope.options.selection.selected = $scope.options.selection.selected.splice(0, 1);
+          $scope.$apply();
+        });
+
+        it('watch remove selections', function () {
+          $scope.options.selection.selected = [];
+
+          // add external selection
+          $scope.options.selection.selected.push({
+            id: 'test',
+            index: 3
+          });
+          $scope.$apply();
+
+          $scope.options.selection.selected.push({
+            id: 'test',
+            index: 4
+          });
+          $scope.$apply();
+
+          // external unselection
+          $scope.options.selection.selected = $scope.options.selection.selected.splice(1, 1);
+          $scope.$apply();
+        });
+
+        it('watch view selections', function () {
+          expect($scope.options.selection.selected.length).toBe(0);
+
+          // chart selection
+          elementScope.configuration.data.onselected({}, {});
+          expect(chartElement.html()).not.toBe(null);
+
+          expect($scope.options.selection.selected.length).toBe(1);
+        });
+
+        it('watch view selections, if not disabled', function () {
+          expect($scope.options.selection.selected.length).toBe(0);
+
+          // avoid selections
+          elementScope.selections.avoidSelections = true;
+
+          // chart selection
+          elementScope.configuration.data.onselected({}, {});
+
+          // was not added
+          expect($scope.options.selection.selected.length).toBe(0);
+          elementScope.selections.avoidSelections = false;
+        });
+
+        it('watch view unselections without existing selections', function () {
+          // chart unselection
+          elementScope.configuration.data.onunselected({}, {});
+          expect(chartElement.html()).not.toBe(null);
+        });
+
+        it('watch view unselections with existing selections', function () {
+          // add external selection
+          $scope.options.selection.selected.push({
+            id: 'test',
+            index: 3
+          });
+          $scope.$apply();
+          expect($scope.options.selection.selected.length).toBe(1);
+
+          // chart unselection
+          elementScope.configuration.data.onunselected({
+            id: 'test',
+            index: 3
+          }, {});
+          expect($scope.options.selection.selected.length).toBe(0);
+        });
+
+        it('watch view selections, if not disabled', function () {
+          // add selection
+          $scope.options.selection.selected.push({
+            id: 'test',
+            index: 3
+          });
+          $scope.$apply();
+          expect($scope.options.selection.selected.length).toBe(1);
+
+          // avoid selections
+          elementScope.selections.avoidSelections = true;
+
+          // chart unselection
+          elementScope.configuration.data.onunselected({
+            id: 'test',
+            index: 3
+          }, {});
+
+          // was not added
+          expect($scope.options.selection.selected.length).toBe(1);
+          elementScope.selections.avoidSelections = false;
+        });
+
+      });
+
     });
 
   });
 
-
-  describe('Selections: ', function () {
-
-    var element, elementScope;
-
-    beforeEach(function () {
-      scope.options.selection = {
-        enabled: true
-      };
-
-      var chartContainer = d3.select('body').append('div').attr('class', 'testContainer');
-      chartContainer.append('angularchart').attr('dataset', 'dataset').attr('options', 'options');
-      element = $compile(chartContainer.select('angularchart')[0][0])(scope);
-
-      elementScope = scope.getElementScope(element);
-    });
-
-    it('Runs with selections enabled', function () {
-      expect(element.html()).not.toBe(null);
-    });
-
-    it('watch add selections', function () {
-      scope.options.selection.selected = [];
-
-      // add external selection
-      scope.options.selection.selected.push({
-        id: 'test',
-        index: 3
-      });
-      scope.$apply();
-
-      // external unselection
-      scope.options.selection.selected = scope.options.selection.selected.splice(0, 1);
-      scope.$apply();
-    });
-
-    it('watch add multiple selections at once', function () {
-      scope.options.selection.selected = [];
-
-      // add external selection
-      scope.options.selection.selected.push({
-        id: 'test',
-        index: 3
-      });
-      scope.options.selection.selected.push({
-        id: 'test',
-        index: 4
-      });
-      scope.$apply();
-
-      // external unselection
-      scope.options.selection.selected = scope.options.selection.selected.splice(0, 1);
-      scope.$apply();
-    });
-
-    it('watch remove selections', function () {
-      scope.options.selection.selected = [];
-
-      // add external selection
-      scope.options.selection.selected.push({
-        id: 'test',
-        index: 3
-      });
-      scope.$apply();
-
-      scope.options.selection.selected.push({
-        id: 'test',
-        index: 4
-      });
-      scope.$apply();
-
-      // external unselection
-      scope.options.selection.selected = scope.options.selection.selected.splice(1, 1);
-      scope.$apply();
-    });
-
-    it('watch view selections', function () {
-      expect(scope.options.selection.selected.length).toBe(0);
-
-      // chart selection
-      elementScope.configuration.data.onselected({}, {});
-      expect(element.html()).not.toBe(null);
-
-      expect(scope.options.selection.selected.length).toBe(1);
-    });
-
-    it('watch view selections, if not disabled', function () {
-      expect(scope.options.selection.selected.length).toBe(0);
-
-      // avoid selections
-      elementScope.selections.avoidSelections = true;
-
-      // chart selection
-      elementScope.configuration.data.onselected({}, {});
-
-      // was not added
-      expect(scope.options.selection.selected.length).toBe(0);
-      elementScope.selections.avoidSelections = false;
-    });
-
-    it('watch view unselections without existing selections', function () {
-      // chart unselection
-      elementScope.configuration.data.onunselected({}, {});
-      expect(element.html()).not.toBe(null);
-    });
-
-    it('watch view unselections with existing selections', function () {
-      // add external selection
-      scope.options.selection.selected.push({
-        id: 'test',
-        index: 3
-      });
-      scope.$apply();
-      expect(scope.options.selection.selected.length).toBe(1);
-
-      // chart unselection
-      elementScope.configuration.data.onunselected({
-        id: 'test',
-        index: 3
-      }, {});
-      expect(scope.options.selection.selected.length).toBe(0);
-    });
-
-    it('watch view selections, if not disabled', function () {
-      // add selection
-      scope.options.selection.selected.push({
-        id: 'test',
-        index: 3
-      });
-      scope.$apply();
-      expect(scope.options.selection.selected.length).toBe(1);
-
-      // avoid selections
-      elementScope.selections.avoidSelections = true;
-
-      // chart unselection
-      elementScope.configuration.data.onunselected({
-        id: 'test',
-        index: 3
-      }, {});
-
-      // was not added
-      expect(scope.options.selection.selected.length).toBe(1);
-      elementScope.selections.avoidSelections = false;
-    });
-
-  });
 
 });

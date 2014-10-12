@@ -28,7 +28,8 @@ angular.module('angularChart', [])
           scope.configuration = {
             data: {
               keys: {
-                value: []
+                value: [],
+                x: ''
               },
               types: {},
               names: [],
@@ -45,6 +46,7 @@ angular.module('angularChart', [])
             },
             axis: {
               x: {
+                label: '',
                 tick: {}
               },
               y: {
@@ -106,7 +108,7 @@ angular.module('angularChart', [])
             // Add lines
             //
             if (!scope.options.rows) {
-              console.warn('The rows to display have to be defined.');
+              // console.warn('The rows to display have to be defined.');
             } else {
               scope.configuration.data.keys.value = [];
               scope.options.rows.forEach(function (element) {
@@ -133,13 +135,6 @@ angular.module('angularChart', [])
                 scope.options.selection.selected = [];
               }
 
-              // label
-              if (scope.options.xAxis.label) {
-                scope.configuration.axis.x.label = scope.options.xAxis.label;
-              } else {
-                scope.configuration.axis.x.label = '';
-              }
-
               scope.configuration.data.keys.x = scope.options.xAxis.name;
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
@@ -150,7 +145,7 @@ angular.module('angularChart', [])
                 if (element.name === scope.options.xAxis.name) {
                   if (element.type === 'datetime') {
                     if (!element.format) {
-                      return console.warn('For data of the type "datetime" a format has to be defined.');
+                      element.format = '%Y-%m-%dT%H:%M:%S';
                     }
                     scope.configuration.axis.x.type = 'timeseries';
                     scope.configuration.data.xFormat = element.format;
@@ -160,6 +155,14 @@ angular.module('angularChart', [])
                   return;
                 }
               });
+            }
+
+            // xAxis Label
+            //
+            if (scope.options.xAxis && scope.options.xAxis.label) {
+              scope.configuration.axis.x.label = scope.options.xAxis.label;
+            } else {
+              scope.configuration.axis.x.label = '';
             }
 
             // Colors
@@ -243,7 +246,7 @@ angular.module('angularChart', [])
           //
           scope.chooseChartType = function () {
             if (scope.options.typeSelector) {
-              var el = angular.element('<span/>');
+              var el = angular.element('<span class="chooseChartType">');
               el.attr('style', 'float: right');
               el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
               el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
@@ -395,9 +398,6 @@ angular.module('angularChart', [])
           scope.startOptionsWatcher = function () {
 
             scope.$watch('options', function (newValue, oldValue) {
-              if (newValue === oldValue) { // skip the first run of $watch
-                return;
-              }
 
               if (scope.selections.watchOptions(newValue, oldValue)) {
                 return;
@@ -423,16 +423,10 @@ angular.module('angularChart', [])
           //
           scope.startDatasetWatcher = function () {
             scope.$watch('dataset.records', function (newValue, oldValue) {
-              if (newValue === oldValue) { // skip the first run of $watch
-                return;
-              }
               scope.loadChart();
             }, true); // checks for changes inside data
 
             scope.$watch('dataset.schema', function (newValue, oldValue) {
-              if (newValue === oldValue) { // skip the first run of $watch
-                return;
-              }
               scope.updateChart();
             }, true); // checks for changes inside data
           };
