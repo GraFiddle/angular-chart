@@ -194,6 +194,8 @@ angular.module('angularChart', [])
             //
             if (scope.options.subchart) {
               scope.configuration.subchart.show = scope.options.subchart.show;
+            } else {
+              scope.configuration.subchart.show = false;
             }
 
             // Y label
