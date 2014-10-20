@@ -118,8 +118,8 @@ angular.module('angularChart', [])
 
                 // data name
                 if (element.name) {
-                  scope.configuration.data.names[element.key] = element.name
-                } else if(scope.schema && scope.schema[element.key] && scope.schema[element.key].name) {
+                  scope.configuration.data.names[element.key] = element.name;
+                } else if (scope.schema && scope.schema[element.key] && scope.schema[element.key].name) {
                   scope.configuration.data.names[element.key] = scope.schema[element.key].name;
                 }
 
