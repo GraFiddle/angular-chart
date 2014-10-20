@@ -168,7 +168,7 @@ describe('angularChart:', function () {
       it('options changes.', function () {
 
         var xAxis = {
-          name: 'dayString'
+          key: 'dayString'
         };
         $scope.options.xAxis = xAxis;
         $scope.$apply();
@@ -236,6 +236,24 @@ describe('angularChart:', function () {
             expect(elementScope.configuration.axis.y.label).toBe(yAxis.label);
           });
 
+        });
+
+      });
+
+      describe('. rows', function () {
+
+        it('- Chart should have defined name for row.', function () {
+          // check configuration before
+          // expect(elementScope.configuration.data.groups.length).toBe(0);
+
+          // set option
+          var row = $scope.options.rows[1];
+          row.name = 'Verkauf';
+          $scope.options.rows[1] = row;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.names[row.key]).toBe(row.name);
         });
 
       });
@@ -330,7 +348,7 @@ describe('angularChart:', function () {
 
       describe('. xAxis', function () {
 
-        describe('. name', function () {
+        describe('. key', function () {
 
           it('- Chart should add defined x-axis.', function () {
             // check configuration before
@@ -338,13 +356,13 @@ describe('angularChart:', function () {
 
             // set option
             var xAxis = {
-              name: 'dayString'
+              key: 'dayString'
             };
             $scope.options.xAxis = xAxis;
             $scope.$apply();
 
             // check configuration change
-            expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+            expect(elementScope.configuration.data.keys.x).toBe(xAxis.key);
           });
 
           it('- Chart should change defined x-axis.', function () {
@@ -353,23 +371,23 @@ describe('angularChart:', function () {
 
             // set option
             var xAxis = {
-              name: 'dayString'
+              key: 'dayString'
             };
             $scope.options.xAxis = xAxis;
             $scope.$apply();
 
             // check configuration change
-            expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+            expect(elementScope.configuration.data.keys.x).toBe(xAxis.key);
 
             // set option
             xAxis = {
-              name: 'day'
+              key: 'day'
             };
             $scope.options.xAxis = xAxis;
             $scope.$apply();
 
             // check configuration change
-            expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+            expect(elementScope.configuration.data.keys.x).toBe(xAxis.key);
           });
 
           it('- Chart should use default format for timestamps.', function () {
@@ -379,13 +397,13 @@ describe('angularChart:', function () {
             // set option
             // delete $scope.dataset.schema[0].format;
             var xAxis = {
-              name: 'day'
+              key: 'day'
             };
             $scope.options.xAxis = xAxis;
             $scope.$apply();
 
             // check configuration change
-            // expect(elementScope.configuration.data.keys.x).toBe(xAxis.name);
+            // expect(elementScope.configuration.data.keys.x).toBe(xAxis.key);
           });
 
         });
@@ -399,7 +417,7 @@ describe('angularChart:', function () {
 
             // set option
             var xAxis = {
-              name: 'day',
+              key: 'day',
               displayFormat: '%Y-%m-%d'
             };
             $scope.options.xAxis = xAxis;
@@ -463,7 +481,7 @@ describe('angularChart:', function () {
             // set option
             $scope.schema.day.format = '%Y-%m-%dT%H:%M:%S';
             var xAxis = {
-              name: 'day'
+              key: 'day'
             };
             $scope.options.xAxis = xAxis;
             $scope.$apply();
@@ -479,7 +497,7 @@ describe('angularChart:', function () {
 
             // set option
             var xAxis = {
-              name: 'income'
+              key: 'income'
             };
             $scope.options.xAxis = xAxis;
             $scope.$apply();
@@ -495,7 +513,7 @@ describe('angularChart:', function () {
             // set option
             delete  $scope.schema.dayString;
             var xAxis = {
-              name: 'dayString'
+              key: 'dayString'
             };
             $scope.options.xAxis = xAxis;
             $scope.$apply();

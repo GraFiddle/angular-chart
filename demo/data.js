@@ -21,12 +21,7 @@ var dataArray = [{
       'type': 'numeric'
     },
     'customers': {
-      'id': 'customers',
-      'name': 'Number of customers'
-    },
-    'units': {
-      'id': 'units',
-      'name': 'Number of units'
+      'id': 'customers'
     },
     'dayString': {
       'id': 'dayString',
