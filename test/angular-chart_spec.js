@@ -37,6 +37,7 @@ describe('angularChart:', function () {
 
     beforeEach(function () {
       $scope.dataset = JSON.parse(JSON.stringify(dataArray[0].data));
+      $scope.schema = JSON.parse(JSON.stringify(dataArray[0].schema));
       $scope.options = JSON.parse(JSON.stringify(optionsArray[0].options));
     });
 
@@ -75,6 +76,25 @@ describe('angularChart:', function () {
       expect(function () {
         $scope.nonResourceObject = {};
         $compile('<angularchart dataset="dataset" options="nonResourceObject"></angularchart>')($scope);
+      }).not.toThrow();
+    });
+
+    it('not requires the optional schema object', function () {
+      expect(function () {
+        $compile('<angularchart dataset="dataset" schema="schema"></angularchart>')($scope);
+      }).not.toThrow();
+      expect(function () {
+        $compile('<angularchart dataset="dataset" schema></angularchart>')($scope);
+      }).not.toThrow();
+      expect(function () {
+        $compile('<angularchart dataset="dataset"></angularchart>')($scope);
+      }).not.toThrow();
+      expect(function () {
+        $compile('<angularchart dataset="dataset" schema="nonObject"></angularchart>')($scope);
+      }).not.toThrow();
+      expect(function () {
+        $scope.nonResourceObject = {};
+        $compile('<angularchart dataset="dataset" schema="nonResourceObject"></angularchart>')($scope);
       }).not.toThrow();
     });
 
@@ -117,12 +137,16 @@ describe('angularChart:', function () {
 
     beforeEach(function () {
       $scope.dataset = JSON.parse(JSON.stringify(dataArray[0].data));
+      $scope.schema = JSON.parse(JSON.stringify(dataArray[0].schema));
       $scope.options = JSON.parse(JSON.stringify(optionsArray[0].options));
 
       // create DOM elements
       chartContainer = d3.select('body').append('div').attr('class', 'testContainer');
       // add directive to DOM
-      chartContainer.append('angularchart').attr('dataset', 'dataset').attr('options', 'options');
+      chartContainer.append('angularchart')
+        .attr('dataset', 'dataset')
+        .attr('schema', 'schema')
+        .attr('options', 'options');
       // select chart
       chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
       // get elements scope
@@ -137,7 +161,7 @@ describe('angularChart:', function () {
           'day': '2013-01-06T00:00:00',
           'sales': 53461.295202
         };
-        $scope.dataset.records.push(newData);
+        $scope.dataset.push(newData);
         $scope.$apply();
       });
 
@@ -353,7 +377,7 @@ describe('angularChart:', function () {
             // expect(elementScope.configuration.data.keys.x).toBe('');
 
             // set option
-            delete $scope.dataset.schema[0].format;
+            // delete $scope.dataset.schema[0].format;
             var xAxis = {
               name: 'day'
             };
@@ -428,6 +452,57 @@ describe('angularChart:', function () {
             expect(chartElement.html()).toContain('chooseXAxis');
           });
 
+        });
+
+        describe('- schema', function () {
+
+          it('- Chart use schema to format datetime.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.type).toBe(undefined);
+
+            // set option
+            $scope.schema.day.format = '%Y-%m-%dT%H:%M:%S';
+            var xAxis = {
+              name: 'day'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.type).toBe('timeseries');
+            expect(elementScope.configuration.data.xFormat).toBe($scope.schema.day.format);
+          });
+
+          it('- Chart use schema to display numeric xAxis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.type).toBe(undefined);
+
+            // set option
+            var xAxis = {
+              name: 'income'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.type).toBe('numeric');
+          });
+
+          it('- xAxis type is category if not in schema defined.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.type).toBe(undefined);
+
+            // set option
+            delete  $scope.schema.dayString;
+            var xAxis = {
+              name: 'dayString'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.type).toBe('category');
+          });
         });
 
       });

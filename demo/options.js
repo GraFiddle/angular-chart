@@ -39,11 +39,9 @@ var optionsArray = [{
   options: {
     rows: [{
       name: 'sales'
-    },{
-      name: 'income'
     }],
     xAxis: {
-      name: 'day',
+      name: 'income',
       displayFormat: '%Y-%m-%d',
       selector: true
     }
@@ -55,7 +53,7 @@ var optionsArray = [{
   options: {
     rows: [{
       name: 'sales'
-    },{
+    }, {
       name: 'income'
     }],
     xAxis: {
@@ -73,14 +71,25 @@ var optionsArray = [{
   options: {
     rows: [{
       name: 'sales'
-    },{
+    }, {
       name: 'income'
     }],
     subchart: {
-            selector: true,
-            show: true
-          }
+      selector: true,
+      show: true
+    }
+  }
+}, {
+  id: 6,
+  name: 'Type Selector',
+  description: 'The type selector allows the user to choose the chart type.',
+  options: {
+    rows: [{
+      name: 'sales'
+    }],
+    typeSelector: true,
+    xAxis: {
+      name: 'income'
+    }
   }
 }];
-
-

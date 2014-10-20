@@ -12,7 +12,8 @@ angular.module('angularChart', [])
         restrict: 'EA',
         scope: {
           dataset: '=',
-          options: '='
+          options: '=',
+          schema: '='
         },
         // controller: ['$scope', '$element', '$attrs',
         //   function ($scope, $element, $attrs) {
@@ -91,10 +92,10 @@ angular.module('angularChart', [])
 
 
             // Add data
-            if (!scope.dataset || !scope.dataset.records) {
-              throw 'No data provided. The dataset has to contains a records array.';
+            if (!scope.dataset) {
+              throw 'No data provided. The dataset has to be an array with the records.';
             } else {
-              scope.configuration.data.json = scope.dataset.records;
+              scope.configuration.data.json = scope.dataset;
             }
 
 
@@ -140,21 +141,21 @@ angular.module('angularChart', [])
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
               }
 
-              // is Datetime?
-              scope.dataset.schema.forEach(function (element) {
-                if (element.name === scope.options.xAxis.name) {
-                  if (element.type === 'datetime') {
-                    if (!element.format) {
-                      element.format = '%Y-%m-%dT%H:%M:%S';
-                    }
-                    scope.configuration.axis.x.type = 'timeseries';
-                    scope.configuration.data.xFormat = element.format;
-                  } else if (element.type === 'string') {
-                    scope.configuration.axis.x.type = 'category';
+              // is xAxis type specified?
+              scope.configuration.axis.x.type = 'category';
+              if (scope.schema && scope.schema[scope.options.xAxis.name]) {
+                var columne = scope.schema[scope.options.xAxis.name]
+                if (columne.type && columne.type === 'datetime') {
+                  scope.configuration.axis.x.type = 'timeseries';
+                  if (columne.format) {
+                    scope.configuration.data.xFormat = columne.format;
+                  } else {
+                    scope.configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
                   }
-                  return;
+                } else if (columne.type === 'numeric') {
+                  scope.configuration.axis.x.type = 'numeric';
                 }
-              });
+              }
             }
 
             // xAxis Label
@@ -237,7 +238,7 @@ angular.module('angularChart', [])
               return;
             }
             var el = angular.element('<span class="chooseXAxis"/>');
-            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
+            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.name">{{col.name ? col.name : col.id}}</option></select>');
             $compile(el)(scope);
             element.append(el);
 
@@ -424,12 +425,8 @@ angular.module('angularChart', [])
           // watcher of changes in options
           //
           scope.startDatasetWatcher = function () {
-            scope.$watch('dataset.records', function (newValue, oldValue) {
+            scope.$watch('dataset', function (newValue, oldValue) {
               scope.loadChart();
-            }, true); // checks for changes inside data
-
-            scope.$watch('dataset.schema', function (newValue, oldValue) {
-              scope.updateChart();
             }, true); // checks for changes inside data
           };
 

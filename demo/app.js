@@ -36,6 +36,7 @@ angular.module('angular-chart-demo', ['angularChart', 'ui.ace'])
   $scope.loadData = function (data) {
     $scope.dataName = data.name;
     $scope.dataObject = data.data;
+    $scope.schemaObject = data.schema;
   };
 
 
