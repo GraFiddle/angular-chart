@@ -411,33 +411,105 @@ angular.module('angularChart', [])
           // Add custom Legend
           //
           scope.customLegend = function () {
-            if (!scope.options.legend || !scope.options.legend.selector) {
-              return;
-            }
-            var legend = angular.element('<div class="customLegend"/>');
-            element.prepend(legend);
-            scope.options.rows.forEach(function (row) {
-              // todo show name of schema if there is no name for row
-              legend.append('<div><span data-id="' + row.name + '">' + row.name + '</span></div>');
-            });
 
-            d3.selectAll('.customLegend span')
-              .each(function () {
-                var id = d3.select(this).attr('data-id');
-                d3.select(this).style('background-color', scope.chart.color(id));
-              })
-              .on('mouseover', function () {
-                var id = d3.select(this).attr('data-id');
-                scope.chart.focus(id);
-              })
-              .on('mouseout', function () {
-                var id = d3.select(this).attr('data-id');
-                scope.chart.revert();
-              })
-              .on('click', function () {
-                var id = d3.select(this).attr('data-id');
-                scope.chart.toggle(id);
-              });
+            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" class="customLegend-item"><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{row.name}}</span></span></div>');
+            $compile(legend)(scope);
+            element.prepend(legend);
+            // scope.options.rows.forEach(function (row) {
+            //   var item = angular.element('<div><circular options="rowEdit[\'' + row.name + '\']"></circular><span data-id="' + row.name + '">' + row.name + '</span></div>')
+            //   $compile(item)(scope);
+            //   legend.append(item);
+            // });
+
+            // d3.selectAll('.customLegend span')
+            //   .each(function () {
+            //     var id = d3.select(this).attr('data-id');
+            //     d3.select(this).style('background-color', scope.chart.color(id));
+            //   })
+            //   .on('mouseover', function () {
+            //     var id = d3.select(this).attr('data-id');
+            //     scope.chart.focus(id);
+            //   })
+            //   .on('mouseout', function () {
+            //     var id = d3.select(this).attr('data-id');
+            //     scope.chart.revert();
+            //   })
+            //   .on('click', function () {
+            //     var id = d3.select(this).attr('data-id');
+            //     scope.chart.toggle(id);
+            //   });
+
+        scope.switchAxis = function (options, clicked) {
+          scope.options.items[0].isActive = false;
+          scope.options.items[1].isActive = false;
+          clicked.isActive = true;
+        };
+        scope.switchColor = function (options, clicked) {
+          options.items[7].isActive = false;
+          options.items[8].isActive = false;
+          options.items[9].isActive = false;
+          clicked.isActive = true;
+          options.button.background = clicked.background;
+        };
+        scope.switchType = function (options, clicked) {
+          scope.options.items[3].isActive = false;
+          scope.options.items[4].isActive = false;
+          scope.options.items[5].isActive = false;
+          clicked.isActive = true;
+          scope.options.button.cssClass = clicked.cssClass;
+        };
+  
+            scope.rowEdit = [
+             {
+                row: 'sales',
+                index: 0,
+                isOpen: false,
+                toggleOnClick: true,
+                background: scope.options.rows[0].color,
+                color: 'white',
+                size: '',
+                button: {
+                  content: '',
+                  cssClass: 'fa fa-bar-chart-o',
+                  background: 'red',
+                  color: 'white',
+                  size: 'small'
+                },
+                items: [{
+                  content: 'Y1',
+                  isActive: true,
+                  onclick: scope.switchAxis
+                }, {
+                  content: 'Y2',
+                  onclick: scope.switchAxis
+                }, {
+                  empty: true
+                }, {
+                  cssClass: 'fa fa-bar-chart-o',
+                  isActive: true,
+                  onclick: scope.switchType
+                }, {
+                  cssClass: 'fa fa-camera-retro',
+                  onclick: scope.switchType
+                }, {
+                  cssClass: 'fa fa-paper-plane-o',
+                  onclick: scope.switchType
+                }, {
+                  empty: true
+                }, {
+                  isActive: true,
+                  background: 'red',
+                  onclick: scope.switchColor
+                }, {
+                  background: 'blue',
+                  onclick: scope.switchColor
+                }, {
+                  background: 'yellow',
+                  onclick: scope.switchColor
+                }]
+              }
+            ];
+
           };
 
           // Selections

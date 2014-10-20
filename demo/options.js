@@ -1,6 +1,19 @@
 'use strict';
 
 var optionsArray = [{
+  id: 0,
+  name: 'Define Rows',
+  description: 'You can combine line, spline, bar, area and scatter charts in a single chart.',
+  options: {
+    rows: [{
+      name: 'sales',
+      type: 'spline'
+    }],
+    legend: {
+      selector: true
+    }
+  }
+}, {
   id: 1,
   name: 'Multichart',
   description: 'You can combine line, spline, bar, area and scatter charts in a single chart.',
