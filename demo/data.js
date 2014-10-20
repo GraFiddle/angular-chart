@@ -11,7 +11,10 @@ var dataArray = [{
     },
     'sales': {
       'id': 'sales',
-      'name': 'Sales'
+      'name': 'Sales',
+      'prefix': '$',
+      'scale': 'ratio',
+      'type': 'numeric'
     },
     'income': {
       'id': 'income',

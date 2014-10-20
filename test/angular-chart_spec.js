@@ -519,6 +519,51 @@ describe('angularChart:', function () {
             // check configuration change
             expect(elementScope.configuration.axis.x.type).toBe('category');
           });
+
+          it('- Do not format function if no post-/prefix is defined.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.tick.format).not.toBeDefined();
+
+            // set option
+            var xAxis = {
+              key: 'dayString'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.tick.format).not.toBeDefined();
+          });
+
+          it('- prefix - Add prefix if defined.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.tick.format).not.toBeDefined();
+
+            // set option
+            var xAxis = {
+              key: 'sales'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.tick.format).toBeDefined();
+          });
+
+          it('- postfix - Add postfix if defined.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.tick.format).not.toBeDefined();
+
+            // set option
+            var xAxis = {
+              key: 'income'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.tick.format).toBeDefined();
+          });
         });
 
       });

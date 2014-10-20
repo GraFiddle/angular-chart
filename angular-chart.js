@@ -141,6 +141,21 @@ angular.module('angularChart', [])
               scope.configuration.axis.x.type = 'category';
               if (scope.schema && scope.schema[scope.options.xAxis.key]) {
                 var columne = scope.schema[scope.options.xAxis.key];
+
+                // prefix / postfix
+                if (columne.prefix || columne.postfix) {
+                  scope.configuration.axis.x.tick.format = function (number) {
+                    if (columne.prefix) {
+                      number = columne.prefix + ' ' + number;
+                    }
+                    if (columne.postfix) {
+                      number = number + columne.postfix;
+                    }
+                    return number;
+                  };
+                }
+
+                // type
                 if (columne.type && columne.type === 'datetime') {
                   scope.configuration.axis.x.type = 'timeseries';
                   if (columne.format) {
@@ -150,6 +165,7 @@ angular.module('angularChart', [])
                   }
                 } else if (columne.type === 'numeric') {
                   scope.configuration.axis.x.type = 'numeric';
+
                 }
               }
             }
