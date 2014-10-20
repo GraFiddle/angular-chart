@@ -75,14 +75,6 @@ angular.module('angularChart', [])
             angular.element(element).attr('style', 'display: block;');
           };
 
-          // reload the charts data
-          //
-          scope.loadChart = function () {
-            scope.chart.load(
-              scope.configuration.data
-            );
-          };
-
           // generate or update chart with options
           //
           scope.updateChart = function () {
@@ -416,9 +408,9 @@ angular.module('angularChart', [])
                 scope.chart.transform(newValue.type);
                 if (['pie', 'donut'].indexOf(newValue.type) >= 0) {
                   scope.options.rows.forEach(function (row) {
-                    if (['pie', 'donut'].indexOf(row.type) < 0) {
-                      delete row.type;
-                    }
+                    // if (['pie', 'donut'].indexOf(row.type) < 0) {
+                    delete row.type;
+                    // }
                   });
                 }
               }
@@ -431,7 +423,7 @@ angular.module('angularChart', [])
           //
           scope.startDatasetWatcher = function () {
             scope.$watch('dataset', function (newValue, oldValue) {
-              scope.loadChart();
+              scope.updateChart();
             }, true); // checks for changes inside data
           };
 

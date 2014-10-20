@@ -103,7 +103,6 @@ describe('angularChart:', function () {
       var elementScope = $scope.getElementScope(element);
 
       expect(elementScope.addIdentifier).toBeDefined();
-      expect(elementScope.loadChart).toBeDefined();
       expect(elementScope.updateChart).toBeDefined();
       expect(elementScope.startOptionsWatcher).toBeDefined();
       expect(elementScope.startDatasetWatcher).toBeDefined();
@@ -113,7 +112,6 @@ describe('angularChart:', function () {
       var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
 
       expect($scope.addIdentifier).not.toBeDefined();
-      expect($scope.loadChart).not.toBeDefined();
       expect($scope.updateChart).not.toBeDefined();
       expect($scope.startOptionsWatcher).not.toBeDefined();
       expect($scope.startDatasetWatcher).not.toBeDefined();
