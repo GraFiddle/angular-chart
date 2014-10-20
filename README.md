@@ -26,34 +26,31 @@ angular.module('myApp', ['angularChart'])
 
 Add the corresponding data in your controller:
 ```javascript
-$scope.dataset = {
-  'schema': [{
-    'name': 'day',
-    'type': 'datetime',
-    'format': '%Y-%m-%dT%H:%M:%S'
-  }, {
-    'name': 'sales',
-    'type': 'double'
-  }, {
-    'name': 'income',
-    'type': 'double'
-  }],
-  'records': [{
+$scope.dataset = [
+  {
     'day': '2013-01-02T00:00:00',
     'sales': 13461.295202,
     'income': 12365.053
-  }]
+  }
+];
+
+$scope.schema = {
+  day: {
+    type: 'datetime',
+    format: '%Y-%m-%d_%H:%M:%S',
+    name: 'Date'
+  }
 };
 
 $scope.options = {
   rows: [{
-    name: 'income',
+    key: 'income',
     type: 'bar'
   }, {
-    name: 'sales'
+    key: 'sales'
   }],
   xAxis: {
-    name: 'day',
+    key: 'day',
     displayFormat: '%Y-%m-%d %H:%M:%S'
   }
 };
@@ -64,10 +61,30 @@ Then you are ready to use the directive in your view:
 <div ng-controller="Controller">
   <angularchart
     dataset="dataset"
+    schema="schema"
     options="options">
   </angularchart>
 </div>
 ```
+
+
+
+
+### Schema
+
+The Schema is optional, it provides additional information about the dataset. It contains objects for all columns of the dataset that have to specified further. Therefor it provides these keys:
+
+#### name : String
+Optional name for the row.
+
+#### type : String
+Possible values: `datetime, numeric, string`
+
+#### format : String
+The format is used to specify how the timestamps are saved if they are different to `%Y-%m-%d_%H:%M:%S`
+
+
+
 
 ### Options
 
@@ -78,12 +95,16 @@ The following attributes define the chart itself and how to display the data.
 Defines the columns which should be displayed in the chart. Each row can contain the following:
 
 ---
-##### rows.name : String (required)
-The column name which identifies the value in each record.
+##### rows.key : String (required)
+The column key which identifies the value in each record.
 
 ---
 ##### rows.type : String
 Possible values: `line, spline, bar, scatter, area`
+
+---
+##### rows.name : String
+Optional name for the row.
 
 
 
@@ -103,8 +124,8 @@ When `true` a selector to switch between multi and pie charts is displayed. Defa
 Defines which column to use and how to display it:
 
 ---
-##### xAxis.name : String
-The column name which identifies which value should be shown on the xAxis.
+##### xAxis.key : String
+The column key which identifies which value should be shown on the xAxis.
 
 ---
 ##### xAxis.displayFormat : String | Function
