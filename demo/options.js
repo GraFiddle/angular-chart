@@ -6,16 +6,16 @@ var optionsArray = [{
   description: 'You can combine line, spline, bar, area and scatter charts in a single chart.',
   options: {
     rows: [{
-      name: 'income',
+      key: 'income',
       type: 'line'
     }, {
-      name: 'sales',
+      key: 'sales',
       type: 'spline'
     }, {
-      name: 'customers',
+      key: 'customers',
       type: 'area'
     }, {
-      name: 'units',
+      key: 'units',
       type: 'bar',
     }]
   }
@@ -25,10 +25,10 @@ var optionsArray = [{
   description: 'The xAxis displayFormat can be defined to timeseries.',
   options: {
     rows: [{
-      name: 'income'
+      key: 'income'
     }],
     xAxis: {
-      name: 'day',
+      key: 'day',
       displayFormat: '%Y-%m-%d'
     }
   }
@@ -38,12 +38,10 @@ var optionsArray = [{
   description: 'The xAxis selector allows the user to choose the xAxis.',
   options: {
     rows: [{
-      name: 'sales'
-    },{
-      name: 'income'
+      key: 'sales'
     }],
     xAxis: {
-      name: 'day',
+      key: 'income',
       displayFormat: '%Y-%m-%d',
       selector: true
     }
@@ -54,12 +52,12 @@ var optionsArray = [{
   description: 'The xAxis selector allows the user to choose the xAxis.',
   options: {
     rows: [{
-      name: 'sales'
-    },{
-      name: 'income'
+      key: 'sales'
+    }, {
+      key: 'income'
     }],
     xAxis: {
-      name: 'dayString',
+      key: 'dayString',
       label: 'Weekday'
     },
     yAxis: {
@@ -72,15 +70,26 @@ var optionsArray = [{
   description: '',
   options: {
     rows: [{
-      name: 'sales'
-    },{
-      name: 'income'
+      key: 'sales'
+    }, {
+      key: 'income'
     }],
     subchart: {
-            selector: true,
-            show: true
-          }
+      selector: true,
+      show: true
+    }
+  }
+}, {
+  id: 6,
+  name: 'Type Selector',
+  description: 'The type selector allows the user to choose the chart type.',
+  options: {
+    rows: [{
+      key: 'sales'
+    }],
+    typeSelector: true,
+    xAxis: {
+      key: 'income'
+    }
   }
 }];
-
-

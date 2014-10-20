@@ -12,7 +12,8 @@ angular.module('angularChart', [])
         restrict: 'EA',
         scope: {
           dataset: '=',
-          options: '='
+          options: '=',
+          schema: '='
         },
         // controller: ['$scope', '$element', '$attrs',
         //   function ($scope, $element, $attrs) {
@@ -91,10 +92,10 @@ angular.module('angularChart', [])
 
 
             // Add data
-            if (!scope.dataset || !scope.dataset.records) {
-              throw 'No data provided. The dataset has to contains a records array.';
+            if (!scope.dataset) {
+              throw 'No data provided. The dataset has to be an array with the records.';
             } else {
-              scope.configuration.data.json = scope.dataset.records;
+              scope.configuration.data.json = scope.dataset;
             }
 
 
@@ -113,15 +114,19 @@ angular.module('angularChart', [])
               scope.configuration.data.keys.value = [];
               scope.options.rows.forEach(function (element) {
                 // TODO exists check? ERROR
-                scope.configuration.data.keys.value.push(element.name);
+                scope.configuration.data.keys.value.push(element.key);
 
-                // data label
-                scope.configuration.data.names[element.name] = element.label ? element.label : element.name;
+                // data name
+                if (element.name) {
+                  scope.configuration.data.names[element.key] = element.name
+                } else if(scope.schema && scope.schema[element.key] && scope.schema[element.key].name) {
+                  scope.configuration.data.names[element.key] = scope.schema[element.key].name;
+                }
 
                 // chart type
                 if (element.type) {
                   // TODO valid type ERROR
-                  scope.configuration.data.types[element.name] = element.type;
+                  scope.configuration.data.types[element.key] = element.type;
                 }
               });
             }
@@ -129,32 +134,32 @@ angular.module('angularChart', [])
 
             // Add x-axis
             //
-            if (scope.options.xAxis && scope.options.xAxis.name) {
+            if (scope.options.xAxis && scope.options.xAxis.key) {
               // key selection changed?
-              if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.name) {
+              if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
                 scope.options.selection.selected = [];
               }
 
-              scope.configuration.data.keys.x = scope.options.xAxis.name;
+              scope.configuration.data.keys.x = scope.options.xAxis.key;
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
               }
 
-              // is Datetime?
-              scope.dataset.schema.forEach(function (element) {
-                if (element.name === scope.options.xAxis.name) {
-                  if (element.type === 'datetime') {
-                    if (!element.format) {
-                      element.format = '%Y-%m-%dT%H:%M:%S';
-                    }
-                    scope.configuration.axis.x.type = 'timeseries';
-                    scope.configuration.data.xFormat = element.format;
-                  } else if (element.type === 'string') {
-                    scope.configuration.axis.x.type = 'category';
+              // is xAxis type specified?
+              scope.configuration.axis.x.type = 'category';
+              if (scope.schema && scope.schema[scope.options.xAxis.key]) {
+                var columne = scope.schema[scope.options.xAxis.key];
+                if (columne.type && columne.type === 'datetime') {
+                  scope.configuration.axis.x.type = 'timeseries';
+                  if (columne.format) {
+                    scope.configuration.data.xFormat = columne.format;
+                  } else {
+                    scope.configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
                   }
-                  return;
+                } else if (columne.type === 'numeric') {
+                  scope.configuration.axis.x.type = 'numeric';
                 }
-              });
+              }
             }
 
             // xAxis Label
@@ -237,7 +242,7 @@ angular.module('angularChart', [])
               return;
             }
             var el = angular.element('<span class="chooseXAxis"/>');
-            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
+            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.key" style="margin-left: 42%"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.key">{{col.name ? col.name : col.id}}</option></select>');
             $compile(el)(scope);
             element.append(el);
 
@@ -288,6 +293,7 @@ angular.module('angularChart', [])
             var legend = angular.element('<div class="customLegend"/>');
             element.prepend(legend);
             scope.options.rows.forEach(function (row) {
+              // todo show name of schema if there is no name for row
               legend.append('<div><span data-id="' + row.name + '">' + row.name + '</span></div>');
             });
 
@@ -424,12 +430,8 @@ angular.module('angularChart', [])
           // watcher of changes in options
           //
           scope.startDatasetWatcher = function () {
-            scope.$watch('dataset.records', function (newValue, oldValue) {
+            scope.$watch('dataset', function (newValue, oldValue) {
               scope.loadChart();
-            }, true); // checks for changes inside data
-
-            scope.$watch('dataset.schema', function (newValue, oldValue) {
-              scope.updateChart();
             }, true); // checks for changes inside data
           };
 
