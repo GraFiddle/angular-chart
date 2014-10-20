@@ -511,7 +511,7 @@ describe('angularChart:', function () {
             expect(elementScope.configuration.axis.x.type).toBe(undefined);
 
             // set option
-            delete  $scope.schema.dayString;
+            delete $scope.schema.dayString;
             var xAxis = {
               key: 'dayString'
             };

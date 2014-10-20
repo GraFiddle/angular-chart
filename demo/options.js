@@ -92,4 +92,27 @@ var optionsArray = [{
       key: 'income'
     }
   }
+}, {
+  id: 7,
+  name: 'Selections',
+  description: 'You can select one or multiple points in a chart.',
+  options: {
+    rows: [{
+      key: 'income',
+      type: 'line'
+    }, {
+      key: 'sales',
+      type: 'spline'
+    }, {
+      key: 'customers',
+      type: 'area'
+    }, {
+      key: 'units',
+      type: 'bar',
+    }],
+    selection: {
+      enabled: true,
+      multiple: true
+    }
+  }
 }];
