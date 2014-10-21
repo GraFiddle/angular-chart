@@ -28,7 +28,7 @@ Add the corresponding data in your controller:
 ```javascript
 $scope.dataset = [
   {
-    'day': '2013-01-02T00:00:00',
+    'day': '2013-01-02_00:00:00',
     'sales': 13461.295202,
     'income': 12365.053
   }
@@ -81,7 +81,7 @@ Optional name for the row.
 Possible values: `datetime, numeric, string`
 
 #### format : String
-The format is used to specify how the timestamps are saved if they are different to `%Y-%m-%d_%H:%M:%S`
+The format is used to specify how the timestamps are saved if they are different to `%Y-%m-%dT%H:%M:%S`
 
 
 
@@ -92,8 +92,9 @@ The following attributes define the chart itself and how to display the data.
 
 ---
 #### data : String
-Defines in what format the data is saved. Possible Values `json(default), columns, rows`
-Please see [C3 Data Examples](http://c3js.org/examples.html#data) for examples.
+Possible Values: `json(default), columns, rows`
+
+Defines in what format the data is saved. Please see [C3 Data Examples](http://c3js.org/examples.html#data) for examples.
 
 
 ---
@@ -117,6 +118,7 @@ Optional name for the row.
 ---
 #### type : String
 Possible values: `line, spline, bar, scatter, bar, donut`
+
 Defines which kind of chart should be rendered. The value will be the default for `rows.type`.
 
 ---
@@ -155,19 +157,19 @@ Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
 ---
 #### groups : Object
-Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_stacked.html).
+Stacks bar together, like in this [example](http://c3js.org/samples/chart_bar_stacked.html).
 
 
 
 ---
 #### colors : Object
-Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
+Defines the colors like in this [example](http://c3js.org/samples/data_color.html).
 
 
 
 ---
 #### subchart : Object
-Defines the subchart like [in this example](http://c3js.org/samples/options_subchart.html).
+Defines the subchart like in this [example](http://c3js.org/samples/options_subchart.html).
 
 ---
 ##### subchart.selector : boolean
@@ -185,7 +187,7 @@ Defines the zoom functionality of the chart.
 
 --- 
 ##### zoom.enable : boolean 
-If `true` a it is possible to zoom using the mouse wheel. Default: `false`
+If `true` it is possible to zoom using the mouse wheel. Default: `false`
 
 ---
 ##### zoom.range : Array [a, b]
@@ -247,7 +249,7 @@ Multichart (line, spline, bar, scatter):
 }
 ```
 
-Pie-, Dountchart: _(Currently adding a selection in the Array will not add the selection in the chart)_
+Pie-, Donut chart: _(Currently adding a selection in the Array will not add the selection in the chart)_
 ```
 {
   id: COLUMN_NAME,
