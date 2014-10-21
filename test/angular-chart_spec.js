@@ -667,6 +667,138 @@ describe('angularChart:', function () {
 
       });
 
+      describe('. zoom', function () {
+
+        describe('. enabled', function () {
+
+          it('- Chart should not be zoomable by default.', function () {
+            // check configuration before
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
+
+            // set option
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.zoom.enabled).not.toBeDefined();
+          });
+
+          it('- Chart should be zoomable if set.', function () {
+            // check configuration before
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
+
+            // set option
+            var zoom = {
+              enabled: true
+            };
+            $scope.options.zoom = zoom;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.zoom.enabled).toBe(zoom.enabled);
+          });
+
+        });
+
+        describe('. range', function () {
+
+          it('- Chart should update range when zoomed.', function () {
+            // check configuration before
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
+
+            // set option
+            var zoom = {
+              enabled: true
+            };
+            $scope.options.zoom = zoom;
+            $scope.$apply();
+
+            // fire event
+            var range = [0, 0];
+            elementScope.configuration.zoom.onzoom(range);
+
+            // check configuration change
+            expect($scope.options.zoom.range).toBe(range);
+          });
+
+          it('- Chart should update range when subchart zoomed.', function () {
+            // check configuration before
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
+
+            // set option
+            var zoom = {
+              enabled: true
+            };
+            $scope.options.zoom = zoom;
+            $scope.$apply();
+
+            // fire event
+            var range = [0, 0];
+            elementScope.configuration.subchart.onbrush(range);
+
+            // check configuration change
+            expect($scope.options.zoom.range).toBe(range);
+          });
+
+          it('- Chart should apply zoom if range is set.', function () {
+            // check configuration before
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
+
+            // set option
+            var zoom = {
+              enabled: true,
+              range: [0, 1]
+            };
+            $scope.options.zoom = zoom;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.zoom.enabled).toBe(zoom.enabled);
+          });
+
+        });
+
+        describe('. onzoom', function () {
+
+          it('- Chart should call onzoom when zoomed.', function () {
+            // check configuration before
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
+
+            // set option
+            var zoom = {
+              enabled: true,
+              onzoom: function () {}
+            };
+            $scope.options.zoom = zoom;
+            $scope.$apply();
+
+            elementScope.configuration.zoom.onzoom([0, 0]);
+
+            // check configuration change
+            expect(elementScope.configuration.zoom.enabled).toBe(zoom.enabled);
+          });
+
+          it('- Chart should call onzoom when subchart zoomed.', function () {
+            // check configuration before
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
+
+            // set option
+            var zoom = {
+              enabled: true,
+              onzoom: function () {}
+            };
+            $scope.options.zoom = zoom;
+            $scope.$apply();
+
+            elementScope.configuration.subchart.onbrush([0, 0]);
+
+            // check configuration change
+            expect(elementScope.configuration.zoom.enabled).toBe(zoom.enabled);
+          });
+
+        });
+
+      });
+
       // ToDo: Review
       describe('. subchart', function () {
 
@@ -852,6 +984,42 @@ describe('angularChart:', function () {
           // was not added
           expect($scope.options.selection.selected.length).toBe(1);
           elementScope.selections.avoidSelections = false;
+        });
+
+        describe('. onselected', function () {
+
+          it('- Chart should call onselected when selection is added.', function () {
+            // set option
+            var selection = {
+              enabled: true,
+              onselected: function () {}
+            };
+            $scope.options.selection = selection;
+            $scope.$apply();
+
+            // fire event
+            elementScope.configuration.data.onselected({
+              id: 'test',
+              index: 3
+            }, {});
+          });
+
+          it('- Chart should call onunselected when selection is removed.', function () {
+            // set option
+            var selection = {
+              enabled: true,
+              onunselected: function () {}
+            };
+            $scope.options.selection = selection;
+            $scope.$apply();
+
+            // fire event
+            elementScope.configuration.data.onunselected({
+              id: 'test',
+              index: 3
+            }, {});
+          });
+
         });
 
       });

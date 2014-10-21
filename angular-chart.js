@@ -75,6 +75,15 @@ angular.module('angularChart', [])
             angular.element(element).attr('style', 'display: block;');
           };
 
+          // update the options by applying the changes to the scope,
+          // but avoid triggering the charts options watcher
+          //
+          scope.updateOptions = function (func) {
+            scope.disableOptionsWatcher = true;
+            scope.$apply(func);
+            scope.disableOptionsWatcher = false;
+          };
+
           // generate or update chart with options
           //
           scope.updateChart = function () {
@@ -229,6 +238,34 @@ angular.module('angularChart', [])
               scope.configuration.legend.show = true;
             }
 
+            // Zoom
+            if (scope.options.zoom) {
+              scope.configuration.zoom.enabled = scope.options.zoom.enabled;
+            } else {
+              scope.options.zoom = {};
+            }
+            // callback for onzoom
+            scope.configuration.zoom.onzoom = function (domain) {
+              scope.updateOptions(function () {
+                scope.options.zoom.range = domain;
+              });
+
+              if (scope.options.zoom.onzoom) {
+                scope.options.zoom.onzoom();
+              }
+            };
+
+            // callback for onbrush
+            scope.configuration.subchart.onbrush = function (domain) {
+              scope.updateOptions(function () {
+                scope.options.zoom.range = domain;
+              });
+
+              if (scope.options.zoom.onzoom) {
+                scope.options.zoom.onzoom();
+              }
+            };
+
             marginBottom = 0;
 
             scope.chart = c3.generate(scope.configuration);
@@ -237,6 +274,11 @@ angular.module('angularChart', [])
             scope.toggleSubchartLink();
             if (scope.options.legend && scope.options.legend.selector) {
               scope.customLegend();
+            }
+
+            // apply zoom
+            if (scope.options.zoom && scope.options.zoom.range) {
+              scope.chart.zoom(scope.options.zoom.range);
             }
 
             angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: ' + marginBottom + 'px');
@@ -335,6 +377,9 @@ angular.module('angularChart', [])
                 scope.$apply(
                   scope.options.selection.selected.push(selection)
                 );
+                if (scope.options.selection.onselected) {
+                  scope.options.selection.onselected();
+                }
               }
             },
 
@@ -346,6 +391,9 @@ angular.module('angularChart', [])
                     return selected.id !== selection.id || selected.index !== selection.index;
                   })
                 );
+                if (scope.options.selection.onunselected) {
+                  scope.options.selection.onunselected();
+                }
               }
             },
 
@@ -414,6 +462,9 @@ angular.module('angularChart', [])
           scope.startOptionsWatcher = function () {
 
             scope.$watch('options', function (newValue, oldValue) {
+              if (scope.disableOptionsWatcher) {
+                return;
+              }
 
               if (scope.selections.watchOptions(newValue, oldValue)) {
                 return;

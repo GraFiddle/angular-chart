@@ -115,4 +115,20 @@ var optionsArray = [{
       multiple: true
     }
   }
+}, {
+  id: 8,
+  name: 'Zoom',
+  description: '',
+  options: {
+    rows: [{
+      key: 'income',
+      type: 'line'
+    }, {
+      key: 'sales',
+      type: 'spline'
+    }],
+    zoom: {
+      enabled: true
+    }
+  }
 }];

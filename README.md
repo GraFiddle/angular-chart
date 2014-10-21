@@ -174,6 +174,24 @@ If `true` a subchart for zooming is displayed.
 
 
 ---
+#### zoom : Object
+Defines the zoom functionality of the chart.
+
+--- 
+##### zoom.enable : boolean 
+If `true` a it is possible to zoom using the mouse wheel. Default: `false`
+
+---
+##### zoom.range : Array [a, b]
+The current zoomed in range can get and set here. Works also for the subchart.
+
+---
+##### zoom.onzoom : function
+Callback whenever a zoom event is fired. Works also for the subchart.
+
+
+
+---
 #### legend : Object
 Defines the legend.
 
@@ -198,6 +216,15 @@ Allows selection of chart elements. Default: `false`
 ---
 ##### selection.multiple : Boolean
 Allows selection of multiple chart elements if selection is enabled at all. Default: `false` 
+
+---
+##### selection.onselected : function
+Callback whenever a new selection is added.
+
+---
+##### selection.onunselected : function
+Callback whenever a selection is removed.
+
 
 ---
 ##### selection.selected : Array
