@@ -194,6 +194,36 @@ describe('angularChart:', function () {
 
       });
 
+      describe('. data', function () {
+
+        it('- Chart should be able to handle column based data.', function () {
+          // check configuration before
+          // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
+
+          // set option
+          var data = 'columns';
+          $scope.options.data = data;
+          $scope.$apply();
+
+          // check configuration change
+          // expect(elementScope.configuration.data.onclick).toBe(handler);
+        });
+
+        it('- Chart should be able to handle row based data.', function () {
+          // check configuration before
+          // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
+
+          // set option
+          var data = 'rows';
+          $scope.options.data = data;
+          $scope.$apply();
+
+          // check configuration change
+          // expect(elementScope.configuration.data.onclick).toBe(handler);
+        });
+
+      });
+
 
       describe('. colors', function () {
 

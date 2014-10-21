@@ -15,11 +15,6 @@ angular.module('angularChart', [])
           options: '=',
           schema: '='
         },
-        // controller: ['$scope', '$element', '$attrs',
-        //   function ($scope, $element, $attrs) {
-        //     console.log('controller', $scope, $element, $attrs);
-        //   }
-        // ],
 
         link: function (scope, element, attrs) {
 
@@ -96,7 +91,13 @@ angular.module('angularChart', [])
             if (!scope.dataset) {
               throw 'No data provided. The dataset has to be an array with the records.';
             } else {
-              scope.configuration.data.json = scope.dataset;
+              if (scope.options.data === 'columns') {
+                scope.configuration.data.columns = scope.dataset;
+              } else if (scope.options.data === 'rows') {
+                scope.configuration.data.rows = scope.dataset;
+              } else {
+                scope.configuration.data.json = scope.dataset;
+              }
             }
 
 

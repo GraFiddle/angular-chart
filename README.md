@@ -91,6 +91,12 @@ The format is used to specify how the timestamps are saved if they are different
 The following attributes define the chart itself and how to display the data.
 
 ---
+#### data : String
+Defines in what format the data is saved. Possible Values `json(default), columns, rows`
+Please see [C3 Data Examples](http://c3js.org/examples.html#data) for examples.
+
+
+---
 #### rows : Object (required)
 Defines the columns which should be displayed in the chart. Each row can contain the following:
 

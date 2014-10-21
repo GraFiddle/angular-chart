@@ -23,11 +23,19 @@ angular.module('angular-chart-demo', ['angularChart', 'ui.ace'])
   $scope.dataName = '';
 
   $scope.loadOptions = function (options) {
+    if (options.data) {
+      for (var i = 0; i < $scope.dataArray.length; i++) {
+        if ($scope.dataArray[i].name === options.data) {
+          $scope.loadData($scope.dataArray[i]);
+        }
+      }
+    }
+
     $scope.optionsObject = options;
     $scope.showInfo = true;
 
+    // hide info after timeout again
     $timeout.cancel($scope.timeout);
-    // hide info again
     $scope.timeout = $timeout(function () {
       $scope.showInfo = false;
     }, 4000);
