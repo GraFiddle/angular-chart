@@ -15,6 +15,10 @@ module.exports = function (config) {
       // the directive
       'angular-chart.js',
 
+      // data
+      'demo/options.js',
+      'demo/data.js',
+
       // test
       'test/*_spec.js'
     ],

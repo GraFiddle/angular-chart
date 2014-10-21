@@ -26,34 +26,31 @@ angular.module('myApp', ['angularChart'])
 
 Add the corresponding data in your controller:
 ```javascript
-$scope.dataset = {
-  'schema': [{
-    'name': 'day',
-    'type': 'datetime',
-    'format': '%Y-%m-%dT%H:%M:%S'
-  }, {
-    'name': 'sales',
-    'type': 'double'
-  }, {
-    'name': 'income',
-    'type': 'double'
-  }],
-  'records': [{
-    'day': '2013-01-02T00:00:00',
+$scope.dataset = [
+  {
+    'day': '2013-01-02_00:00:00',
     'sales': 13461.295202,
     'income': 12365.053
-  }]
+  }
+];
+
+$scope.schema = {
+  day: {
+    type: 'datetime',
+    format: '%Y-%m-%d_%H:%M:%S',
+    name: 'Date'
+  }
 };
 
 $scope.options = {
   rows: [{
-    name: 'income',
+    key: 'income',
     type: 'bar'
   }, {
-    name: 'sales'
+    key: 'sales'
   }],
   xAxis: {
-    name: 'day',
+    key: 'day',
     displayFormat: '%Y-%m-%d %H:%M:%S'
   }
 };
@@ -64,72 +61,157 @@ Then you are ready to use the directive in your view:
 <div ng-controller="Controller">
   <angularchart
     dataset="dataset"
+    schema="schema"
     options="options">
   </angularchart>
 </div>
 ```
+
+
+
+
+### Schema
+
+The Schema is optional, it provides additional information about the dataset. It contains objects for all columns of the dataset that have to specified further. Therefor it provides these keys:
+
+#### name : String
+Optional name for the row.
+
+#### type : String
+Possible values: `datetime, numeric, string`
+
+#### format : String
+The format is used to specify how the timestamps are saved if they are different to `%Y-%m-%dT%H:%M:%S`
+
+
+
 
 ### Options
 
 The following attributes define the chart itself and how to display the data.
 
 ---
+#### data : String
+Possible Values: `json(default), columns, rows`
+
+Defines in what format the data is saved. Please see [C3 Data Examples](http://c3js.org/examples.html#data) for examples.
+
+
+---
 #### rows : Object (required)
 Defines the columns which should be displayed in the chart. Each row can contain the following:
 
 ---
-##### rows.name : String (required)
-The column name which identifies the value in each record.
+##### rows.key : String (required)
+The column key which identifies the value in each record.
 
 ---
 ##### rows.type : String
-Possible values: `line, spline, bar, scatter`
+Possible values: `line, spline, bar, scatter, area`
+
+---
+##### rows.name : String
+Optional name for the row.
+
 
 
 ---
 #### type : String
 Possible values: `line, spline, bar, scatter, bar, donut`
+
 Defines which kind of chart should be rendered. The value will be the default for `rows.type`.
+
+---
+#### typeSelector : boolean
+When `true` a selector to switch between multi and pie charts is displayed. Default: `false`
+
 
 
 ---
-#### xAxis : Object (required)
+#### xAxis : Object
 Defines which column to use and how to display it:
 
 ---
-##### xAxis.name : String (required)
-The column name which identifies which value should be shown on the xAxis.
+##### xAxis.key : String
+The column key which identifies which value should be shown on the xAxis.
 
 ---
 ##### xAxis.displayFormat : String | Function
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
-
 ---
 ##### xAxis.selector : boolean
 Shows the dropdown to choose which xAxis you want to use. Default: `false`
+
+
+---
+#### yAxis : Object
+Defines yAxis display.
 
 ---
 ##### yAxis.label : String
 Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
+
+
 ---
 #### groups : Object
-Stacks bar together, [like in this example](http://c3js.org/samples/chart_bar_stacked.html).
+Stacks bar together, like in this [example](http://c3js.org/samples/chart_bar_stacked.html).
+
+
 
 ---
 #### colors : Object
-Defines the colors like [in this example](http://c3js.org/samples/data_color.html).
+Defines the colors like in this [example](http://c3js.org/samples/data_color.html).
+
+
 
 ---
-
 #### subchart : Object
-Defines the subchart.
+Defines the subchart like in this [example](http://c3js.org/samples/options_subchart.html).
 
 ---
-##### show : boolean
+##### subchart.selector : boolean
+If `true` a subchart toggle button is displayed.
+
+---
+##### subchart.show : boolean
 If `true` a subchart for zooming is displayed.
+
+
+
+---
+#### zoom : Object
+Defines the zoom functionality of the chart.
+
+--- 
+##### zoom.enable : boolean 
+If `true` it is possible to zoom using the mouse wheel. Default: `false`
+
+---
+##### zoom.range : Array [a, b]
+The current zoomed in range can get and set here. Works also for the subchart.
+
+---
+##### zoom.onzoom : function
+Callback whenever a zoom event is fired. Works also for the subchart.
+
+
+
+---
+#### legend : Object
+Defines the legend.
+
+---
+##### legend.selector : boolean
+If `true` a custom legend is displayed. Default: `false` 
+
+---
+##### legend.show : boolean
+If `flase` the default legend is hidden. Default: `true` 
+
+
 
 ---
 #### selection : Object
@@ -144,8 +226,19 @@ Allows selection of chart elements. Default: `false`
 Allows selection of multiple chart elements if selection is enabled at all. Default: `false` 
 
 ---
+##### selection.onselected : function
+Callback whenever a new selection is added.
+
+---
+##### selection.onunselected : function
+Callback whenever a selection is removed.
+
+
+---
 ##### selection.selected : Array
 Contains an array with all selected points of the chart:
+
+
 
 Multichart (line, spline, bar, scatter):
 ```
@@ -156,7 +249,7 @@ Multichart (line, spline, bar, scatter):
 }
 ```
 
-Pie-, Dountchart: _(Currently adding a selection in the Array will not add the selection in the chart)_
+Pie-, Donut chart: _(Currently adding a selection in the Array will not add the selection in the chart)_
 ```
 {
   id: COLUMN_NAME,

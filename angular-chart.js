@@ -6,18 +6,15 @@ angular.module('angularChart', [])
     function ($compile) {
 
       var c3 = window.c3;
+      var d3 = window.d3;
 
       return {
         restrict: 'EA',
         scope: {
           dataset: '=',
-          options: '='
+          options: '=',
+          schema: '='
         },
-        // controller: ['$scope', '$element', '$attrs',
-        //   function ($scope, $element, $attrs) {
-        //     console.log('controller', $scope, $element, $attrs);
-        //   }
-        // ],
 
         link: function (scope, element, attrs) {
 
@@ -27,7 +24,8 @@ angular.module('angularChart', [])
           scope.configuration = {
             data: {
               keys: {
-                value: []
+                value: [],
+                x: ''
               },
               types: {},
               names: [],
@@ -44,6 +42,7 @@ angular.module('angularChart', [])
             },
             axis: {
               x: {
+                label: '',
                 tick: {}
               },
               y: {
@@ -51,12 +50,16 @@ angular.module('angularChart', [])
               }
             },
             legend: {
-              position: 'right'
+              show: true
             },
             subchart: {
               show: false
+            },
+            zoom: {
+              enabled: false
             }
           };
+          var marginBottom = 0;
 
           // add unique identifier for each chart
           //
@@ -67,12 +70,13 @@ angular.module('angularChart', [])
             angular.element(element).attr('style', 'display: block;');
           };
 
-          // reload the charts data
+          // update the options by applying the changes to the scope,
+          // but avoid triggering the charts options watcher
           //
-          scope.loadChart = function () {
-            scope.chart.load(
-              scope.configuration.data
-            );
+          scope.updateOptions = function (func) {
+            scope.disableOptionsWatcher = true;
+            scope.$apply(func);
+            scope.disableOptionsWatcher = false;
           };
 
           // generate or update chart with options
@@ -84,10 +88,16 @@ angular.module('angularChart', [])
 
 
             // Add data
-            if (!scope.dataset || !scope.dataset.records) {
-              throw 'No data provided. The dataset has to contains a records array.';
+            if (!scope.dataset) {
+              throw 'No data provided. The dataset has to be an array with the records.';
             } else {
-              scope.configuration.data.json = scope.dataset.records;
+              if (scope.options.data === 'columns') {
+                scope.configuration.data.columns = scope.dataset;
+              } else if (scope.options.data === 'rows') {
+                scope.configuration.data.rows = scope.dataset;
+              } else {
+                scope.configuration.data.json = scope.dataset;
+              }
             }
 
 
@@ -101,20 +111,24 @@ angular.module('angularChart', [])
             // Add lines
             //
             if (!scope.options.rows) {
-              console.warn('The rows to display have to be defined.');
+              // console.warn('The rows to display have to be defined.');
             } else {
               scope.configuration.data.keys.value = [];
               scope.options.rows.forEach(function (element) {
                 // TODO exists check? ERROR
-                scope.configuration.data.keys.value.push(element.name);
+                scope.configuration.data.keys.value.push(element.key);
 
-                // data label
-                scope.configuration.data.names[element.name] = element.label ? element.label : element.name;
+                // data name
+                if (element.name) {
+                  scope.configuration.data.names[element.key] = element.name;
+                } else if (scope.schema && scope.schema[element.key] && scope.schema[element.key].name) {
+                  scope.configuration.data.names[element.key] = scope.schema[element.key].name;
+                }
 
                 // chart type
                 if (element.type) {
                   // TODO valid type ERROR
-                  scope.configuration.data.types[element.name] = element.type;
+                  scope.configuration.data.types[element.key] = element.type;
                 }
               });
             }
@@ -122,34 +136,56 @@ angular.module('angularChart', [])
 
             // Add x-axis
             //
-            if (!scope.options.xAxis || !scope.options.xAxis.name) {
-              console.warn('No xAxis provided.');
-            } else {
+            if (scope.options.xAxis && scope.options.xAxis.key) {
               // key selection changed?
-              if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.name) {
+              if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
                 scope.options.selection.selected = [];
               }
 
-              scope.configuration.data.keys.x = scope.options.xAxis.name;
+              scope.configuration.data.keys.x = scope.options.xAxis.key;
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
               }
 
-              // is Datetime?
-              scope.dataset.schema.forEach(function (element) {
-                if (element.name === scope.options.xAxis.name) {
-                  if (element.type === 'datetime') {
-                    if (!element.format) {
-                      return console.warn('For data of the type "datetime" a format has to be defined.');
+              // is xAxis type specified?
+              scope.configuration.axis.x.type = 'category';
+              if (scope.schema && scope.schema[scope.options.xAxis.key]) {
+                var columne = scope.schema[scope.options.xAxis.key];
+
+                // prefix / postfix
+                if (columne.prefix || columne.postfix) {
+                  scope.configuration.axis.x.tick.format = function (number) {
+                    if (columne.prefix) {
+                      number = columne.prefix + ' ' + number;
                     }
-                    scope.configuration.axis.x.type = 'timeseries';
-                    scope.configuration.data.xFormat = element.format;
-                  } else if (element.type === 'string') {
-                    scope.configuration.axis.x.type = 'category';
-                  }
-                  return;
+                    if (columne.postfix) {
+                      number = number + columne.postfix;
+                    }
+                    return number;
+                  };
                 }
-              });
+
+                // type
+                if (columne.type && columne.type === 'datetime') {
+                  scope.configuration.axis.x.type = 'timeseries';
+                  if (columne.format) {
+                    scope.configuration.data.xFormat = columne.format;
+                  } else {
+                    scope.configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
+                  }
+                } else if (columne.type === 'numeric') {
+                  scope.configuration.axis.x.type = 'numeric';
+
+                }
+              }
+            }
+
+            // xAxis Label
+            //
+            if (scope.options.xAxis && scope.options.xAxis.label) {
+              scope.configuration.axis.x.label = scope.options.xAxis.label;
+            } else {
+              scope.configuration.axis.x.label = '';
             }
 
             // Colors
@@ -179,8 +215,10 @@ angular.module('angularChart', [])
 
             // SubChart
             //
-            if (scope.options.subchart && scope.options.subchart.show) {
+            if (scope.options.subchart) {
               scope.configuration.subchart.show = scope.options.subchart.show;
+            } else {
+              scope.configuration.subchart.show = false;
             }
 
             // Y label
@@ -189,9 +227,62 @@ angular.module('angularChart', [])
               scope.configuration.axis.y.label = scope.options.yAxis.label;
             }
 
+            // Legend
+            //
+            if (scope.options.legend) {
+              if (scope.options.legend.selector === undefined) {
+                scope.configuration.legend.show = scope.options.legend.show;
+              } else {
+                scope.configuration.legend.show = !scope.options.legend.selector;
+              }
+            } else {
+              scope.configuration.legend.show = true;
+            }
+
+            // Zoom
+            if (scope.options.zoom) {
+              scope.configuration.zoom.enabled = scope.options.zoom.enabled;
+            } else {
+              scope.options.zoom = {};
+            }
+            // callback for onzoom
+            scope.configuration.zoom.onzoom = function (domain) {
+              scope.updateOptions(function () {
+                scope.options.zoom.range = domain;
+              });
+
+              if (scope.options.zoom.onzoom) {
+                scope.options.zoom.onzoom();
+              }
+            };
+
+            // callback for onbrush
+            scope.configuration.subchart.onbrush = function (domain) {
+              scope.updateOptions(function () {
+                scope.options.zoom.range = domain;
+              });
+
+              if (scope.options.zoom.onzoom) {
+                scope.options.zoom.onzoom();
+              }
+            };
+
+            marginBottom = 0;
+
             scope.chart = c3.generate(scope.configuration);
             scope.chooseXAxis();
             scope.chooseChartType();
+            scope.toggleSubchartLink();
+            if (scope.options.legend && scope.options.legend.selector) {
+              scope.customLegend();
+            }
+
+            // apply zoom
+            if (scope.options.zoom && scope.options.zoom.range) {
+              scope.chart.zoom(scope.options.zoom.range);
+            }
+
+            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: ' + marginBottom + 'px');
           };
 
 
@@ -202,24 +293,79 @@ angular.module('angularChart', [])
               return;
             }
             var el = angular.element('<span class="chooseXAxis"/>');
-            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.name" style="margin-left: 42%"><option ng-repeat="col in dataset.schema" value="{{col.name}}" ng-selected="col.name==options.xAxis.name">{{col.label ? col.label : col.name}}</option></select>');
+            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.key" style="margin-left: 42%"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.key">{{col.name ? col.name : col.id}}</option></select>');
             $compile(el)(scope);
             element.append(el);
 
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' padding-bottom: 30px');
+            marginBottom = 30;
           };
 
           // Choose chart-type
           //
           scope.chooseChartType = function () {
-            var el = angular.element('<span/>');
-            el.attr('style', 'float: right');
-            el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
-            el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
-            $compile(el)(scope);
-            element.prepend(el);
+            if (scope.options.typeSelector) {
+              var el = angular.element('<span class="chooseChartType">');
+              el.attr('style', 'float: right');
+              el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
+              el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
+              $compile(el)(scope);
+              element.prepend(el);
+            }
           };
 
+          // Toggle Subchart
+          //
+          scope.toggleSubchart = function () {
+            scope.options.subchart.show = !scope.options.subchart.show;
+          };
+
+          // Add Toggle Subchart Links
+          //
+          scope.toggleSubchartLink = function () {
+            if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.subchart || !scope.options.subchart.selector) {
+              return;
+            }
+            var el = angular.element('<span class="toggleSubchart"/>');
+            if (scope.options.subchart.show) {
+              // hide subchart
+              el.append('<a  ng-click="toggleSubchart()" style="margin-left: 90%">hide subchart</a>');
+            } else {
+              // show subchart
+              el.append('<a  ng-click="toggleSubchart()" style="margin-left: 90%">show subchart</a>');
+            }
+            $compile(el)(scope);
+            element.append(el);
+
+          };
+
+          // Add custom Legend
+          //
+          scope.customLegend = function () {
+            var legend = angular.element('<div class="customLegend"/>');
+            element.prepend(legend);
+            scope.options.rows.forEach(function (row) {
+              // todo show name of schema if there is no name for row
+              legend.append('<div><span data-id="' + row.name + '">' + row.name + '</span></div>');
+            });
+
+            d3.selectAll('.customLegend span')
+              .each(function () {
+                var id = d3.select(this).attr('data-id');
+                d3.select(this).style('background-color', scope.chart.color(id));
+              })
+              .on('mouseover', function () {
+                var id = d3.select(this).attr('data-id');
+                scope.chart.focus(id);
+              })
+              .on('mouseout', function () {
+                var id = d3.select(this).attr('data-id');
+                scope.chart.revert();
+              })
+              .on('click', function () {
+                var id = d3.select(this).attr('data-id');
+                scope.chart.toggle(id);
+              });
+          };
 
           // Selections
           //
@@ -232,6 +378,9 @@ angular.module('angularChart', [])
                 scope.$apply(
                   scope.options.selection.selected.push(selection)
                 );
+                if (scope.options.selection.onselected) {
+                  scope.options.selection.onselected();
+                }
               }
             },
 
@@ -243,6 +392,9 @@ angular.module('angularChart', [])
                     return selected.id !== selection.id || selected.index !== selection.index;
                   })
                 );
+                if (scope.options.selection.onunselected) {
+                  scope.options.selection.onunselected();
+                }
               }
             },
 
@@ -311,7 +463,7 @@ angular.module('angularChart', [])
           scope.startOptionsWatcher = function () {
 
             scope.$watch('options', function (newValue, oldValue) {
-              if (newValue === oldValue) { // skip the first run of $watch
+              if (scope.disableOptionsWatcher) {
                 return;
               }
 
@@ -323,10 +475,10 @@ angular.module('angularChart', [])
               if (oldValue.type !== newValue.type) {
                 scope.chart.transform(newValue.type);
                 if (['pie', 'donut'].indexOf(newValue.type) >= 0) {
-                  scope.options.rows.forEach(function(row) {
-                    if (['pie', 'donut'].indexOf(row.type) < 0) {
-                      delete row.type;
-                    }
+                  scope.options.rows.forEach(function (row) {
+                    // if (['pie', 'donut'].indexOf(row.type) < 0) {
+                    delete row.type;
+                    // }
                   });
                 }
               }
@@ -338,17 +490,7 @@ angular.module('angularChart', [])
           // watcher of changes in options
           //
           scope.startDatasetWatcher = function () {
-            scope.$watch('dataset.records', function (newValue, oldValue) {
-              if (newValue === oldValue) { // skip the first run of $watch
-                return;
-              }
-              scope.loadChart();
-            }, true); // checks for changes inside data
-
-            scope.$watch('dataset.schema', function (newValue, oldValue) {
-              if (newValue === oldValue) { // skip the first run of $watch
-                return;
-              }
+            scope.$watch('dataset', function (newValue, oldValue) {
               scope.updateChart();
             }, true); // checks for changes inside data
           };

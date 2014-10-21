@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html ng-app="angular-chart-demo">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="AngularJS directive for adjustable dynamically updating c3 charts.">
+    <meta name="author" content="Max Klenk">
+    <link rel="icon" href="demo/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="demo/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="demo/bower_components/c3/c3.css" />
+    <link rel="stylesheet" type="text/css" href="demo/app.css"/>
+
+    <script type="text/javascript" src="demo/bower_components/ace-builds/src-min-noconflict/ace.js"></script>
+    <script type="text/javascript" src="demo/bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="demo/bower_components/d3/d3.min.js"></script>
+    <script type="text/javascript" src="demo/bower_components/c3/c3.min.js"></script>
+    <script type="text/javascript" src="demo/bower_components/angular-ui-ace/ui-ace.min.js"></script>
+    <script type="text/javascript" src="angular-chart.js"></script>
+    <script type="text/javascript" src="demo/data.js"></script>
+    <script type="text/javascript" src="demo/options.js"></script>
+    <script type="text/javascript" src="demo/app.js"></script>
+</head>
+<body ng-controller="Controller">
+
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">angular-chart</a>
+      </div>
+      <div class="hidden-xs">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="https://github.com/maxklenk/angular-chart/#usage">Getting Started</a></li>
+          <li><a href="https://github.com/maxklenk/angular-chart/#options">Reference</a></li>
+          <li><a href="https://github.com/maxklenk/angular-chart">Source</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+
+  <!-- Main jumbotron -->
+  <div class="jumbotron chart">
+    <div class="container">
+      <div class="alerts">
+        <div ng-show="showInfo" class="alert alert-info" role="alert">
+          <strong>{{optionsObject.name}}</strong> {{optionsObject.description}}
+        </div>
+      </div>
+      
+      <angularChart options="optionsObject.options" dataset="dataObject" schema="schemaObject"></angularChart>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Options</h2>
+        <hr>
+      </div>
+
+      <div class="col-sm-4">
+        <ul class="nav nav-pills nav-stacked">
+          <li ng-repeat="options in optionsArray" ng-class="{'active': options.id === optionsObject.id}" >
+            <a href="" ng-click="loadOptions(options)" >{{options.name}}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-sm-8">
+        <div ng-model="optionsObject.string" ui-ace="optionsAceConfig"></div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Data</h2>
+        <hr>
+      </div>
+
+      <div class="col-sm-4">
+        <ul class="nav nav-pills nav-stacked">
+          <li ng-repeat="data in dataArray" ng-class="{'active': dataName === data.name}" >
+            <a href="" ng-click="loadData(data)" >{{data.name}}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-sm-8">
+        <div ng-model="dataString" ui-ace="optionsAceConfig"></div>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <footer>
+      <p>&copy; Max Klenk 2014</p>
+    </footer>
+
+  </div> <!-- /container -->
+
+</body>
+</html>
