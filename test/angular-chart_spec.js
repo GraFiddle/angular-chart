@@ -617,6 +617,59 @@ describe('angularChart:', function () {
 
       });
 
+      describe('. annotation', function () {
+
+        it('- Chart have annotations on x-Axis.', function () {
+          // check configuration before
+          expect(elementScope.configuration.grid.x.lines.length).toBe(0);
+
+          // set option
+          var line = {
+            axis: 'x',
+            value: 1,
+            text: 'one'
+          };
+          $scope.options.annotation = [line];
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.grid.x.lines.length).toBe(1);
+        });
+        it('- Chart have annotations on y-Axis.', function () {
+          // check configuration before
+          expect(elementScope.configuration.grid.y.lines.length).toBe(0);
+
+          // set option
+          var line = {
+            axis: 'y',
+            value: 1,
+            text: 'one'
+          };
+          $scope.options.annotation = [line];
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.grid.y.lines.length).toBe(1);
+        });
+        it('- Chart have annotations on y2-Axis.', function () {
+          // check configuration before
+          expect(elementScope.configuration.grid.y.lines.length).toBe(0);
+
+          // set option
+          var line = {
+            axis: 'y2',
+            value: 1,
+            text: 'one'
+          };
+          $scope.options.annotation = [line];
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.grid.y.lines.length).toBe(1);
+        });
+
+      });
+
       describe('. legend', function () {
 
         describe('. selector', function () {

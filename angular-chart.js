@@ -57,6 +57,14 @@ angular.module('angularChart', [])
             },
             zoom: {
               enabled: false
+            },
+            grid: {
+              x: {
+                lines: []
+              },
+              y: {
+                lines: []
+              }
             }
           };
           var marginBottom = 0;
@@ -237,6 +245,39 @@ angular.module('angularChart', [])
               }
             } else {
               scope.configuration.legend.show = true;
+            }
+
+            // Annotation
+            //
+            scope.configuration.grid.y.lines = [];
+            scope.configuration.grid.x.lines = [];
+
+            if (scope.options.annotation) {
+              scope.options.annotation.forEach(function (annotation) {
+                switch (annotation.axis) {
+                case 'x':
+                  scope.configuration.grid.x.lines.push({
+                    text: annotation.label,
+                    value: annotation.value
+                  });
+                  break;
+
+                case 'y':
+                  scope.configuration.grid.y.lines.push({
+                    text: annotation.label,
+                    value: annotation.value
+                  });
+                  break;
+
+                case 'y2':
+                  scope.configuration.grid.y.lines.push({
+                    text: annotation.label,
+                    value: annotation.value,
+                    axis: 'y2'
+                  });
+                  break;
+                }
+              });
             }
 
             // Zoom

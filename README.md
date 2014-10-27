@@ -212,6 +212,12 @@ If `true` a custom legend is displayed. Default: `false`
 If `flase` the default legend is hidden. Default: `true` 
 
 
+---
+#### annotation : Array of Objects
+Defines the annotation lines.
+
+`{value: X, text: 'LABEL', axis: 'AXIS'}` AXIS can be `x`, `y`, `y2`.
+
 
 ---
 #### selection : Object
@@ -233,12 +239,9 @@ Callback whenever a new selection is added.
 ##### selection.onunselected : function
 Callback whenever a selection is removed.
 
-
 ---
 ##### selection.selected : Array
 Contains an array with all selected points of the chart:
-
-
 
 Multichart (line, spline, bar, scatter):
 ```
