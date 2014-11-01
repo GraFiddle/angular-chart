@@ -113,15 +113,15 @@ angular.module('angularChart', [])
             // 
             if (scope.options.type) {
               scope.configuration.data.type = scope.options.type;
+            } else {
+              scope.configuration.data.type = 'line';
             }
 
 
             // Add lines
             //
-            if (!scope.options.rows) {
-              // console.warn('The rows to display have to be defined.');
-            } else {
-              scope.configuration.data.keys.value = [];
+            scope.configuration.data.keys.value = [];
+            if (scope.options.rows) {
               scope.options.rows.forEach(function (element) {
                 // TODO exists check? ERROR
                 scope.configuration.data.keys.value.push(element.key);
@@ -137,26 +137,46 @@ angular.module('angularChart', [])
                 if (element.type) {
                   // TODO valid type ERROR
                   scope.configuration.data.types[element.key] = element.type;
+                } else {
+                  delete scope.configuration.data.types[element.key];
                 }
+
               });
+
+            } else {
+              // No rows
             }
 
 
-            // Add x-axis
+            // Selection
             //
+            if (scope.options.selection && scope.options.selection.enabled) {
+              scope.configuration.data.selection.enabled = scope.options.selection.enabled;
+              scope.configuration.data.selection.multiple = scope.options.selection.multiple;
+            }
             if (scope.options.xAxis && scope.options.xAxis.key) {
               // key selection changed?
               if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
                 scope.options.selection.selected = [];
               }
+            }
 
+            // Add x-axis
+            //
+            scope.configuration.data.keys.x = '';
+            scope.configuration.axis.x.type = 'category';
+            scope.configuration.axis.x.tick.format = undefined;
+            if (scope.options.xAxis && scope.options.xAxis.key) {
+
+              // set x Axis
               scope.configuration.data.keys.x = scope.options.xAxis.key;
+
+              // add specific display Format
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
               }
 
               // is xAxis type specified?
-              scope.configuration.axis.x.type = 'category';
               if (scope.schema && scope.schema[scope.options.xAxis.key]) {
                 var columne = scope.schema[scope.options.xAxis.key];
 
@@ -200,25 +220,24 @@ angular.module('angularChart', [])
             //
             if (scope.options.colors) {
               scope.configuration.data.colors = scope.options.colors;
-            }
-
-            // Selection
-            //
-            if (scope.options.selection && scope.options.selection.enabled) {
-              scope.configuration.data.selection.enabled = scope.options.selection.enabled;
-              scope.configuration.data.selection.multiple = scope.options.selection.multiple;
+            } else {
+              scope.configuration.data.colors = [];
             }
 
             // Groups
             //
             if (scope.options.groups) {
               scope.configuration.data.groups = scope.options.groups;
+            } else {
+              scope.configuration.data.groups = [];
             }
 
             // onclick
             //
             if (scope.options.onclick) {
               scope.configuration.data.onclick = scope.options.onclick;
+            } else {
+              scope.configuration.data.onclick = angular.noop;
             }
 
             // SubChart
@@ -233,6 +252,8 @@ angular.module('angularChart', [])
             //
             if (scope.options.yAxis && scope.options.yAxis.label) {
               scope.configuration.axis.y.label = scope.options.yAxis.label;
+            } else {
+              scope.configuration.axis.y.label = '';
             }
 
             // Legend
@@ -281,11 +302,13 @@ angular.module('angularChart', [])
             }
 
             // Zoom
+            //
             if (scope.options.zoom) {
               scope.configuration.zoom.enabled = scope.options.zoom.enabled;
             } else {
               scope.options.zoom = {};
             }
+
             // callback for onzoom
             scope.configuration.zoom.onzoom = function (domain) {
               scope.updateOptions(function () {
@@ -308,22 +331,25 @@ angular.module('angularChart', [])
               }
             };
 
-            marginBottom = 0;
 
+            // Draw chart
+            //
             scope.chart = c3.generate(scope.configuration);
+
+            // In-place editing
+            //
+            marginBottom = 0;
             scope.chooseXAxis();
             scope.chooseChartType();
             scope.toggleSubchartLink();
-            if (scope.options.legend && scope.options.legend.selector) {
-              scope.customLegend();
-            }
+            scope.customLegend();
+            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: ' + marginBottom + 'px');
 
-            // apply zoom
+            // Apply earlier zoom
+            //
             if (scope.options.zoom && scope.options.zoom.range) {
               scope.chart.zoom(scope.options.zoom.range);
             }
-
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: ' + marginBottom + 'px');
           };
 
 
@@ -382,6 +408,9 @@ angular.module('angularChart', [])
           // Add custom Legend
           //
           scope.customLegend = function () {
+            if (!scope.options.legend || !scope.options.legend.selector) {
+              return;
+            }
             var legend = angular.element('<div class="customLegend"/>');
             element.prepend(legend);
             scope.options.rows.forEach(function (row) {
