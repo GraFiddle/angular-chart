@@ -360,7 +360,7 @@ angular.module('angularChart', [])
               return;
             }
             var el = angular.element('<span class="chooseXAxis"/>');
-            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.key" style="margin-left: 42%"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.key">{{col.name ? col.name : col.id}}</option></select>');
+            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.key" style="margin: auto" class="form-control"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.key">{{col.name ? col.name : col.id}}</option></select>');
             $compile(el)(scope);
             element.append(el);
 
@@ -371,10 +371,10 @@ angular.module('angularChart', [])
           //
           scope.chooseChartType = function () {
             if (scope.options.typeSelector) {
-              var el = angular.element('<span class="chooseChartType">');
+              var el = angular.element('<div class="chooseChartType btn-group">');
               el.attr('style', 'float: right');
-              el.append('<button ng-click="options.type = \'line\'" ng-disabled="options.type === \'line\'">Multi</button>');
-              el.append('<button ng-click="options.type = \'pie\'" ng-disabled="options.type === \'pie\'">Pie</button>');
+              el.append('<button ng-click="options.type = \'line\'" ng-class="{\'active\': options.type === \'line\'}" class="btn btn-default">Multi</button>');
+              el.append('<button ng-click="options.type = \'pie\'" ng-class="{\'active\': options.type === \'pie\'}" class="btn btn-default">Pie</button>');
               $compile(el)(scope);
               element.prepend(el);
             }
@@ -384,6 +384,9 @@ angular.module('angularChart', [])
           //
           scope.toggleSubchart = function () {
             scope.options.subchart.show = !scope.options.subchart.show;
+            if (scope.options.zoom && scope.options.zoom.range) {
+              delete scope.options.zoom.range;
+            }
           };
 
           // Add Toggle Subchart Links
@@ -392,13 +395,13 @@ angular.module('angularChart', [])
             if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.subchart || !scope.options.subchart.selector) {
               return;
             }
-            var el = angular.element('<span class="toggleSubchart"/>');
+            var el = angular.element('<span class="toggleSubchart" style="float:right;"/>');
             if (scope.options.subchart.show) {
               // hide subchart
-              el.append('<a  ng-click="toggleSubchart()" style="margin-left: 90%">hide subchart</a>');
+              el.append('<a  ng-click="toggleSubchart()"><i class="fa-eye-slash"></i> hide subchart</a>');
             } else {
               // show subchart
-              el.append('<a  ng-click="toggleSubchart()" style="margin-left: 90%">show subchart</a>');
+              el.append('<a  ng-click="toggleSubchart()"><i class="fa-eye"></i> show subchart</a>');
             }
             $compile(el)(scope);
             element.append(el);
