@@ -11,6 +11,7 @@ module.exports = function (config) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/d3/d3.js',
       'bower_components/c3/c3.js',
+      'bower_components/angular-circular-navigation/angular-circular-navigation.js',
 
       // the directive
       'angular-chart.js',

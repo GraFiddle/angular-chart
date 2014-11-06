@@ -107,17 +107,21 @@ The column key which identifies the value in each record.
 
 ---
 ##### rows.type : String
-Possible values: `line, spline, bar, scatter, area`
+Possible values: `line, spline, bar, scatter, area, area-spline, step, area-step, step`
 
 ---
 ##### rows.name : String
 Optional name for the row.
 
+---
+#### rows.color : String
+Defines the color for this row.
+
 
 
 ---
 #### type : String
-Possible values: `line, spline, bar, scatter, bar, donut`
+Possible values: `line, spline, bar, scatter, donut`
 
 Defines which kind of chart should be rendered. The value will be the default for `rows.type`.
 
@@ -158,12 +162,6 @@ Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 ---
 #### groups : Array
 Stacks bar together, like in this [example](http://c3js.org/samples/chart_bar_stacked.html).
-
-
-
----
-#### colors : Object
-Defines the colors like in this [example](http://c3js.org/samples/data_color.html).
 
 
 

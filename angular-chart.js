@@ -111,11 +111,10 @@ angular.module('angularChart', [])
 
             // Chart type
             // 
-            if (scope.options.type) {
-              scope.configuration.data.type = scope.options.type;
-            } else {
-              scope.configuration.data.type = 'line';
+            if (!scope.options.type) {
+              scope.options.type = 'line';
             }
+            scope.configuration.data.type = scope.options.type;
 
 
             // Add lines
@@ -134,11 +133,14 @@ angular.module('angularChart', [])
                 }
 
                 // chart type
-                if (element.type) {
-                  // TODO valid type ERROR
-                  scope.configuration.data.types[element.key] = element.type;
-                } else {
-                  delete scope.configuration.data.types[element.key];
+                if (!element.type) {
+                  element.type = scope.options.type;
+                }
+                scope.configuration.data.types[element.key] = element.type;
+
+                // color
+                if (element.color) {
+                  scope.configuration.data.colors[element.key] = element.color;
                 }
 
               });
@@ -214,14 +216,6 @@ angular.module('angularChart', [])
               scope.configuration.axis.x.label = scope.options.xAxis.label;
             } else {
               scope.configuration.axis.x.label = '';
-            }
-
-            // Colors
-            //
-            if (scope.options.colors) {
-              scope.configuration.data.colors = scope.options.colors;
-            } else {
-              scope.configuration.data.colors = [];
             }
 
             // Groups
@@ -336,6 +330,15 @@ angular.module('angularChart', [])
             //
             scope.chart = c3.generate(scope.configuration);
 
+
+            // Get Colors
+            //
+            if (scope.options.rows) {
+              scope.options.rows.forEach(function (element) {
+                element.color = scope.chart.color(element.key);
+              });
+            }
+
             // In-place editing
             //
             marginBottom = 0;
@@ -411,15 +414,13 @@ angular.module('angularChart', [])
           // Add custom Legend
           //
           scope.customLegend = function () {
+            if (!scope.options.legend || !scope.options.legend.selector) {
+              return;
+            }
 
-            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" class="customLegend-item"><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{row.name}}</span></span></div>');
+            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" class="customLegend-item"><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{row.name ? row.name : row.key}}</span></span></div>');
             $compile(legend)(scope);
             element.prepend(legend);
-            // scope.options.rows.forEach(function (row) {
-            //   var item = angular.element('<div><circular options="rowEdit[\'' + row.name + '\']"></circular><span data-id="' + row.name + '">' + row.name + '</span></div>')
-            //   $compile(item)(scope);
-            //   legend.append(item);
-            // });
 
             // d3.selectAll('.customLegend span')
             //   .each(function () {
@@ -439,76 +440,96 @@ angular.module('angularChart', [])
             //     scope.chart.toggle(id);
             //   });
 
-        scope.switchAxis = function (options, clicked) {
-          scope.options.items[0].isActive = false;
-          scope.options.items[1].isActive = false;
-          clicked.isActive = true;
-        };
-        scope.switchColor = function (options, clicked) {
-          options.items[7].isActive = false;
-          options.items[8].isActive = false;
-          options.items[9].isActive = false;
-          clicked.isActive = true;
-          options.button.background = clicked.background;
-        };
-        scope.switchType = function (options, clicked) {
-          scope.options.items[3].isActive = false;
-          scope.options.items[4].isActive = false;
-          scope.options.items[5].isActive = false;
-          clicked.isActive = true;
-          scope.options.button.cssClass = clicked.cssClass;
-        };
-  
-            scope.rowEdit = [
-             {
+            var typeIcons = {
+              'line': 'fa fa-line-chart',
+              'spline': 'fa fa-line-chart',
+              'area': 'fa fa-area-chart',
+              'area-spline': 'fa fa-area-chart',
+              'scatter': 'fa fa-circle',
+              'bar': 'fa fa-bar-chart',
+              'pie': 'fa fa-pie-chart',
+              'donut': 'fa fa-pie-chart',
+              'step': 'fa fa-bar-chart',
+              'area-step': 'fa fa-area-chart'
+            };
+
+            scope.switchAxis = function (options, clicked) {
+              scope.options.rows[options.index].axis = clicked.axis;
+            };
+            scope.switchType = function (options, clicked) {
+              scope.options.rows[options.index].type = clicked.type;
+            };
+            // ToDo: optional color selection
+            // scope.switchColor = function (options, clicked) {
+            //   scope.options.rows[options.index].color = clicked.color;
+            // };
+            // {
+            //   isActive: true,
+            //   background: 'red',
+            //   onclick: scope.switchColor
+            // }, {
+            //   background: 'blue',
+            //   onclick: scope.switchColor
+            // }, {
+            //   background: 'yellow',
+            //   onclick: scope.switchColor
+            // }
+
+            // generate circular options
+            //
+            scope.rowEdit = [];
+            for (var index in scope.options.rows) {
+
+              scope.rowEdit[index] = {
                 row: 'sales',
-                index: 0,
+                index: index,
                 isOpen: false,
                 toggleOnClick: true,
-                background: scope.options.rows[0].color,
+                background: scope.options.rows[index].color,
                 color: 'white',
                 size: '',
                 button: {
                   content: '',
-                  cssClass: 'fa fa-bar-chart-o',
-                  background: 'red',
+                  cssClass: typeIcons[scope.options.rows[index].type],
+                  background: scope.options.rows[index].color,
                   color: 'white',
                   size: 'small'
                 },
                 items: [{
-                  content: 'Y1',
-                  isActive: true,
-                  onclick: scope.switchAxis
+                  axis: 'y1',
+                  onclick: scope.switchAxis,
+                  isActive: scope.options.rows[index].axis !== 'y2',
+                  content: 'Y1'
                 }, {
-                  content: 'Y2',
-                  onclick: scope.switchAxis
-                }, {
-                  empty: true
-                }, {
-                  cssClass: 'fa fa-bar-chart-o',
-                  isActive: true,
-                  onclick: scope.switchType
-                }, {
-                  cssClass: 'fa fa-camera-retro',
-                  onclick: scope.switchType
-                }, {
-                  cssClass: 'fa fa-paper-plane-o',
-                  onclick: scope.switchType
+                  axis: 'y2',
+                  onclick: scope.switchAxis,
+                  isActive: scope.options.rows[index].axis === 'y2',
+                  content: 'Y2'
                 }, {
                   empty: true
                 }, {
-                  isActive: true,
-                  background: 'red',
-                  onclick: scope.switchColor
+                  type: 'spline',
+                  onclick: scope.switchType,
+                  isActive: scope.options.rows[index].type === 'spline' || scope.options.rows[index].type === 'line',
+                  cssClass: typeIcons.spline
                 }, {
-                  background: 'blue',
-                  onclick: scope.switchColor
+                  type: 'area-spline',
+                  onclick: scope.switchType,
+                  isActive: scope.options.rows[index].type === 'area' || scope.options.rows[index].type === 'area-spline',
+                  cssClass: typeIcons['area-spline'],
                 }, {
-                  background: 'yellow',
-                  onclick: scope.switchColor
+                  type: 'bar',
+                  onclick: scope.switchType,
+                  isActive: scope.options.rows[index].type === 'bar',
+                  cssClass: typeIcons.bar
+                }, {
+                  type: 'scatter',
+                  onclick: scope.switchType,
+                  isActive: scope.options.rows[index].type === 'scatter',
+                  cssClass: typeIcons.scatter
                 }]
-              }
-            ];
+              };
+            }
 
           };
 
