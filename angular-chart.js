@@ -357,9 +357,9 @@ angular.module('angularChart', [])
             //
             marginBottom = 30;
             scope.chooseXAxis();
+            scope.customLegend();
             scope.chooseChartType();
             scope.toggleSubchartLink();
-            scope.customLegend();
             angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: ' + marginBottom + 'px');
 
             // Apply earlier zoom
@@ -390,11 +390,18 @@ angular.module('angularChart', [])
             if (scope.options.typeSelector) {
               var el = angular.element('<div class="chooseChartType btn-group">');
               el.attr('style', 'float: right');
-              el.append('<button ng-click="options.type = \'line\'" ng-class="{\'active\': options.type === \'line\'}" class="btn btn-default">Multi</button>');
-              el.append('<button ng-click="options.type = \'pie\'" ng-class="{\'active\': options.type === \'pie\'}" class="btn btn-default">Pie</button>');
+              el.append('<button ng-click="changeChartType(\'spline\')" ng-class="{\'active\': options.type !== \'pie\'}" class="btn btn-default">Multi</button>');
+              el.append('<button ng-click="changeChartType(\'pie\')" ng-class="{\'active\': options.type === \'pie\'}" class="btn btn-default">Pie</button>');
               $compile(el)(scope);
               element.prepend(el);
             }
+          };
+          // called function
+          scope.changeChartType = function (type) {
+            scope.options.type = type;
+            scope.options.rows.forEach(function(element) {
+              element.type = type;
+            });
           };
 
           // Toggle Subchart
@@ -433,7 +440,7 @@ angular.module('angularChart', [])
             }
             marginBottom += 30;
 
-            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" class="customLegend-item"><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{row.name ? row.name : row.key}}</span></span></div>');
+            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" class="customLegend-item"><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{(schema[row.key] && schema[row.key].name) ? schema[row.key].name : (row.name ? row.name : row.key)}}</span></span></div>');
             $compile(legend)(scope);
             element.prepend(legend);
 
@@ -671,9 +678,9 @@ angular.module('angularChart', [])
           // watcher of changes in options
           //
           scope.startDatasetWatcher = function () {
-            scope.$watch('dataset', function (newValue, oldValue) {
-              scope.updateChart();
-            }, true); // checks for changes inside data
+            // scope.$watch('dataset', function (newValue, oldValue) {
+            //   scope.updateChart();
+            // }, true); // checks for changes inside data
           };
 
 

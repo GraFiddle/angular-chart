@@ -360,6 +360,22 @@ describe('angularChart:', function () {
             expect(chartElement.html()).toContain('chooseChartType');
           });
 
+          it('should reset rows type on change.', function () {
+            // check configuration before
+            expect(chartElement.html()).not.toContain('chooseChartType');
+
+            // set option
+            var typeSelector = true;
+            $scope.options.typeSelector = typeSelector;
+            $scope.$apply();
+
+            // interact: change type to 'pie'
+            elementScope.changeChartType('pie');
+
+            // check configuration change
+            expect(chartElement.html()).toContain('chooseChartType');
+          });
+
         });
 
       });
