@@ -1,9 +1,9 @@
 {
   "name": "angular-chart-demo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
     "angular": "~1.3.x",
-    "angular-chart": "~0.1.x",
+    "angular-chart": "~0.2.x",
     "angular-ui-ace": "bower",
     "bootstrap": "~3.x.x"
   },

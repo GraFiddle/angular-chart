@@ -118,7 +118,7 @@ var optionsArray = [{
 }, {
   id: 8,
   name: 'Zoom',
-  description: '',
+  description: 'This chart can be zoomed using the mouse wheel.',
   options: {
     rows: [{
       key: 'income',
@@ -129,6 +129,48 @@ var optionsArray = [{
     }],
     zoom: {
       enabled: true
+    }
+  }
+}, {
+  id: 9,
+  name: 'Annotation',
+  description: 'Annotation lines can be added on every axis',
+  options: {
+    rows: [{
+      key: 'income',
+      type: 'line'
+    }, {
+      key: 'sales',
+      type: 'spline'
+    }],
+    xAxis: {
+      key: 'dayString',
+    },
+    annotation: [{
+      axis: 'x',
+      value: 1,
+      label: 'one'
+    }, {
+      axis: 'y',
+      value: 200,
+      label: 'two hundred'
+    }, {
+      axis: 'y2',
+      value: 0,
+      label: 'none'
+    }]
+  }
+}, {
+  id: 10,
+  name: 'Define Rows',
+  description: 'You can combine line, spline, bar, area and scatter charts in a single chart.',
+  options: {
+    rows: [{
+      key: 'sales',
+      type: 'spline'
+    }],
+    legend: {
+      selector: true
     }
   }
 }];

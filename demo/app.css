@@ -15,6 +15,7 @@ body {
 .jumbotron {
 	padding-top: 10px;
 	padding-bottom: 30px;
+	padding-top: 70px;
 	margin-bottom: 0;
 }
 .alerts {
@@ -27,4 +28,29 @@ body {
 	z-index: 1;
 	background-color: rgba(217, 237, 247, 0.8);
 	margin-top: 10px;
+}
+
+
+
+
+/* Edit rows*/
+.customLegend {
+	margin-left: 50px;
+}
+.customLegend-item {
+    width: 120px;
+    padding: 10px;
+    display: inline-block;
+    /*cursor: pointer;*/
+    margin-right: 10px;
+}
+
+.customLegend-label {
+	padding-left: 30px;
+	font-size: 20px;
+}
+circular, .circular {
+	position: relative;
+	top: -10px;
+	left: 8px;
 }

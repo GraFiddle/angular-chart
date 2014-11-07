@@ -224,27 +224,6 @@ describe('angularChart:', function () {
 
       });
 
-
-      describe('. colors', function () {
-
-        it('- Chart should set custom color for row.', function () {
-          // check configuration before
-          expect(elementScope.configuration.data.colors.sales).not.toBe('#ff0000');
-
-          // set option
-          var colors = {
-            sales: '#ff0000'
-          };
-          $scope.options.colors = colors;
-          $scope.$apply();
-
-          // check configuration change
-          expect(elementScope.configuration.data.colors.sales).toBe(colors.sales);
-        });
-
-      });
-
-
       describe('. yAxis', function () {
 
         describe('. label', function () {
@@ -275,13 +254,42 @@ describe('angularChart:', function () {
           // expect(elementScope.configuration.data.groups.length).toBe(0);
 
           // set option
-          var row = $scope.options.rows[1];
+          var row = $scope.options.rows[0];
           row.name = 'Verkauf';
-          $scope.options.rows[1] = row;
+          $scope.options.rows[0] = row;
           $scope.$apply();
 
           // check configuration change
           expect(elementScope.configuration.data.names[row.key]).toBe(row.name);
+        });
+
+        it('- Chart should have line type if none defined.', function () {
+          var row = $scope.options.rows[0];
+
+          // check configuration before
+          expect(elementScope.configuration.data.types[row.key]).toBe(row.type);
+
+          // set option
+          delete $scope.options.rows[0].type;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.types[row.key]).toBe('line');
+        });
+
+        it('- Chart should set custom color for row.', function () {
+          var row = $scope.options.rows[0];
+
+          // check configuration before
+          expect(elementScope.configuration.data.colors.sales).not.toBe('#ff0000');
+
+          // set option
+          row.color = '#ff0000';
+          $scope.options.rows[0] = row;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.colors[row.key]).toBe(row.color);
         });
 
       });
@@ -323,24 +331,6 @@ describe('angularChart:', function () {
             type = 'pie';
 
             $scope.options.type = type;
-            $scope.$apply();
-
-            // check configuration change
-            // expect(elementScope.configuration.axis.y.label).toBe(type);
-          });
-
-          it('should be created in rows.', function () {
-            // check configuration before
-            // expect(elementScope.configuration.axis.y.label).toBe('');
-
-            // set option
-            var type = 'pie';
-            var rows = [{
-              type: 'pie'
-            }];
-
-            $scope.options.type = type;
-            $scope.options.rows = rows;
             $scope.$apply();
 
             // check configuration change
@@ -504,7 +494,7 @@ describe('angularChart:', function () {
 
           it('- Chart use schema to format datetime.', function () {
             // check configuration before
-            expect(elementScope.configuration.axis.x.type).toBe(undefined);
+            expect(elementScope.configuration.axis.x.type).toBe('category');
 
             // set option
             $scope.schema.day.format = '%Y-%m-%dT%H:%M:%S';
@@ -521,7 +511,7 @@ describe('angularChart:', function () {
 
           it('- Chart use schema to display numeric xAxis.', function () {
             // check configuration before
-            expect(elementScope.configuration.axis.x.type).toBe(undefined);
+            expect(elementScope.configuration.axis.x.type).toBe('category');
 
             // set option
             var xAxis = {
@@ -536,7 +526,7 @@ describe('angularChart:', function () {
 
           it('- xAxis type is category if not in schema defined.', function () {
             // check configuration before
-            expect(elementScope.configuration.axis.x.type).toBe(undefined);
+            expect(elementScope.configuration.axis.x.type).toBe('category');
 
             // set option
             delete $scope.schema.dayString;
@@ -617,6 +607,61 @@ describe('angularChart:', function () {
 
       });
 
+      describe('. annotation', function () {
+
+        it('- Chart have annotations on x-Axis.', function () {
+          // check configuration before
+          expect(elementScope.configuration.grid.x.lines.length).toBe(0);
+
+          // set option
+          var line = {
+            axis: 'x',
+            value: 1,
+            text: 'one'
+          };
+          $scope.options.annotation = [line];
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.grid.x.lines.length).toBe(1);
+        });
+
+        it('- Chart have annotations on y-Axis.', function () {
+          // check configuration before
+          expect(elementScope.configuration.grid.y.lines.length).toBe(0);
+
+          // set option
+          var line = {
+            axis: 'y',
+            value: 1,
+            text: 'one'
+          };
+          $scope.options.annotation = [line];
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.grid.y.lines.length).toBe(1);
+        });
+
+        it('- Chart have annotations on y2-Axis.', function () {
+          // check configuration before
+          expect(elementScope.configuration.grid.y.lines.length).toBe(0);
+
+          // set option
+          var line = {
+            axis: 'y2',
+            value: 1,
+            text: 'one'
+          };
+          $scope.options.annotation = [line];
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.grid.y.lines.length).toBe(1);
+        });
+
+      });
+
       describe('. legend', function () {
 
         describe('. selector', function () {
@@ -651,9 +696,9 @@ describe('angularChart:', function () {
             expect(chartElement.html()).toContain('customLegend');
           });
 
-          it('- Chart should add events on legend.', function () {
-            // check  before
-            // ToDo
+          it('- Custom Legend should switch axis.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
 
             // set option
             var legend = {
@@ -662,16 +707,41 @@ describe('angularChart:', function () {
             $scope.options.legend = legend;
             $scope.$apply();
 
-            // fire events
-            d3.selectAll('.customLegend span')
-              .each(function () {
-                $scope.fireEvent(this, 'click');
-                $scope.fireEvent(this, 'mouseover');
-                $scope.fireEvent(this, 'mouseout');
-              });
+            //
+            var options = {
+              index: 0
+            };
+            var clicked = {
+              axis: 'y2'
+            };
+            elementScope.switchAxis(options, clicked);
 
-            // check change
-            // ToDo
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should switch type.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.$apply();
+
+            //
+            var options = {
+              index: 0
+            };
+            var clicked = {
+              type: 'line'
+            };
+            elementScope.switchType(options, clicked);
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
           });
 
         });
@@ -829,50 +899,77 @@ describe('angularChart:', function () {
 
       });
 
-      // ToDo: Review
       describe('. subchart', function () {
 
         it('Creating a line chart with subchart toggle', function () {
-          $scope.options.subchart = {
+          // check rendering before
+          expect(chartElement.html()).not.toContain('toggleSubchart');
+
+          // set option
+          var subchart = {
             selector: true
           };
+          $scope.options.subchart = subchart;
           $scope.$apply();
 
+          // check rendering change
           expect(chartElement.html()).not.toBe(null);
           expect(chartElement.html()).toContain('toggleSubchart');
         });
 
         it('Creating a line chart with subchart toggle and with subchart', function () {
-          $scope.options.subchart = {
+          // check configuration before
+          expect(elementScope.configuration.subchart.show).toBe(false);
+          // check rendering before
+          expect(chartElement.html()).not.toContain('toggleSubchart');
+
+          // set option
+          var subchart = {
             selector: true,
             show: true
           };
+          $scope.options.subchart = subchart;
           $scope.$apply();
 
+          // check configuration change
+          expect(elementScope.configuration.subchart.show).toBe(subchart.show);
+
+          // check rendering
           expect(chartElement.html()).not.toBe(null);
           expect(chartElement.html()).toContain('toggleSubchart');
 
-          // toggle show subchart
-          var elementScope = $scope.getElementScope(chartElement);
+          // interact with chart
+          //   toggle show subchart
           elementScope.toggleSubchart();
+
+          // check options change
           expect($scope.options.subchart.show).toBe(false);
         });
 
-        it('Creating a line chart with custom legend', function () {
-          $scope.options.legend = {
-            selector: true
-          };
-          $scope.$apply();
-          expect(chartElement.html()).not.toBe(null);
-          expect(chartElement.html()).toContain('customLegend');
+        it('Hide subchart should reset zoom.', function () {
+          // check configuration before
+          expect(elementScope.configuration.subchart.show).toBe(false);
 
-          // fire events
-          d3.selectAll('.customLegend span')
-            .each(function () {
-              $scope.fireEvent(this, 'click');
-              $scope.fireEvent(this, 'mouseover');
-              $scope.fireEvent(this, 'mouseout');
-            });
+          // set option - show subchart
+          var subchart = {
+            selector: true,
+            show: true
+          };
+          $scope.options.subchart = subchart;
+          $scope.$apply();
+
+          // set option - set zoom
+          var range = [0, 1];
+          $scope.options.zoom.range = range;
+          $scope.$apply();
+
+          // interact with chart
+          //   hide subchart
+          elementScope.toggleSubchart();
+
+          // check options change
+          expect($scope.options.subchart.show).toBe(false);
+          expect($scope.options.zoom.range).not.toBeDefined();
         });
 
       });

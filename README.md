@@ -107,17 +107,27 @@ The column key which identifies the value in each record.
 
 ---
 ##### rows.type : String
-Possible values: `line, spline, bar, scatter, area`
+Possible values: `line, spline, bar, scatter, area, area-spline, step, area-step, step`
 
 ---
 ##### rows.name : String
 Optional name for the row.
 
+---
+#### rows.color : String
+Defines the color for this row.
+
+---
+#### rows.axis : String
+Possible values: `y, y2`
+
+Defines the y axis the row is linked.
+
 
 
 ---
 #### type : String
-Possible values: `line, spline, bar, scatter, bar, donut`
+Possible values: `line, spline, bar, scatter, donut`
 
 Defines which kind of chart should be rendered. The value will be the default for `rows.type`.
 
@@ -156,14 +166,8 @@ Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
 
 ---
-#### groups : Object
+#### groups : Array
 Stacks bar together, like in this [example](http://c3js.org/samples/chart_bar_stacked.html).
-
-
-
----
-#### colors : Object
-Defines the colors like in this [example](http://c3js.org/samples/data_color.html).
 
 
 
@@ -212,6 +216,12 @@ If `true` a custom legend is displayed. Default: `false`
 If `flase` the default legend is hidden. Default: `true` 
 
 
+---
+#### annotation : Array of Objects
+Defines the annotation lines.
+
+`{value: X, text: 'LABEL', axis: 'AXIS'}` AXIS can be `x`, `y`, `y2`.
+
 
 ---
 #### selection : Object
@@ -233,12 +243,9 @@ Callback whenever a new selection is added.
 ##### selection.onunselected : function
 Callback whenever a selection is removed.
 
-
 ---
 ##### selection.selected : Array
 Contains an array with all selected points of the chart:
-
-
 
 Multichart (line, spline, bar, scatter):
 ```
