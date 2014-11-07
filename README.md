@@ -117,6 +117,12 @@ Optional name for the row.
 #### rows.color : String
 Defines the color for this row.
 
+---
+#### rows.axis : String
+Possible values: `y, y2`
+
+Defines the y axis the row is linked.
+
 
 
 ---

@@ -32,6 +32,7 @@ angular.module('angularChart', [])
               colors: {},
               selection: {},
               groups: [],
+              axes: {},
               onselected: function (d, element) {
                 scope.selections.addSelected(d);
               },
@@ -46,6 +47,9 @@ angular.module('angularChart', [])
                 tick: {}
               },
               y: {
+                label: ''
+              },
+              y2: {
                 label: ''
               }
             },
@@ -119,6 +123,8 @@ angular.module('angularChart', [])
 
             // Add lines
             //
+            scope.configuration.axis.y.show = false;
+            scope.configuration.axis.y2.show = false;
             scope.configuration.data.keys.value = [];
             if (scope.options.rows) {
               scope.options.rows.forEach(function (element) {
@@ -143,6 +149,14 @@ angular.module('angularChart', [])
                   scope.configuration.data.colors[element.key] = element.color;
                 }
 
+                // axis
+                if (!element.axis) {
+                  element.axis = 'y';
+                }
+                scope.configuration.data.axes[element.key] = element.axis;
+                scope.configuration.axis[element.axis] = {
+                  show: true
+                };
               });
 
             } else {
@@ -341,7 +355,7 @@ angular.module('angularChart', [])
 
             // In-place editing
             //
-            marginBottom = 0;
+            marginBottom = 30;
             scope.chooseXAxis();
             scope.chooseChartType();
             scope.toggleSubchartLink();
@@ -367,7 +381,7 @@ angular.module('angularChart', [])
             $compile(el)(scope);
             element.append(el);
 
-            marginBottom = 30;
+            marginBottom += 30;
           };
 
           // Choose chart-type
@@ -417,6 +431,7 @@ angular.module('angularChart', [])
             if (!scope.options.legend || !scope.options.legend.selector) {
               return;
             }
+            marginBottom += 30;
 
             var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" class="customLegend-item"><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{row.name ? row.name : row.key}}</span></span></div>');
             $compile(legend)(scope);
@@ -496,9 +511,9 @@ angular.module('angularChart', [])
                   size: 'small'
                 },
                 items: [{
-                  axis: 'y1',
+                  axis: 'y',
                   onclick: scope.switchAxis,
-                  isActive: scope.options.rows[index].axis !== 'y2',
+                  isActive: scope.options.rows[index].axis === 'y',
                   content: 'Y1'
                 }, {
                   axis: 'y2',
