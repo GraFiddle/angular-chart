@@ -1,12 +1,15 @@
 'use strict';
 
+var require;
 /*global beforeEach, afterEach, describe, it, inject, expect, spyOn, module, angular*/
 describe('angularChart:', function () {
 
   var $scope, $compile, $controller;
   var d3 = window.d3;
+  var c3 = window.c3;
   var dataArray = window.dataArray;
   var optionsArray = window.optionsArray;
+
 
   beforeEach(module('angularChart'));
   beforeEach(inject(function (_$rootScope_, _$compile_, _$controller_) {
@@ -123,6 +126,57 @@ describe('angularChart:', function () {
 
       expect($scope.options).toEqual(elementScope.options);
       expect($scope.dataset).toEqual(elementScope.dataset);
+    });
+
+    it('should be able to not find c3', function () {
+      require = undefined;
+      window.c3 = undefined;
+
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      }).toThrow();
+
+      // reset
+      window.c3 = c3;
+    });
+
+    it('should be able to inject c3 using require', function () {
+      var requireMock = function (val) {
+        return c3;
+      };
+      require = requireMock;
+      window.c3 = undefined;
+
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+
+      // reset
+      window.c3 = c3;
+    });
+
+    it('should be able to not find d3', function () {
+      require = undefined;
+      window.d3 = undefined;
+
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      }).toThrow();
+
+      // reset
+      window.d3 = d3;
+    });
+
+
+    it('should be able to inject d3 using require', function () {
+      var requireMock = function (val) {
+        return d3;
+      };
+      require = requireMock;
+      window.d3 = undefined;
+
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+
+      // reset
+      window.d3 = d3;
     });
 
   });
