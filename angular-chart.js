@@ -5,8 +5,8 @@ angular.module('angularChart', [])
 
     function ($compile) {
 
-      var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require("c3") : undefined;
-      var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require("d3") : undefined;
+      var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
+      var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require('d3') : undefined;
 
       return {
         restrict: 'EA',

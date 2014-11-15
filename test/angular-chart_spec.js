@@ -1,5 +1,7 @@
 'use strict';
 
+/*jshint -W079 */
+/*jshint -W020 */
 var require;
 /*global beforeEach, afterEach, describe, it, inject, expect, spyOn, module, angular*/
 describe('angularChart:', function () {
