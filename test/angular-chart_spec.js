@@ -147,6 +147,8 @@ describe('angularChart:', function () {
         .attr('options', 'options');
       // select chart
       chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
+
+      // $scope.$digest();
       // get elements scope
       elementScope = $scope.getElementScope(chartElement);
     });
@@ -290,6 +292,21 @@ describe('angularChart:', function () {
 
           // check configuration change
           expect(elementScope.configuration.data.colors[row.key]).toBe(row.color);
+        });
+
+        it('- Chart rows can be hidden.', function () {
+          var row = $scope.options.rows[0];
+
+          // check configuration before
+          expect(elementScope.configuration.data.keys.value.length).toBe(4);
+
+          // set option
+          row.show = false;
+          $scope.options.rows[0] = row;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.keys.value.length).toBe(3);
         });
 
       });
@@ -755,6 +772,81 @@ describe('angularChart:', function () {
               type: 'line'
             };
             elementScope.switchType(options, clicked);
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should switch show/hide.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.$apply();
+
+            //
+            var options = {
+              index: 0
+            };
+            var clicked = {
+              show: false
+            };
+            elementScope.switchShow(options, clicked);
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should hide xAxis in legend.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            var xAxis = {
+              key: 'income'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should show rows set on true.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.options.rows[0].show = true;
+            $scope.$apply();
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should show rows set on true.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.options.rows[0].show = false;
+            $scope.$apply();
 
             // check element change
             expect(chartElement.html()).toContain('customLegend');
