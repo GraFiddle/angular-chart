@@ -117,6 +117,10 @@ Possible values: `line, spline, bar, scatter, area, area-spline, step, area-step
 Optional name for the row.
 
 ---
+#### rows.show : String
+Defines if the row should be rendered in the chart.
+
+---
 #### rows.color : String
 Defines the color for this row.
 

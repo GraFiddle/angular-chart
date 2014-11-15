@@ -5,8 +5,8 @@ angular.module('angularChart', [])
 
     function ($compile) {
 
-      var c3 = window.c3;
-      var d3 = window.d3;
+      var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
+      var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require('d3') : undefined;
 
       return {
         restrict: 'EA',
@@ -128,8 +128,9 @@ angular.module('angularChart', [])
             scope.configuration.data.keys.value = [];
             if (scope.options.rows) {
               scope.options.rows.forEach(function (element) {
-                // TODO exists check? ERROR
-                scope.configuration.data.keys.value.push(element.key);
+                if (element.show === undefined || element.show) {
+                  scope.configuration.data.keys.value.push(element.key);
+                }
 
                 // data name
                 if (element.name) {
@@ -159,8 +160,6 @@ angular.module('angularChart', [])
                 };
               });
 
-            } else {
-              // No rows
             }
 
 
@@ -176,6 +175,7 @@ angular.module('angularChart', [])
                 scope.options.selection.selected = [];
               }
             }
+
 
             // Add x-axis
             //
@@ -390,7 +390,9 @@ angular.module('angularChart', [])
             if (scope.options.typeSelector) {
               var el = angular.element('<div class="chooseChartType btn-group">');
               el.attr('style', 'float: right');
-              el.append('<button ng-click="changeChartType(\'spline\')" ng-class="{\'active\': options.type !== \'pie\'}" class="btn btn-default">Multi</button>');
+              el.append('<button ng-click="changeChartType(\'scatter\')" ng-class="{\'active\': options.type === \'scatter\'}" class="btn btn-default">Scatter</button>');
+              el.append('<button ng-click="changeChartType(\'bar\')" ng-class="{\'active\': options.type === \'bar\'}" class="btn btn-default">Bar</button>');
+              el.append('<button ng-click="changeChartType(\'line\')" ng-class="{\'active\': options.type === \'line\'}" class="btn btn-default">Line</button>');
               el.append('<button ng-click="changeChartType(\'pie\')" ng-class="{\'active\': options.type === \'pie\'}" class="btn btn-default">Pie</button>');
               $compile(el)(scope);
               element.prepend(el);
@@ -399,7 +401,7 @@ angular.module('angularChart', [])
           // called function
           scope.changeChartType = function (type) {
             scope.options.type = type;
-            scope.options.rows.forEach(function(element) {
+            scope.options.rows.forEach(function (element) {
               element.type = type;
             });
           };
@@ -440,7 +442,7 @@ angular.module('angularChart', [])
             }
             marginBottom += 30;
 
-            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" class="customLegend-item"><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{(schema[row.key] && schema[row.key].name) ? schema[row.key].name : (row.name ? row.name : row.key)}}</span></span></div>');
+            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" ng-if="row.key !== options.xAxis.key" class="customLegend-item" ><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{(schema[row.key] && schema[row.key].name) ? schema[row.key].name : (row.name ? row.name : row.key)}}</span></span></div>');
             $compile(legend)(scope);
             element.prepend(legend);
 
@@ -475,45 +477,45 @@ angular.module('angularChart', [])
               'area-step': 'fa fa-area-chart'
             };
 
+            // onClick functions
+            //
             scope.switchAxis = function (options, clicked) {
               scope.options.rows[options.index].axis = clicked.axis;
+              scope.options.rows[options.index].show = true;
             };
             scope.switchType = function (options, clicked) {
               scope.options.rows[options.index].type = clicked.type;
+              scope.options.rows[options.index].show = true;
             };
-            // ToDo: optional color selection
-            // scope.switchColor = function (options, clicked) {
-            //   scope.options.rows[options.index].color = clicked.color;
-            // };
-            // {
-            //   isActive: true,
-            //   background: 'red',
-            //   onclick: scope.switchColor
-            // }, {
-            //   background: 'blue',
-            //   onclick: scope.switchColor
-            // }, {
-            //   background: 'yellow',
-            //   onclick: scope.switchColor
-            // }
+            scope.switchShow = function (options, clicked) {
+              scope.options.rows[options.index].show = clicked.show;
+            };
 
             // generate circular options
             //
             scope.rowEdit = [];
             for (var index in scope.options.rows) {
 
+              // hide current x-axis
+              //
+              if (scope.options.xAxis && scope.options.xAxis.key === scope.options.rows[index].key) {
+                continue;
+              }
+
+              var show = scope.options.rows[index].show === undefined || scope.options.rows[index].show === true;
+
               scope.rowEdit[index] = {
                 row: 'sales',
                 index: index,
                 isOpen: false,
                 toggleOnClick: true,
-                background: scope.options.rows[index].color,
+                background: show ? scope.options.rows[index].color : 'gray',
                 color: 'white',
                 size: '',
                 button: {
                   content: '',
                   cssClass: typeIcons[scope.options.rows[index].type],
-                  background: scope.options.rows[index].color,
+                  background: show ? scope.options.rows[index].color : 'gray',
                   color: 'white',
                   size: 'small'
                 },
@@ -549,6 +551,18 @@ angular.module('angularChart', [])
                   onclick: scope.switchType,
                   isActive: scope.options.rows[index].type === 'scatter',
                   cssClass: typeIcons.scatter
+                }, {
+                  empty: true
+                }, {
+                  show: true,
+                  onclick: scope.switchShow,
+                  isActive: show,
+                  cssClass: 'fa-eye'
+                }, {
+                  show: false,
+                  onclick: scope.switchShow,
+                  isActive: !show,
+                  cssClass: 'fa-eye-slash'
                 }]
               };
             }

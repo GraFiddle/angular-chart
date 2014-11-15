@@ -1,12 +1,17 @@
 'use strict';
 
+/*jshint -W079 */
+/*jshint -W020 */
+var require;
 /*global beforeEach, afterEach, describe, it, inject, expect, spyOn, module, angular*/
 describe('angularChart:', function () {
 
   var $scope, $compile, $controller;
   var d3 = window.d3;
+  var c3 = window.c3;
   var dataArray = window.dataArray;
   var optionsArray = window.optionsArray;
+
 
   beforeEach(module('angularChart'));
   beforeEach(inject(function (_$rootScope_, _$compile_, _$controller_) {
@@ -125,6 +130,57 @@ describe('angularChart:', function () {
       expect($scope.dataset).toEqual(elementScope.dataset);
     });
 
+    it('should be able to not find c3', function () {
+      require = undefined;
+      window.c3 = undefined;
+
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      }).toThrow();
+
+      // reset
+      window.c3 = c3;
+    });
+
+    it('should be able to inject c3 using require', function () {
+      var requireMock = function (val) {
+        return c3;
+      };
+      require = requireMock;
+      window.c3 = undefined;
+
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+
+      // reset
+      window.c3 = c3;
+    });
+
+    it('should be able to not find d3', function () {
+      require = undefined;
+      window.d3 = undefined;
+
+      expect(function () {
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      }).toThrow();
+
+      // reset
+      window.d3 = d3;
+    });
+
+
+    it('should be able to inject d3 using require', function () {
+      var requireMock = function (val) {
+        return d3;
+      };
+      require = requireMock;
+      window.d3 = undefined;
+
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+
+      // reset
+      window.d3 = d3;
+    });
+
   });
 
   describe('#', function () {
@@ -147,6 +203,8 @@ describe('angularChart:', function () {
         .attr('options', 'options');
       // select chart
       chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
+
+      // $scope.$digest();
       // get elements scope
       elementScope = $scope.getElementScope(chartElement);
     });
@@ -290,6 +348,21 @@ describe('angularChart:', function () {
 
           // check configuration change
           expect(elementScope.configuration.data.colors[row.key]).toBe(row.color);
+        });
+
+        it('- Chart rows can be hidden.', function () {
+          var row = $scope.options.rows[0];
+
+          // check configuration before
+          expect(elementScope.configuration.data.keys.value.length).toBe(4);
+
+          // set option
+          row.show = false;
+          $scope.options.rows[0] = row;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.keys.value.length).toBe(3);
         });
 
       });
@@ -755,6 +828,81 @@ describe('angularChart:', function () {
               type: 'line'
             };
             elementScope.switchType(options, clicked);
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should switch show/hide.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.$apply();
+
+            //
+            var options = {
+              index: 0
+            };
+            var clicked = {
+              show: false
+            };
+            elementScope.switchShow(options, clicked);
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should hide xAxis in legend.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            var xAxis = {
+              key: 'income'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should show rows set on true.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.options.rows[0].show = true;
+            $scope.$apply();
+
+            // check element change
+            expect(chartElement.html()).toContain('customLegend');
+          });
+
+          it('- Custom Legend should show rows set on true.', function () {
+            // check element before
+            expect(chartElement.html()).not.toContain('customLegend');
+
+            // set option
+            var legend = {
+              selector: true
+            };
+            $scope.options.legend = legend;
+            $scope.options.rows[0].show = false;
+            $scope.$apply();
 
             // check element change
             expect(chartElement.html()).toContain('customLegend');
