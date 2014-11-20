@@ -1,7 +1,8 @@
-'use strict';
+(function(){
+  'use strict';
 
-angular.module('angularChart', [])
-  .directive('angularchart',
+var angularChart = angular.module('angularChart', [])
+  .directive('angularchart', ['$compile', 
 
     function ($compile) {
 
@@ -705,7 +706,12 @@ angular.module('angularChart', [])
           scope.selections.performSelections(scope.options.selection.selected);
           scope.startOptionsWatcher();
           scope.startDatasetWatcher();
-
+          
         }
       };
-    });
+    }]);
+    
+    if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
+        module.exports = angularChart;
+    }
+})();
