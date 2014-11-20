@@ -1,10 +1,14 @@
-(function(){
+(function () {
+
   'use strict';
 
-var angularChart = angular.module('angularChart', [])
-  .directive('angularchart', ['$compile', 
+  /*global define, module, exports, require */
 
-    function ($compile) {
+  /* istanbul ignore next */
+  var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
+
+  var angularChart = angular.module('angularChart', [])
+    .directive('angularchart', ['$compile', function ($compile) {
 
       var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
       var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require('d3') : undefined;
@@ -115,7 +119,7 @@ var angularChart = angular.module('angularChart', [])
 
 
             // Chart type
-            // 
+            //
             if (!scope.options.type) {
               scope.options.type = 'line';
             }
@@ -575,7 +579,7 @@ var angularChart = angular.module('angularChart', [])
           scope.selections = {
             avoidSelections: false,
 
-            // handle chart event onselection 
+            // handle chart event onselection
             addSelected: function (selection) {
               if (!this.avoidSelections) {
                 scope.$apply(
@@ -706,12 +710,16 @@ var angularChart = angular.module('angularChart', [])
           scope.selections.performSelections(scope.options.selection.selected);
           scope.startOptionsWatcher();
           scope.startDatasetWatcher();
-          
+
         }
       };
     }]);
-    
-    if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-        module.exports = angularChart;
-    }
+
+  /* istanbul ignore next */
+  if (typeof define === 'function' && define.amd) {
+    define('angularChart', ['c3', 'angular'], angularChart);
+  } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
+    module.exports = angularChart;
+  }
+
 })();

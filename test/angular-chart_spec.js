@@ -7,6 +7,8 @@ var require;
 describe('angularChart:', function () {
 
   var $scope, $compile, $controller;
+  var angular = window.angular;
+  window.angular = undefined;
   var d3 = window.d3;
   var c3 = window.c3;
   var dataArray = window.dataArray;
@@ -128,6 +130,31 @@ describe('angularChart:', function () {
 
       expect($scope.options).toEqual(elementScope.options);
       expect($scope.dataset).toEqual(elementScope.dataset);
+    });
+
+    it('should be able to not find angular', function () {
+      require = undefined;
+      window.angular = undefined;
+
+      // expect(function () {
+        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      // }).toThrow();
+
+      // reset
+      window.angular = angular;
+    });
+
+    it('should be able to inject c3 using require', function () {
+      var requireMock = function (val) {
+        return angular;
+      };
+      require = requireMock;
+      window.angular = undefined;
+
+      var element = $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+
+      // reset
+      window.angular = angular;
     });
 
     it('should be able to not find c3', function () {
