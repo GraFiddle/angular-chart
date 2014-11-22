@@ -108,9 +108,9 @@
             if (!scope.dataset) {
               throw 'No data provided. The dataset has to be an array with the records.';
             } else {
-              if (scope.options.data === 'columns') {
+              if (scope.options.data && scope.options.data.orientation === 'columns') {
                 scope.configuration.data.columns = scope.dataset;
-              } else if (scope.options.data === 'rows') {
+              } else if (scope.options.data && scope.options.data.orientation === 'rows') {
                 scope.configuration.data.rows = scope.dataset;
               } else {
                 scope.configuration.data.json = scope.dataset;
@@ -694,12 +694,54 @@
             }, true); // checks for changes inside options
           };
 
-          // watcher of changes in options
+          scope.smallWatcher = undefined;
+          scope.bigWatcher = undefined;
+
+          // start watcher changes in small datasets, compares whole object
+          //
+          scope.startSmallDatasetWatcher = function () {
+            return scope.$watchCollection('dataset', function (newValue, oldValue) {
+              scope.updateChart();
+              scope.startDatasetWatcher();
+            });
+          };
+
+          // start watcher changes in big datasets, compares length of records
+          //
+          scope.startBigDatasetWatcher = function () {
+            return scope.$watch(function () {
+              return scope.dataset.length;
+            }, function (newValue, oldValue) {
+              scope.updateChart();
+              scope.startDatasetWatcher();
+            });
+          };
+
+          // choose watcher for changes in datasets
           //
           scope.startDatasetWatcher = function () {
-            // scope.$watch('dataset', function (newValue, oldValue) {
-            //   scope.updateChart();
-            // }, true); // checks for changes inside data
+            var limit = (scope.options.data && scope.options.data.watchLimit) ? scope.options.data.watchLimit : 100;
+            if (scope.dataset.length < limit) {
+              // start small watcher
+              if (!scope.smallWatcher) {
+                scope.smallWatcher = scope.startSmallDatasetWatcher();
+              }
+              // stop big watcher
+              if (scope.bigWatcher) {
+                scope.bigWatcher();
+                scope.bigWatcher = undefined;
+              }
+            } else {
+              // start big watcher
+              if (!scope.bigWatcher) {
+                scope.bigWatcher = scope.startBigDatasetWatcher();
+              }
+              // stop small watcher
+              if (scope.smallWatcher) {
+                scope.smallWatcher();
+                scope.smallWatcher = undefined;
+              }
+            }
           };
 
 

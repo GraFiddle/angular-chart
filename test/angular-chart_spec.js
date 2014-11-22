@@ -137,7 +137,7 @@ describe('angularChart:', function () {
       window.angular = undefined;
 
       // expect(function () {
-        $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
+      $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
       // }).toThrow();
 
       // reset
@@ -238,13 +238,67 @@ describe('angularChart:', function () {
 
     describe('watch', function () {
 
-      it('dataset changes.', function () {
+      it('small dataset changes when updating an element', function () {
+        // set new data
+        $scope.dataset[0].sales = 1000;
+        $scope.$apply();
+      });
 
-        var newData = {
+      it('small dataset changes when adding an element', function () {
+        // define new data
+        var newRecord = {
           'day': '2013-01-06T00:00:00',
           'sales': 53461.295202
         };
-        $scope.dataset.push(newData);
+        // add new record
+        for (var i = 0; i < 1; i++) {
+          $scope.dataset.push(newRecord);
+        }
+        $scope.$apply();
+      });
+
+      it('update a small to a big dataset', function () {
+        // define new data
+        var newRecord = {
+          'day': '2013-01-06T00:00:00',
+          'sales': 53461.295202
+        };
+        // add new record
+        for (var i = 0; i < 100; i++) {
+          $scope.dataset.push(newRecord);
+        }
+        $scope.$apply();
+      });
+
+      it('big dataset changes when adding an element', function () {
+        // define new data
+        var newRecord = {
+          'day': '2013-01-06T00:00:00',
+          'sales': 53461.295202
+        };
+        // add new records
+        for (var j = 0; j < 100; j++) {
+          $scope.dataset.push(newRecord);
+        }
+        $scope.$apply();
+      });
+
+      it('upgrade a big to a small dataset', function () {
+        // define new data
+        var newRecord = {
+          'day': '2013-01-06T00:00:00',
+          'sales': 53461.295202
+        };
+        // add new records
+        for (var i = 0; i < 100; i++) {
+          $scope.dataset.push(newRecord);
+        }
+        $scope.$apply();
+
+        // remove records
+        for (var j = 0; j < 100; j++) {
+          $scope.dataset.pop();
+        }
         $scope.$apply();
       });
 
@@ -281,30 +335,57 @@ describe('angularChart:', function () {
 
       describe('. data', function () {
 
-        it('- Chart should be able to handle column based data.', function () {
-          // check configuration before
-          // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
+        describe('. orientation', function () {
 
-          // set option
-          var data = 'columns';
-          $scope.options.data = data;
-          $scope.$apply();
+          it('- Chart should be able to handle column based data.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
 
-          // check configuration change
-          // expect(elementScope.configuration.data.onclick).toBe(handler);
+            // set option
+            var data = {
+              orientation: 'columns'
+            };
+            $scope.options.data = data;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.data.onclick).toBe(handler);
+          });
+
+          it('- Chart should be able to handle row based data.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
+
+            // set option
+            var data = {
+              orientation: 'rows'
+            };
+            $scope.options.data = data;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.data.onclick).toBe(handler);
+          });
+
         });
 
-        it('- Chart should be able to handle row based data.', function () {
-          // check configuration before
-          // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
+        describe('. watchLimit', function () {
 
-          // set option
-          var data = 'rows';
-          $scope.options.data = data;
-          $scope.$apply();
+          it('- Chart should watch inside dataset when defined.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
 
-          // check configuration change
-          // expect(elementScope.configuration.data.onclick).toBe(handler);
+            // set option
+            var data = {
+              watchLimit: 200
+            };
+            $scope.options.data = data;
+            $scope.$apply();
+
+            // check configuration change
+            // expect(elementScope.configuration.data.onclick).toBe(handler);
+          });
+
         });
 
       });

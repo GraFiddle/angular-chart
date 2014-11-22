@@ -94,11 +94,17 @@ The format is used to specify how the timestamps are saved if they are different
 The following attributes define the chart itself and how to display the data.
 
 ---
-#### data : String
+#### data : Object
+
+---
+##### orientation : String
 Possible Values: `json(default), columns, rows`
 
-Defines in what format the data is saved. Please see [C3 Data Examples](http://c3js.org/examples.html#data) for examples.
+Defines in what orientation the data is saved. Please see [C3 Data Examples](http://c3js.org/examples.html#data) for examples.
 
+---
+##### watchLimit : Integer
+Define a custom limit to stop watching for changes inside the dataset and only watch for changes in the number of items. Default: 100
 
 ---
 #### rows : Object (required)
@@ -196,8 +202,8 @@ If `true` a subchart for zooming is displayed.
 #### zoom : Object
 Defines the zoom functionality of the chart.
 
---- 
-##### zoom.enable : boolean 
+---
+##### zoom.enable : boolean
 If `true` it is possible to zoom using the mouse wheel. Default: `false`
 
 ---
@@ -216,11 +222,11 @@ Defines the legend.
 
 ---
 ##### legend.selector : boolean
-If `true` a custom legend is displayed. Default: `false` 
+If `true` a custom legend is displayed. Default: `false`
 
 ---
 ##### legend.show : boolean
-If `flase` the default legend is hidden. Default: `true` 
+If `flase` the default legend is hidden. Default: `true`
 
 
 ---
@@ -236,11 +242,11 @@ Defines which Items can be selected and are currently selected.
 
 ---
 ##### selection.enabled : Boolean
-Allows selection of chart elements. Default: `false` 
+Allows selection of chart elements. Default: `false`
 
 ---
 ##### selection.multiple : Boolean
-Allows selection of multiple chart elements if selection is enabled at all. Default: `false` 
+Allows selection of multiple chart elements if selection is enabled at all. Default: `false`
 
 ---
 ##### selection.onselected : function
