@@ -23,6 +23,11 @@
   "bugs": {
     "url": "https://github.com/maxklenk/angular-chart/issues"
   },
+  "dependencies": {
+    "angular": "~1.3.0",
+    "c3": "~0",
+    "angular-circular-navigation": "~0.2.1"
+  },
   "devDependencies": {
     "load-grunt-tasks": "~1.0",
     "grunt": "~0.4",
