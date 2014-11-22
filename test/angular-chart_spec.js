@@ -1005,7 +1005,7 @@ describe('angularChart:', function () {
 
             // fire event
             var range = [0, 0];
-            elementScope.configuration.zoom.onzoom(range);
+            elementScope.configuration.zoom.onzoomend(range);
 
             // check configuration change
             expect($scope.options.zoom.range).toBe(range);
@@ -1062,7 +1062,7 @@ describe('angularChart:', function () {
             $scope.options.zoom = zoom;
             $scope.$apply();
 
-            elementScope.configuration.zoom.onzoom([0, 0]);
+            elementScope.configuration.zoom.onzoomend([0, 0]);
 
             // check configuration change
             expect(elementScope.configuration.zoom.enabled).toBe(zoom.enabled);

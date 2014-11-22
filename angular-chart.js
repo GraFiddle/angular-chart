@@ -323,7 +323,7 @@
             }
 
             // callback for onzoom
-            scope.configuration.zoom.onzoom = function (domain) {
+            scope.configuration.zoom.onzoomend = function (domain) {
               scope.updateOptions(function () {
                 scope.options.zoom.range = domain;
               });
