@@ -1,9 +1,14 @@
-'use strict';
+(function () {
 
-angular.module('angularChart', [])
-  .directive('angularchart',
+  'use strict';
 
-    function ($compile) {
+  /*global define, module, exports, require */
+
+  /* istanbul ignore next */
+  var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
+
+  var angularChart = angular.module('angularChart', [])
+    .directive('angularchart', ['$compile', function ($compile) {
 
       var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
       var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require('d3') : undefined;
@@ -103,9 +108,9 @@ angular.module('angularChart', [])
             if (!scope.dataset) {
               throw 'No data provided. The dataset has to be an array with the records.';
             } else {
-              if (scope.options.data === 'columns') {
+              if (scope.options.data && scope.options.data.orientation === 'columns') {
                 scope.configuration.data.columns = scope.dataset;
-              } else if (scope.options.data === 'rows') {
+              } else if (scope.options.data && scope.options.data.orientation === 'rows') {
                 scope.configuration.data.rows = scope.dataset;
               } else {
                 scope.configuration.data.json = scope.dataset;
@@ -114,7 +119,7 @@ angular.module('angularChart', [])
 
 
             // Chart type
-            // 
+            //
             if (!scope.options.type) {
               scope.options.type = 'line';
             }
@@ -318,7 +323,7 @@ angular.module('angularChart', [])
             }
 
             // callback for onzoom
-            scope.configuration.zoom.onzoom = function (domain) {
+            scope.configuration.zoom.onzoomend = function (domain) {
               scope.updateOptions(function () {
                 scope.options.zoom.range = domain;
               });
@@ -574,7 +579,7 @@ angular.module('angularChart', [])
           scope.selections = {
             avoidSelections: false,
 
-            // handle chart event onselection 
+            // handle chart event onselection
             addSelected: function (selection) {
               if (!this.avoidSelections) {
                 scope.$apply(
@@ -689,12 +694,54 @@ angular.module('angularChart', [])
             }, true); // checks for changes inside options
           };
 
-          // watcher of changes in options
+          scope.smallWatcher = undefined;
+          scope.bigWatcher = undefined;
+
+          // start watcher changes in small datasets, compares whole object
+          //
+          scope.startSmallDatasetWatcher = function () {
+            return scope.$watchCollection('dataset', function (newValue, oldValue) {
+              scope.updateChart();
+              scope.startDatasetWatcher();
+            });
+          };
+
+          // start watcher changes in big datasets, compares length of records
+          //
+          scope.startBigDatasetWatcher = function () {
+            return scope.$watch(function () {
+              return scope.dataset.length;
+            }, function (newValue, oldValue) {
+              scope.updateChart();
+              scope.startDatasetWatcher();
+            });
+          };
+
+          // choose watcher for changes in datasets
           //
           scope.startDatasetWatcher = function () {
-            // scope.$watch('dataset', function (newValue, oldValue) {
-            //   scope.updateChart();
-            // }, true); // checks for changes inside data
+            var limit = (scope.options.data && scope.options.data.watchLimit) ? scope.options.data.watchLimit : 100;
+            if (scope.dataset.length < limit) {
+              // start small watcher
+              if (!scope.smallWatcher) {
+                scope.smallWatcher = scope.startSmallDatasetWatcher();
+              }
+              // stop big watcher
+              if (scope.bigWatcher) {
+                scope.bigWatcher();
+                scope.bigWatcher = undefined;
+              }
+            } else {
+              // start big watcher
+              if (!scope.bigWatcher) {
+                scope.bigWatcher = scope.startBigDatasetWatcher();
+              }
+              // stop small watcher
+              if (scope.smallWatcher) {
+                scope.smallWatcher();
+                scope.smallWatcher = undefined;
+              }
+            }
           };
 
 
@@ -708,4 +755,13 @@ angular.module('angularChart', [])
 
         }
       };
-    });
+    }]);
+
+  /* istanbul ignore next */
+  if (typeof define === 'function' && define.amd) {
+    define('angularChart', ['c3', 'angular'], angularChart);
+  } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
+    module.exports = angularChart;
+  }
+
+})();
