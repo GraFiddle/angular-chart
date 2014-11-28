@@ -282,6 +282,9 @@ Pie-, Donut chart: _(Currently adding a selection in the Array will not add the 
 Triggered when you click on a data point.
 Sample: `function(d, element) { console.log('Point at', d.x, 'of the serie', d.name 'has been clicked; corresponding htmlElement:', element) };`
 
+##### resize : function
+Call this function to trigger the c3 resize() function (http://c3js.org/samples/api_resize.html)
+
 ---
 
 ## Development [![Stories in Ready](https://badge.waffle.io/maxklenk/angular-chart.png?label=ready&title=Ready)](https://waffle.io/maxklenk/angular-chart) [![Gitter chat](https://badges.gitter.im/maxklenk/angular-chart.png)](https://gitter.im/maxklenk/angular-chart)

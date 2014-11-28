@@ -574,7 +574,14 @@
 
           };
 
-          // Selections
+	        // expose resize function of c3 to outside
+	        //
+	        scope.options.resize = function () {
+		        scope.chart.resize();
+	        };
+
+
+	        // Selections
           //
           scope.selections = {
             avoidSelections: false,
