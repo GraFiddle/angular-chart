@@ -640,11 +640,6 @@
                 return isNew;
               });
 
-              if (addedSelections.length > 0) {
-                this.performSelections(addedSelections);
-                return true;
-              }
-
               // removedSelections
               var removedSelections = oldSelections.filter(function (elm) {
                 var isOld = true;
@@ -656,12 +651,20 @@
                 });
                 return isOld;
               });
-              if (removedSelections.length > 0) {
-                this.performUnselections(removedSelections);
-                return true;
-              }
 
-              return false;
+            //do actual removal /adding of selections and return if something happened.
+            var didSomething = false;
+            if (addedSelections.length > 0) {
+                this.performSelections(addedSelections);
+                didSomething = true;
+            }
+
+            if (removedSelections.length > 0) {
+                this.performUnselections(removedSelections);
+                didSomething = true;
+            }
+
+            return didSomething;
             }
           };
 
