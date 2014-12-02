@@ -1171,6 +1171,46 @@ describe('angularChart:', function () {
 
       });
 
+      describe('. size', function () {
+
+          it('- Chart should be sized.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.size).toBe({});
+
+            // set option
+            var size = {
+              width: 200,
+              heigth: 200
+            };
+            $scope.options.size = size;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.size).toBe(size);
+          });
+
+      });
+
+      describe('. resize', function () {
+
+          it('- Chart should be resized when called.', function () {
+            // setup spys
+            spyOn(elementScope.chart, 'resize');
+
+            // set option
+            var size = {
+              width: 300,
+              heigth: 100
+            };
+            $scope.options.resize(size);
+
+            // check configuration change
+            expect(elementScope.configuration.size).toBe(size);
+            expect(elementScope.chart.resize).toHaveBeenCalled();
+          });
+
+      });
+
       describe('. subchart', function () {
 
         it('Creating a line chart with subchart toggle', function () {

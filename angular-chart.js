@@ -314,6 +314,22 @@
               });
             }
 
+            // Size
+            // 
+            if (scope.options.size) {
+              scope.configuration.size = scope.options.size;
+            } else {
+              scope.configuration.size = {};
+            }
+
+            // expose resize function of c3 to outside
+            //
+            scope.options.resize = function (size) {
+              scope.options.size = size;
+              scope.configuration.size = size;
+              scope.chart.resize(size);
+            };
+
             // Zoom
             //
             if (scope.options.zoom) {
@@ -574,7 +590,7 @@
 
           };
 
-          // Selections
+	        // Selections
           //
           scope.selections = {
             avoidSelections: false,
