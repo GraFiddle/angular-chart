@@ -177,6 +177,23 @@ Defines yAxis display.
 Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
 
+---
+#### size : Object
+Defines a fixed size of the chart.
+
+---
+##### size.height : Int
+A fixed height of the chart.
+
+---
+##### size.width : Int
+A fixed width of the chart.
+
+
+---
+#### resize: function(size)
+Resize the chart, to a provided size or without parameters to fill the suronding element.
+
 
 ---
 #### groups : Array
