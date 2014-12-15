@@ -289,30 +289,46 @@
             if (scope.options.annotation) {
               scope.options.annotation.forEach(function (annotation) {
                 switch (annotation.axis) {
-                case 'x':
-                  scope.configuration.grid.x.lines.push({
-                    text: annotation.label,
-                    value: annotation.value
-                  });
-                  break;
+                  case 'x':
+                    scope.configuration.grid.x.lines.push({
+                      text: annotation.label,
+                      value: annotation.value
+                    });
+                    break;
 
-                case 'y':
-                  scope.configuration.grid.y.lines.push({
-                    text: annotation.label,
-                    value: annotation.value
-                  });
-                  break;
+                  case 'y':
+                    scope.configuration.grid.y.lines.push({
+                      text: annotation.label,
+                      value: annotation.value
+                    });
+                    break;
 
-                case 'y2':
-                  scope.configuration.grid.y.lines.push({
-                    text: annotation.label,
-                    value: annotation.value,
-                    axis: 'y2'
-                  });
-                  break;
+                  case 'y2':
+                    scope.configuration.grid.y.lines.push({
+                      text: annotation.label,
+                      value: annotation.value,
+                      axis: 'y2'
+                    });
+                    break;
                 }
               });
             }
+
+            // Size
+            //
+            if (scope.options.size) {
+              scope.configuration.size = scope.options.size;
+            } else {
+              scope.configuration.size = {};
+            }
+
+            // expose resize function of c3 to outside
+            //
+            scope.options.resize = function (size) {
+              scope.options.size = size;
+              scope.configuration.size = size;
+              scope.chart.resize(size);
+            };
 
             // Zoom
             //
@@ -640,11 +656,6 @@
                 return isNew;
               });
 
-              if (addedSelections.length > 0) {
-                this.performSelections(addedSelections);
-                return true;
-              }
-
               // removedSelections
               var removedSelections = oldSelections.filter(function (elm) {
                 var isOld = true;
@@ -656,12 +667,20 @@
                 });
                 return isOld;
               });
-              if (removedSelections.length > 0) {
-                this.performUnselections(removedSelections);
-                return true;
+
+              //do actual removal /adding of selections and return if something happened.
+              var didSomething = false;
+              if (addedSelections.length > 0) {
+                this.performSelections(addedSelections);
+                didSomething = true;
               }
 
-              return false;
+              if (removedSelections.length > 0) {
+                this.performUnselections(removedSelections);
+                didSomething = true;
+              }
+
+              return didSomething;
             }
           };
 
