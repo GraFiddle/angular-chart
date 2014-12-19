@@ -126,6 +126,13 @@
             scope.configuration.data.type = scope.options.type;
 
 
+            // Donut Options
+            //
+            if(scope.options.donut)
+            {
+              scope.configuration.donut = scope.options.donut;
+            }
+
             // Add lines
             //
             scope.configuration.axis.y.show = false;
