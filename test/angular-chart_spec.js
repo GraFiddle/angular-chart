@@ -1191,6 +1191,25 @@ describe('angularChart:', function () {
 
       });
 
+      describe('. donut', function () {
+
+          it('- Chart should be a donut with title set.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.donut).toBe({});
+
+            // set option
+            var donut = {
+              title: 'Yummy Donut'
+            };
+            $scope.options.donut = donut;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.donut).toBe(donut);
+          });
+
+      });
+
       describe('. resize', function () {
 
           it('- Chart should be resized when called.', function () {
