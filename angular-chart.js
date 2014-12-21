@@ -125,7 +125,6 @@
             }
             scope.configuration.data.type = scope.options.type;
 
-
             // Add lines
             //
             scope.configuration.axis.y.show = false;
@@ -360,6 +359,12 @@
               }
             };
 
+            // Donut Options
+            //
+            if(scope.options.donut)
+            {
+              scope.configuration.donut = scope.options.donut;
+            }
 
             // Draw chart
             //
