@@ -1,6 +1,5 @@
 body {
-	padding-top: 50px;
-	padding-bottom: 20px;
+	background: #D1D5D8;
 }
 .ace_editor {
 	height: 400px;
@@ -30,15 +29,37 @@ body {
 	margin-top: 10px;
 }
 
+/* Section */
+.section {
+	text-align: center;
+}
+h1 {
+	font-size: 4em;
+	font-family: arial, helvetica;
+}
+.section-home {
+	background: #D1D5D8
+}
+.section-feature {
+	background: #61BD6D
+}
+.section-usage {
+	background: #A38F84
+}
 
-
+/* Chart */
+angularchart {
+	stroke-width: 1.5px;
+}
+.c3-line {
+	stroke-width: 3px;
+}
 
 /* Edit rows*/
 .customLegend {
-	margin-left: 50px;
 }
 .customLegend-item {
-    width: 120px;
+    width: 150px;
     padding: 10px;
     display: inline-block;
     /*cursor: pointer;*/

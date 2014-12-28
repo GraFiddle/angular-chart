@@ -8,6 +8,13 @@
     <meta name="author" content="Max Klenk">
     <link rel="icon" href="demo/favicon.ico">
 
+
+  <link rel="stylesheet" type="text/css" href="demo/bower_components/fullpage.js/jquery.fullPage.css" />
+  <script type="text/javascript" src="demo/bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="demo/bower_components/fullpage.js/jquery.fullPage.js"></script>
+
+
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="demo/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="demo/bower_components/c3/c3.css" />
@@ -27,7 +34,85 @@
 </head>
 <body ng-controller="Controller">
 
-  <!-- Fixed navbar -->
+  <div id="fullpage">
+    <div class="section section-home">
+      <h1>angular-chart</h1>
+      <angularChart options="optionsObject.options" dataset="dataObject" schema="schemaObject"></angularChart>
+    </div>
+    <div class="section section-feature">
+    <div class="slide">
+      <h1>stateful</h1>
+      Slide 1
+    </div>
+    <div class="slide"> Slide 2 </div>
+    <div class="slide"> Slide 3 </div>
+    <div class="slide"> Slide 4 </div>
+    </div>
+    <div class="section section-usage">
+      <h1>usage</h1>
+    </div>
+    <div class="section">Some section</div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#fullpage').fullpage({
+        //Navigation
+        //menu: false,
+        //anchors:['firstSlide', 'secondSlide'],
+        //navigation: false,
+        //navigationPosition: 'right',
+        //navigationTooltips: ['firstSlide', 'secondSlide'],
+        //slidesNavigation: true,
+        //slidesNavPosition: 'bottom',
+
+        //Scrolling
+        //css3: true,
+        //scrollingSpeed: 700,
+        //autoScrolling: true,
+        //scrollBar: false,
+        //easing: 'easeInQuart',
+        //easingcss3: 'ease',
+        //loopBottom: false,
+        //loopTop: false,
+        //loopHorizontal: true,
+        //continuousVertical: false,
+        //normalScrollElements: '#element1, .element2',
+        //scrollOverflow: false,
+        //touchSensitivity: 15,
+        //normalScrollElementTouchThreshold: 5,
+
+        //Accessibility
+        //keyboardScrolling: true,
+        //animateAnchor: true,
+
+        //Design
+        //controlArrows: true,
+        //verticalCentered: true,
+        //resize : true,
+        //sectionsColor : ['#ccc', '#fff'],
+        //paddingTop: '3em',
+        //paddingBottom: '10px',
+        //fixedElements: '#header, .footer',
+        //responsive: 0,
+
+        ////Custom selectors
+        //sectionSelector: '.section',
+        //slideSelector: '.slide',
+
+        //events
+        //onLeave: function(index, nextIndex, direction){},
+        //afterLoad: function(anchorLink, index){},
+        //afterRender: function(){},
+        //afterResize: function(){},
+        //afterSlideLoad: function(anchorLink, index, slideAnchor, slideIndex){},
+        //onSlideLeave: function(anchorLink, index, slideIndex, direction){}
+    });
+});
+</script>
+
+
+  <!-- Fixed navbar 
   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
       <div class="navbar-header">
@@ -39,11 +124,11 @@
           <li><a href="https://github.com/maxklenk/angular-chart/#options">Reference</a></li>
           <li><a href="https://github.com/maxklenk/angular-chart">Source</a></li>
         </ul>
-      </div><!--/.nav-collapse -->
+      </div>
     </div>
-  </div>
+  </div> -->
 
-  <!-- Main jumbotron -->
+  <!-- Main jumbotron 
   <div class="jumbotron chart">
     <div class="container">
       <div class="alerts">
@@ -54,9 +139,9 @@
       
       <angularChart options="optionsObject.options" dataset="dataObject" schema="schemaObject"></angularChart>
     </div>
-  </div>
+  </div> -->
 
-  <!-- Content -->
+  <!-- Content 
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -104,7 +189,7 @@
       <p>&copy; Max Klenk 2014</p>
     </footer>
 
-  </div> <!-- /container -->
+  </div> -->
 
 </body>
 </html>

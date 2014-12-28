@@ -1,6 +1,32 @@
 'use strict';
 
 var optionsArray = [{
+  id: 0,
+  name: 'Showcase',
+  description: '',
+  options: {
+    rows: [{
+      key: 'temp',
+      color: '#F37934'
+    }, {
+      key: 'rain',
+      type: 'bar',
+      axis: 'y2',
+      color: '#2C82C9'
+    }, {
+      key: 'raindays',
+      show: false,
+      color: '#553982'
+    }],
+    xAxis: {
+      key: 'month'
+    },
+    legend: {
+      selector: true
+    }
+  }
+},
+{
   id: 1,
   name: 'Multichart',
   description: 'You can combine line, spline, bar, area and scatter charts in a single chart.',
