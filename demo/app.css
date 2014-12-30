@@ -29,6 +29,22 @@ body {
 	margin-top: 10px;
 }
 
+.example {
+	text-align: left;
+	color: black;
+}
+.example:hover {
+	text-decoration: none;
+	color: black;
+}
+.example:hover .panel{
+	background-color: #f5f5f5;
+}
+.example h3 {
+	margin-top: 0;
+}
+
+
 /* Section */
 .section {
 	text-align: center;
@@ -37,14 +53,56 @@ h1 {
 	font-size: 4em;
 	font-family: arial, helvetica;
 }
+h3 {
+	font-size: 1.5em;
+	color: rgb(93, 93, 93);
+}
+a.next-section {
+	font-size: 1.5em;
+}
 .section-home {
-	background: #D1D5D8
+	background: #D1D5D8;
 }
 .section-feature {
-	background: #61BD6D
+	background: #2ECC71;
 }
 .section-usage {
-	background: #A38F84
+	background: #F5AB35;
+}
+.section-examples {
+	background: #19B5FE; 
+}
+.section-examples .row {
+	margin-right: 15px;
+	margin-left: 15px;
+}
+
+/* Slide */
+.slide .row {
+	padding-left: 50px;
+	padding-right: 50px;
+}
+
+/* highlight */
+.highlight {
+	max-width: 500px;
+	max-height: 121px;
+	padding: 0 10px;
+	margin: auto;
+	text-align: left;
+	overflow-x: hidden;
+}
+.pl-ent {
+color: #63a35c;
+}
+.pl-e, .pl-en {
+color: #795da3;
+}
+.pl-pds, .pl-s1, .pl-s1 .pl-pse .pl-s2, .pl-sr, .pl-sr .pl-cce, .pl-sr .pl-sra, .pl-sr .pl-sre, .pl-src, .pl-v {
+color: #df5000;
+}
+.pl-c1, .pl-mdh, .pl-mm, .pl-mp, .pl-mr, .pl-s1 .pl-v, .pl-s3, .pl-sc, .pl-sv {
+color: #0086b3;
 }
 
 /* Chart */
@@ -53,6 +111,9 @@ angularchart {
 }
 .c3-line {
 	stroke-width: 3px;
+}
+.chooseChartType{
+	padding-right: 20px;
 }
 
 /* Edit rows*/
@@ -74,4 +135,11 @@ circular, .circular {
 	position: relative;
 	top: -10px;
 	left: 8px;
+}
+
+/* Github */
+#github {
+	position: absolute;
+	top: 5px;
+	right: 5px;
 }

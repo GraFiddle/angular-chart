@@ -2,13 +2,13 @@
 
 angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation', 'ui.ace'])
 
-.controller('Controller', function ($scope, $filter, $timeout) {
+.controller('ExamplesController', function($scope, $filter, $timeout) {
 
   // define code highlighting
   $scope.optionsAceConfig = {
     mode: 'json',
     useWrapMode: false,
-    onLoad: function (_editor) {
+    onLoad: function(_editor) {
       _editor.setShowPrintMargin(false);
     }
   };
@@ -22,7 +22,7 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
   $scope.dataObject = {};
   $scope.dataName = '';
 
-  $scope.loadOptions = function (options) {
+  $scope.loadOptions = function(options) {
     if (options.data) {
       for (var i = 0; i < $scope.dataArray.length; i++) {
         if ($scope.dataArray[i].name === options.data) {
@@ -36,12 +36,12 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
 
     // hide info after timeout again
     $timeout.cancel($scope.timeout);
-    $scope.timeout = $timeout(function () {
+    $scope.timeout = $timeout(function() {
       $scope.showInfo = false;
     }, 4000);
   };
 
-  $scope.loadData = function (data) {
+  $scope.loadData = function(data) {
     $scope.dataName = data.name;
     $scope.dataObject = data.data;
     $scope.schemaObject = data.schema;
@@ -49,12 +49,12 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
 
 
   // keep string representation in sync with object
-  var syncObjectWithString = function (object, string) {
-    $scope.$watch(object, function (json) {
+  var syncObjectWithString = function(object, string) {
+    $scope.$watch(object, function(json) {
       $scope[string] = $filter('json')(json);
     }, true);
 
-    $scope.$watch(string, function (json) {
+    $scope.$watch(string, function(json) {
       try {
         $scope[object] = JSON.parse(json);
         $scope.wellFormed = true;
@@ -66,11 +66,11 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
 
   syncObjectWithString('dataObject', 'dataString');
 
-  $scope.$watch('optionsObject.options', function (json) {
+  $scope.$watch('optionsObject.options', function(json) {
     $scope.optionsObject.string = $filter('json')(json);
   }, true);
 
-  $scope.$watch('optionsObject.string', function (json) {
+  $scope.$watch('optionsObject.string', function(json) {
     try {
       $scope.optionsObject.options = JSON.parse(json);
       $scope.wellFormed = true;
