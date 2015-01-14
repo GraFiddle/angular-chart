@@ -445,10 +445,10 @@
             var el = angular.element('<span class="toggleSubchart" style="float:right;"/>');
             if (scope.options.subchart.show) {
               // hide subchart
-              el.append('<a  ng-click="toggleSubchart()"><i class="fa-eye-slash"></i> hide subchart</a>');
+              el.append('<a  ng-click="toggleSubchart()"><i class="fa fa-eye-slash"></i> hide subchart</a>');
             } else {
               // show subchart
-              el.append('<a  ng-click="toggleSubchart()"><i class="fa-eye"></i> show subchart</a>');
+              el.append('<a  ng-click="toggleSubchart()"><i class="fa fa-eye"></i> show subchart</a>');
             }
             $compile(el)(scope);
             element.append(el);
