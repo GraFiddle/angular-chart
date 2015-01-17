@@ -130,7 +130,6 @@
               }
             }
           };
-          var marginBottom = 0;
 
           // add unique identifier for each chart
           //
@@ -138,7 +137,6 @@
             scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
             angular.element(element).attr('id', scope.options.dataAttributeChartID);
             scope.configuration.bindto = '#' + scope.options.dataAttributeChartID;
-            angular.element(element).attr('style', 'display: block;');
           };
 
           // update the options by applying the changes to the scope,
@@ -435,12 +433,13 @@
 
             // In-place editing
             //
-            marginBottom = 30;
             scope.chooseXAxis();
             scope.customLegend();
             scope.chooseChartType();
             scope.toggleSubchartLink();
-            angular.element(element).attr('style', angular.element(element).attr('style') + ' margin-bottom: ' + marginBottom + 'px');
+
+            // Remove the max-height set by c3.js
+            angular.element(element).removeAttr('style');
 
             // Apply earlier zoom
             //
@@ -457,11 +456,9 @@
               return;
             }
             var el = angular.element('<span class="chooseXAxis"/>');
-            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.key" style="margin: auto" class="form-control"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.key">{{col.name ? col.name : col.id}}</option></select>');
+            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.key" class="form-control"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.key">{{col.name ? col.name : col.id}}</option></select>');
             $compile(el)(scope);
             element.append(el);
-
-            marginBottom += 30;
           };
 
           // Choose chart-type
@@ -469,7 +466,6 @@
           scope.chooseChartType = function () {
             if (scope.options.typeSelector) {
               var el = angular.element('<div class="chooseChartType btn-group">');
-              el.attr('style', 'float: right');
               el.append('<button ng-click="changeChartType(\'scatter\')" ng-class="{\'active\': options.type === \'scatter\'}" class="btn btn-default">Scatter</button>');
               el.append('<button ng-click="changeChartType(\'bar\')" ng-class="{\'active\': options.type === \'bar\'}" class="btn btn-default">Bar</button>');
               el.append('<button ng-click="changeChartType(\'line\')" ng-class="{\'active\': options.type === \'line\'}" class="btn btn-default">Line</button>');
@@ -501,7 +497,7 @@
             if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.subchart || !scope.options.subchart.selector) {
               return;
             }
-            var el = angular.element('<span class="toggleSubchart" style="float:right;"/>');
+            var el = angular.element('<span class="toggleSubchart"/>');
             if (scope.options.subchart.show) {
               // hide subchart
               el.append('<a title="hide navigation subchart" ng-click="toggleSubchart()"><i class="flaticon-hide"></i> hide navigator</a>');
@@ -520,7 +516,6 @@
             if (!scope.options.legend || !scope.options.legend.selector) {
               return;
             }
-            marginBottom += 30;
 
             var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" ng-if="row.key !== options.xAxis.key" class="customLegend-item" ><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{(schema[row.key] && schema[row.key].name) ? schema[row.key].name : (row.name ? row.name : row.key)}}</span></span></div>');
             $compile(legend)(scope);
