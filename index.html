@@ -8,6 +8,8 @@
     <meta name="author" content="Max Klenk">
     <link rel="icon" href="demo/favicon.ico">
 
+    <title>angular-chart - stateful visualizations for collaborative Visual Analytics</title>
+
     <!-- home page only -->
     <link rel="stylesheet" type="text/css" href="demo/bower_components/fullpage.js/jquery.fullPage.css" />
     <script type="text/javascript" src="demo/bower_components/jquery/dist/jquery.min.js"></script>
@@ -31,7 +33,7 @@
 <body ng-controller="HomeController">
 
   <div id="fullpage">
-    
+
     <!-- home -->
     <div class="section section-home">
       <h1>angular-chart</h1>
@@ -42,7 +44,8 @@
 
     <!-- features -->
     <div class="section section-feature">
-      <div class="slide">
+
+      <div class="slide slide-stateful">
         <h1>stateful</h1>
         <h3>All interactions with the chart are saved to options to create a sharable state of the chart</h3>
         <div class="row">
@@ -51,12 +54,12 @@
           </div>
           <div class="col-md-6">
             <h2>Zoomed</h2>
-            
+
             <form class="form-horizontal">
               <div class="form-group">
                 <label for="inputFrom" class="col-xs-2 col-sm-offset-2 col-md-offset-1 control-label">From</label>
                 <div class="col-xs-5 col-sm-3">
-                  <input ng-model="optionsStateful.zoom.range[0]" type="number" class="form-control" id="inputFrom" placeholder="From"> 
+                  <input ng-model="optionsStateful.zoom.range[0]" type="number" class="form-control" id="inputFrom" placeholder="From">
                 </div>
                 <div class="col-xs-5 col-sm-3">
                 (<span class="hidden-xs">first visible month:</span> {{ dataObject[ (optionsStateful.zoom.range[0] | number:0) ].month }} )
@@ -65,7 +68,7 @@
               <div class="form-group">
                 <label for="inputTo" class="col-xs-2 col-sm-offset-2 col-md-offset-1 control-label">To</label>
                 <div class="col-xs-5 col-sm-3">
-                  <input ng-model="optionsStateful.zoom.range[1]" type="number" class="form-control" id="inputTo" placeholder="Password">
+                  <input ng-model="optionsStateful.zoom.range[1]" type="number" class="form-control" id="inputTo" placeholder="To">
                 </div>
                 <div class="col-xs-5 col-sm-3">
                 (<span class="hidden-xs">last visible month:</span> {{ dataObject[ (optionsStateful.zoom.range[1] | number:0) - 1 ].month }} )
@@ -77,10 +80,108 @@
         </div>
 
         <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
-      
+
       </div>
 
-      <div class="slide"> Slide 2 </div>
+      <div class="slide slide-inplace">
+        <h1>in-place editor</h1>
+        <h3>Similar to a WYSIWYG editor angular-chart offers ways to choose the optional visualization</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <angularChart options="optionsInplace" dataset="dataObject" schema="schemaObject"></angularChart>
+          </div>
+          <div class="col-md-6">
+            <h2>Row types</h2>
+
+            <form class="form-horizontal">
+
+              <div class="form-group" ng-repeat="key in optionsInplace.rows">
+                <label for="input{{key}}" class="col-xs-2 col-xs-offset-2 control-label">{{key.key}}</label>
+                <div class="col-xs-6">
+                  <select id="input{{key}}" ng-options="type for type in types" ng-model="key.type" class="form-control"></select>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+        <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+     </div>
+
+      <div class="slide slide-schema">
+        <h1>schema</h1>
+        <h3>the schema allows to specify date formats and if post- or prefixes should be added</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <angularChart options="optionsSchema" dataset="dataObject" schema="schemaSchema"></angularChart>
+          </div>
+          <div class="col-md-6">
+
+            <form class="form-horizontal">
+
+              <div ng-repeat="row in schemaSchema">
+                <h2 class="col-xs-12">{{row.key}}</h2>
+                <div class="form-group col-xs-6">
+                  <label for="input{{key}}" class="col-xs-4 control-label">prefix</label>
+                  <div class="col-xs-8">
+                    <input ng-model="row.prefix" type="text" class="form-control" id="inputTo" placeholder="prefix">
+                  </div>
+                </div>
+
+                <div class="form-group col-xs-6">
+                  <label for="input{{key}}" class="col-xs-4 control-label">postfix</label>
+                  <div class="col-xs-8">
+                    <input ng-model="row.postfix" type="text" class="form-control" id="inputTo" placeholder="postfix">
+                  </div>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+        <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+     </div>
+
+      <div class="slide slide-realtime">
+        <h1>real-time updates</h1>
+        <h3>angular-chart adds 2-Way-Databinding to c3 to keep data/options and the visualization in sync</h3>
+        <div class="row">
+        </div>
+
+        <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+     </div>
+
+      <div class="slide slide-more">
+        <div class="row">
+          <div class="col-xs-12 col-md-6">
+            <h1>HTML5 / SVG</h1>
+            <h3>the visualization is based on SVG to support most kinds of browsers an screen sizes</h3>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <h1>customizable</h1>
+            <!--<h3>style charts using CSS3</h3>-->
+            <angularChart options="optionsCustomizable" dataset="dataObject" schema="schemaObject" class="customizable"></angularChart>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <h1>shareable</h1>
+            <h3>the options object always represents the current state of the chart, it can be passed to other clients to share the same view</h3>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <h1>data formats</h1>
+            <h3>angular-chart supports row/column based data as well as json data, just update the <code>data.orientation</code> key in the options</h3>
+          </div>
+        </div>
+
+        <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+     </div>
 
     </div>
 
@@ -142,13 +243,13 @@
       <a class="next-section btn btn-info" href="#examples">You need more examples?</a>
     </div>
 
-    <!-- examples -->
+    <!-- examples
     <div class="section section-examples">
       <h1>examples</h1>
 
       <div ng-repeat="category in exampleCategories">
         <h3>{{category.title}}</h3>
-        <div class="row">  
+        <div class="row">
           <div ng-repeat="example in category.examples" class="col-xs-6 col-sm-4 col-md-3">
             <a class="example" href="#">
               <div class="panel panel-default">
@@ -161,7 +262,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
 
   </div>
 

@@ -4,6 +4,16 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
 
 .controller('HomeController', function($scope, $filter, $timeout) {
 
+  $scope.types = [
+    'line',
+    'spline',
+    'area',
+    'area-spline',
+    'step',
+    'bar',
+    'scatter'
+  ];
+
   $scope.optionsShowcase = {
     rows: [{
       key: 'temp',
@@ -45,6 +55,71 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
     },
     subchart: {
       show: true
+    }
+  };
+
+  $scope.optionsInplace = {
+    size: {
+      height: 200
+    },
+    rows: [{
+      key: 'temp',
+      color: '#F37934'
+    }, {
+      key: 'rain',
+      type: 'bar',
+      axis: 'y2',
+      color: '#2C82C9'
+    }],
+    xAxis: {
+      key: 'month'
+    },
+    legend: {
+      selector: true
+    }
+  };
+
+  $scope.optionsSchema = {
+    size: {
+      height: 200
+    },
+    rows: [{
+      key: 'temp',
+      color: '#F37934'
+    }, {
+      key: 'rain',
+      type: 'bar',
+      axis: 'y2',
+      color: '#2C82C9'
+    }],
+    xAxis: {
+      key: 'month'
+    },
+    legend: {
+      selector: true
+    }
+  };
+  
+  $scope.schemaSchema = window.dataArray[1].schema;
+
+  $scope.optionsCustomizable = {
+    size: {
+      height: 150
+    },
+    rows: [{
+      key: 'temp',
+      color: '#96281B'
+    }, {
+      key: 'rain',
+      type: 'area',
+      axis: 'y2',
+      color: '#913D88'
+    }],
+    xAxis: {
+      key: 'month'
+    },
+    legend: {
+      show: false
     }
   };
 

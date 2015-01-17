@@ -116,6 +116,19 @@ angularchart {
 	padding-right: 20px;
 }
 
+.customizable.c3 path, .customizable.c3 line {
+	fill: none;
+	stroke: rgb(249, 0, 255);
+}
+
+.customizable {
+	stroke-width: 1px;
+	fill: rgb(249, 0, 255);
+}
+.customizable .c3-line {
+	stroke-width: 2px;
+}
+
 /* Edit rows*/
 .customLegend {
 }
