@@ -832,8 +832,9 @@
           // Registers a $destroy listeners for cleanup purposes
           //
           scope.registerDestroyListener = function() {
-            element.on('$destroy', function() {
-              scope.chart.destroy();
+            scope.$on('$destroy', function() {
+                scope.chart.destroy();
+                element.remove();
             });
           };
 

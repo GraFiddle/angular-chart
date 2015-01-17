@@ -83,7 +83,7 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       },
       gruntfile: 'Gruntfile.js',
-      angularChart: 'angular-chart.js',
+      src: 'src/*.js',
       test: 'test/*.js',
       demo: 'demo/*.js'
     }
