@@ -134,9 +134,9 @@
           // add unique identifier for each chart
           //
           scope.addIdentifier = function () {
-            scope.options.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
-            angular.element(element).attr('id', scope.options.dataAttributeChartID);
-            scope.configuration.bindto = '#' + scope.options.dataAttributeChartID;
+            scope.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
+            angular.element(element).attr('id', scope.dataAttributeChartID);
+            scope.configuration.bindto = '#' + scope.dataAttributeChartID;
           };
 
           // update the options by applying the changes to the scope,
