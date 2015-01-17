@@ -10,6 +10,8 @@ module.exports = function (grunt) {
   grunt.registerTask('watch', ['karma:watch']);
   grunt.registerTask('coverage', ['karma:coverage', 'coveralls']);
 
+  grunt.registerTask('build', ['compass', 'cssmin', 'concat', 'uglify']);
+
 
   // perform test in Firefox on travis ci
   var testConfig = function(configFile, customOptions) {
@@ -19,6 +21,40 @@ module.exports = function (grunt) {
   };
 
   grunt.initConfig({
+
+    compass: {
+      dist: {
+        options: {
+          sassDir: 'scss',
+          specify: 'scss/angular-chart.scss', // only compile this
+          cssDir: '.',
+        }
+      }
+    },
+
+    cssmin: {
+      target: {
+        files: {
+          'angular-chart.min.css': ['angular-chart.css']
+        }
+      }
+    },
+
+    concat: {
+      dist: {
+        src: ['src/legend.js', 'src/chart.js'],
+        dest: 'angular-chart.js',
+      },
+    },
+
+
+    uglify: {
+      dist: {
+        files: {
+          'angular-chart.min.js': ['src/legend.js', 'src/chart.js']
+        }
+      }
+    },
 
     karma: {
       unit: {

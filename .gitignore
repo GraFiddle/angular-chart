@@ -10,3 +10,6 @@ coverage
 # IntelliJ project settings
 .idea
 *.iml
+
+# scss
+.sass-cache
