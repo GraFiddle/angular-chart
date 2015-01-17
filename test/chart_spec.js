@@ -313,6 +313,12 @@ describe('angularChart:', function () {
 
     });
 
+    describe('destroy', function () {
+      it(' the directive.', function () {
+        elementScope.$destroy();
+        $scope.$apply();
+      });
+    });
 
     describe('options', function () {
 

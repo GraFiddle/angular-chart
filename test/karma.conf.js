@@ -11,10 +11,10 @@ module.exports = function (config) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/d3/d3.js',
       'bower_components/c3/c3.js',
-      'bower_components/angular-circular-navigation/angular-circular-navigation.js',
 
-      // the directive
-      'angular-chart.js',
+      // the directives
+      'src/chart.js',
+      'src/legend.js',
 
       // data
       'demo/options.js',
@@ -31,7 +31,8 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
 
     preprocessors: {
-      'angular-chart.js': 'coverage'
+      'src/chart.js': 'coverage',
+      'src/legend.js': 'coverage'
     },
 
     plugins: [
