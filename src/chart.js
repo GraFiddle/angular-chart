@@ -364,6 +364,10 @@
               scope.configuration.donut = scope.options.donut;
             }
 
+            // Remove onresize listeners of the old chart
+            //
+            window.onresize = null;
+
             // Draw chart
             //
             scope.chart = c3.generate(scope.configuration);
@@ -771,6 +775,13 @@
             }
           };
 
+          // Registers a $destroy listeners for cleanup purposes
+          //
+          scope.registerDestroyListener = function() {
+            element.on('$destroy', function() {
+              scope.chart.destroy();
+            });
+          };
 
           // startup
           scope.addIdentifier();
@@ -779,7 +790,7 @@
           scope.selections.performSelections(scope.options.selection.selected);
           scope.startOptionsWatcher();
           scope.startDatasetWatcher();
-
+          scope.registerDestroyListener();
         }
       };
     }]);
