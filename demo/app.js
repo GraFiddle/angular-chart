@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation', 'ui.ace'])
+angular.module('angular-chart-demo', ['angularChart', 'ui.ace'])
 
 .controller('ExamplesController', function($scope, $filter, $timeout) {
 

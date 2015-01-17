@@ -1,0 +1,20 @@
+
+@import "icons.scss";
+@import "legend.scss";
+
+angularchart, .angularchart {
+  display: block;
+}
+
+.chooseXAxis select {
+  margin: auto;
+  display: block;
+}
+
+.chooseChartType {
+  float: right;
+}
+
+.toggleSubchart {
+  float: right;
+}

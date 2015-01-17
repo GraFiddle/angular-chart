@@ -1,0 +1,51 @@
+
+/*
+  ICONS
+ */
+@font-face {
+  font-family: "Flaticon";
+  src: url("fonts/flaticon.eot");
+  src: url("fonts/flaticon.eot#iefix") format("embedded-opentype"),
+  url("fonts/flaticon.woff") format("woff"),
+  url("fonts/flaticon.ttf") format("truetype"),
+  url("fonts/flaticon.svg") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+  font-family: Flaticon;
+  font-size: 14px;
+  font-style: normal;
+}
+.flaticon-bar:before {
+  content: "\e000";
+}
+.flaticon-scatter:before {
+  content: "\e001";
+}
+.flaticon-area:before {
+  content: "\e002";
+}
+.flaticon-box:before {
+  content: "\e003";
+}
+.flaticon-line:before {
+  content: "\e004";
+}
+.flaticon-hide:before {
+  content: "\e005";
+}
+.flaticon-pie:before {
+  content: "\e006";
+}
+.flaticon-left:before {
+  content: "\e007";
+}
+.flaticon-right:before {
+  content: "\e008";
+}
+.flaticon-show:before {
+  content: "\e009";
+}
