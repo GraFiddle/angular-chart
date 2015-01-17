@@ -6,20 +6,18 @@ angular-chart is a [AngularJS](https://github.com/angular/angular.js) directive,
 
 You can get it from [Bower](http://bower.io/):
 ```sh
-bower install angular-chart
+bower install angular-chart --save
 ```
 
 Add everything to your index.html:
 ```html
 <link rel="stylesheet" href="bower_components/c3/c3.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="bower_components/angular-circular-navigation/angular-circular-navigation.css">
+<link rel="stylesheet" href="bower_components/angular-chart/angular-chart.css">
 
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/d3/d3.js"></script>
 <script src="bower_components/c3/c3.js"></script>
 <script src="bower_components/angular-chart/angular-chart.js"></script>
-<script src="bower_components/angular-circular-navigation/angular-circular-navigation.js"></script>
 ```
 
 And specify the directive in your module dependencies:

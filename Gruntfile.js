@@ -2,16 +2,21 @@
 
 module.exports = function (grunt) {
 
-   // load all grunt tasks
-  require('load-grunt-tasks')(grunt);
-
   // default task
-  grunt.registerTask('default', ['jshint', 'karma:unit']);
+  grunt.registerTask('default', ['jshint', 'karma:unit', 'build']);
+
+  // automatically execute the unit tests when a file changes
   grunt.registerTask('watch', ['karma:watch']);
+
+  // generate coverage report and send it to coveralls
   grunt.registerTask('coverage', ['karma:coverage', 'coveralls']);
 
+  // generate combined and minified distribution files
   grunt.registerTask('build', ['compass', 'cssmin', 'concat', 'uglify']);
 
+
+  // load all grunt tasks
+  require('load-grunt-tasks')(grunt);
 
   // perform test in Firefox on travis ci
   var testConfig = function(configFile, customOptions) {
@@ -22,6 +27,8 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
 
+    // Compiles the SCSS files to CSS
+    //
     compass: {
       dist: {
         options: {
@@ -32,6 +39,8 @@ module.exports = function (grunt) {
       }
     },
 
+    // Minifies the CSS code
+    //
     cssmin: {
       target: {
         files: {
@@ -40,6 +49,8 @@ module.exports = function (grunt) {
       }
     },
 
+    // Combines the JavaScript files
+    //
     concat: {
       dist: {
         src: ['src/legend.js', 'src/chart.js'],
@@ -47,7 +58,8 @@ module.exports = function (grunt) {
       },
     },
 
-
+    // Minifies the JavaScript code
+    //
     uglify: {
       dist: {
         files: {
@@ -56,6 +68,8 @@ module.exports = function (grunt) {
       }
     },
 
+    // Runs unit tests
+    //
     karma: {
       unit: {
         options: testConfig('test/karma.conf.js')
@@ -71,6 +85,8 @@ module.exports = function (grunt) {
       }
     },
 
+    // Sends coverage report to Coveralls
+    //
     coveralls: {
       options: {
         debug: true,
@@ -78,6 +94,8 @@ module.exports = function (grunt) {
       }
     },
 
+    // Lints the code
+    //
     jshint: {
       options: {
         jshintrc: '.jshintrc'
