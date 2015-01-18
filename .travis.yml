@@ -11,8 +11,9 @@ before_script:
   - 'npm install -g codeclimate-test-reporter'
   - 'bower install'
 
-script: 
-  - 'grunt --verbose'
+script:
+  - 'grunt jshint --verbose'
+  - 'grunt karma:unit --verbose'
 
 after_success:
   - 'grunt coverage'
