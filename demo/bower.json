@@ -5,7 +5,8 @@
     "angular": "~1.3.x",
     "angular-chart": "~0.2.x",
     "angular-ui-ace": "bower",
-    "bootstrap": "~3.x.x"
+    "bootstrap": "~3.x.x",
+    "fullpage.js": "~2.5.2"
   },
   "devDependencies": {}
 }
