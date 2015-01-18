@@ -11,8 +11,8 @@ describe('angularChart:', function () {
   window.angular = undefined;
   var d3 = window.d3;
   var c3 = window.c3;
-  var dataArray = window.dataArray;
-  var optionsArray = window.optionsArray;
+  var dataArray = window.testData;
+  var optionsArray = window.testOptions;
 
 
   beforeEach(module('angularChart'));

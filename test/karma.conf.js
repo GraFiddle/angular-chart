@@ -17,8 +17,7 @@ module.exports = function (config) {
       'src/legend.js',
 
       // data
-      'demo/options.js',
-      'demo/data.js',
+      'test/test-data.js',
 
       // test
       'test/*_spec.js'
