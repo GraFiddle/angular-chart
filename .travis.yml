@@ -8,10 +8,19 @@ before_install:
 
 before_script:
   - 'npm install -g bower grunt-cli'
+  - 'npm install -g codeclimate-test-reporter'
   - 'bower install'
 
-script: 
-  - 'grunt --verbose'
+script:
+  - 'grunt jshint --verbose'
+  - 'grunt karma:unit --verbose'
 
 after_success:
   - 'grunt coverage'
+
+after_script:
+  - codeclimate < coverage/**/lcov.info
+
+addons:
+  code_climate:
+    repo_token: d5c5ec4be4b0d4059959998993a111a21b927c9122d87ca0a570d6620019aa27

@@ -11,8 +11,8 @@ describe('angularChart:', function () {
   window.angular = undefined;
   var d3 = window.d3;
   var c3 = window.c3;
-  var dataArray = window.dataArray;
-  var optionsArray = window.optionsArray;
+  var dataArray = window.testData;
+  var optionsArray = window.testOptions;
 
 
   beforeEach(module('angularChart'));
@@ -313,6 +313,12 @@ describe('angularChart:', function () {
 
     });
 
+    describe('destroy', function () {
+      it(' the directive.', function () {
+        elementScope.$destroy();
+        $scope.$apply();
+      });
+    });
 
     describe('options', function () {
 
@@ -1187,6 +1193,25 @@ describe('angularChart:', function () {
 
             // check configuration change
             expect(elementScope.configuration.size).toBe(size);
+          });
+
+      });
+
+      describe('. donut', function () {
+
+          it('- Chart should be a donut with title set.', function () {
+            // check configuration before
+            // expect(elementScope.configuration.donut).toBe({});
+
+            // set option
+            var donut = {
+              title: 'Yummy Donut'
+            };
+            $scope.options.donut = donut;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.donut).toBe(donut);
           });
 
       });

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="angular-chart-demo">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AngularJS directive for adjustable dynamically updating c3 charts.">
+  <meta name="author" content="Max Klenk">
+  <link rel="icon" href="demo/favicon.ico">
+
+  <link rel="stylesheet" type="text/css" href="demo/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="demo/bower_components/c3/c3.css" />
+  <link rel="stylesheet" type="text/css" href="angular-chart.min.css">
+  <link rel="stylesheet" type="text/css" href="demo/demo.css"/>
+
+  <script type="text/javascript" src="demo/bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="demo/bower_components/d3/d3.min.js"></script>
+  <script type="text/javascript" src="demo/bower_components/c3/c3.min.js"></script>
+  <script type="text/javascript" src="angular-chart.min.js"></script>
+  <script type="text/javascript" src="demo/bower_components/ace-builds/src-min-noconflict/ace.js"></script>
+  <script type="text/javascript" src="demo/bower_components/angular-ui-ace/ui-ace.min.js"></script>
+  <script type="text/javascript" src="demo/data.js"></script>
+  <script type="text/javascript" src="demo/options.js"></script>
+  <script type="text/javascript" src="demo/examples.js"></script>
+
+</head>
+<body ng-controller="ExamplesController">
+
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="index.html">angular-chart</a>
+      </div>
+      <div class="hidden-xs">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="https://github.com/maxklenk/angular-chart/#usage">Getting Started</a>
+          </li>
+          <li>
+            <a href="https://github.com/maxklenk/angular-chart/#options">Reference</a>
+          </li>
+          <li>
+            <a href="https://github.com/maxklenk/angular-chart">Source</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="container" style="margin-top: 70px;">
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label for="inputEmail3" class="col-sm-4 control-label">Example Category</label>
+        <div class="col-sm-6">
+          <select ng-model="selectedCategory" ng-options="category.title for (key, category) in exampleCategories" class="form-control"></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-4 control-label">Select an Example</label>
+        <div class="col-sm-6">
+          <select ng-model="selectedExample"  ng-options="example.title for (key, example) in selectedCategory.examples" class="form-control"></select>
+        </div>
+      </div>
+    </form>
+
+    <div class="alerts">
+      <div ng-show="showInfo" class="alert alert-info" role="alert"> <strong>{{optionsObject.name}}</strong>
+        {{optionsObject.description}}
+      </div>
+    </div>
+
+    <angularChart options="optionsObject.options" dataset="dataObject" schema="schemaObject"></angularChart>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Options</h2>
+        <hr>
+        <div ng-model="optionsObject.string" ui-ace="optionsAceConfig"></div>
+      </div>
+      <div class="col-md-6">
+        <h2>Data</h2>
+        <hr>
+        <div ng-model="dataString" ui-ace="optionsAceConfig"></div>
+      </div>
+    </div>
+
+    <hr>
+
+    <footer>
+      <p>
+        &copy;
+        <a href="https://github.com/maxklenk">Max Klenk</a>
+        2015
+      </p>
+    </footer>
+
+  </div>
+
+</body>
+</html>

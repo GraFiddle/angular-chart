@@ -6,20 +6,18 @@ angular-chart is a [AngularJS](https://github.com/angular/angular.js) directive,
 
 You can get it from [Bower](http://bower.io/):
 ```sh
-bower install angular-chart
+bower install angular-chart --save
 ```
 
 Add everything to your index.html:
 ```html
 <link rel="stylesheet" href="bower_components/c3/c3.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="bower_components/angular-circular-navigation/angular-circular-navigation.css">
+<link rel="stylesheet" href="bower_components/angular-chart/angular-chart.css">
 
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/d3/d3.js"></script>
 <script src="bower_components/c3/c3.js"></script>
 <script src="bower_components/angular-chart/angular-chart.js"></script>
-<script src="bower_components/angular-circular-navigation/angular-circular-navigation.js"></script>
 ```
 
 And specify the directive in your module dependencies:
@@ -155,16 +153,16 @@ When `true` a selector to switch between multi and pie charts is displayed. Defa
 Defines which column to use and how to display it:
 
 ---
-##### xAxis.key : String
+##### xAxis.key : String ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=xAxis&example=datetime))
 The column key which identifies which value should be shown on the xAxis.
 
 ---
-##### xAxis.displayFormat : String | Function
+##### xAxis.displayFormat : String | Function  ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=xAxis&example=datetime))
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
 ---
-##### xAxis.selector : boolean
+##### xAxis.selector : boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=xAxis&example=selector))
 Shows the dropdown to choose which xAxis you want to use. Default: `false`
 
 
@@ -182,11 +180,11 @@ Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 Defines a fixed size of the chart.
 
 ---
-##### size.height : Int
+##### size.height : Int ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=size&example=height))
 A fixed height of the chart.
 
 ---
-##### size.width : Int
+##### size.width : Int ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=size&example=width))
 A fixed width of the chart.
 
 
@@ -206,11 +204,11 @@ Stacks bar together, like in this [example](http://c3js.org/samples/chart_bar_st
 Defines the subchart like in this [example](http://c3js.org/samples/options_subchart.html).
 
 ---
-##### subchart.selector : boolean
+##### subchart.selector : boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=zoom&example=navigator))
 If `true` a subchart toggle button is displayed.
 
 ---
-##### subchart.show : boolean
+##### subchart.show : boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=zoom&example=navigator))
 If `true` a subchart for zooming is displayed.
 
 
@@ -220,11 +218,11 @@ If `true` a subchart for zooming is displayed.
 Defines the zoom functionality of the chart.
 
 ---
-##### zoom.enable : boolean
+##### zoom.enable : boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=zoom&example=scroll))
 If `true` it is possible to zoom using the mouse wheel. Default: `false`
 
 ---
-##### zoom.range : Array [a, b]
+##### zoom.range : Array ```[a, b]``` ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=zoom&example=scroll))
 The current zoomed in range can get and set here. Works also for the subchart.
 
 ---
@@ -238,16 +236,16 @@ Callback whenever a zoom event is fired. Works also for the subchart.
 Defines the legend.
 
 ---
-##### legend.selector : boolean
+##### legend.selector : boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=legend&example=selector))
 If `true` a custom legend is displayed. Default: `false`
 
 ---
-##### legend.show : boolean
+##### legend.show : boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=legend&example=hide))
 If `flase` the default legend is hidden. Default: `true`
 
 
 ---
-#### annotation : Array of Objects
+#### annotation : Array of Objects ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=annotate&example=xAxis), [see example](http://maxklenk.github.io/angular-chart/examples.html#?category=annotate&example=yAxis))
 Defines the annotation lines.
 
 `{value: X, text: 'LABEL', axis: 'AXIS'}` AXIS can be `x`, `y`, `y2`.
@@ -258,11 +256,11 @@ Defines the annotation lines.
 Defines which Items can be selected and are currently selected.
 
 ---
-##### selection.enabled : Boolean
+##### selection.enabled : Boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=selection&example=single))
 Allows selection of chart elements. Default: `false`
 
 ---
-##### selection.multiple : Boolean
+##### selection.multiple : Boolean ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=selection&example=multiple))
 Allows selection of multiple chart elements if selection is enabled at all. Default: `false`
 
 ---
@@ -319,12 +317,17 @@ grunt
 
 Please submit all pull requests the against develop branch. Make sure it passes the CI [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=develop)](https://travis-ci.org/maxklenk/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop). Thanks!
 
+
 ## Authors
 
 **Max Klenk**
 
 + http://github.com/maxklenk
 
+
+## Credit
+
+Icons made by [Freepik](http://www.freepik.com) from [www.flaticon.com](http://www.flaticon.com) is licensed by [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)
 
 
 ## Copyright and license

@@ -1,110 +1,393 @@
 <!DOCTYPE html>
 <html ng-app="angular-chart-demo">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="AngularJS directive for adjustable dynamically updating c3 charts.">
-    <meta name="author" content="Max Klenk">
-    <link rel="icon" href="demo/favicon.ico">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AngularJS directive for adjustable dynamically updating c3 charts.">
+  <meta name="author" content="Max Klenk">
+  <link rel="icon" href="demo/favicon.ico">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="demo/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="demo/bower_components/c3/c3.css" />
-    <link rel="stylesheet" type="text/css" href="demo/bower_components/angular-circular-navigation/angular-circular-navigation.css">
-    <link rel="stylesheet" type="text/css" href="demo/app.css"/>
+  <title>angular-chart - stateful visualizations for collaborative Visual Analytics</title>
 
-    <script type="text/javascript" src="demo/bower_components/ace-builds/src-min-noconflict/ace.js"></script>
-    <script type="text/javascript" src="demo/bower_components/angular/angular.min.js"></script>
-    <script type="text/javascript" src="demo/bower_components/d3/d3.min.js"></script>
-    <script type="text/javascript" src="demo/bower_components/c3/c3.min.js"></script>
-    <script type="text/javascript" src="demo/bower_components/angular-ui-ace/ui-ace.min.js"></script>
-    <script type="text/javascript" src="demo/bower_components/angular-circular-navigation/angular-circular-navigation.js"></script>
-    <script type="text/javascript" src="angular-chart.js"></script>
-    <script type="text/javascript" src="demo/data.js"></script>
-    <script type="text/javascript" src="demo/options.js"></script>
-    <script type="text/javascript" src="demo/app.js"></script>
+  <!-- home page only -->
+  <link rel="stylesheet" type="text/css" href="demo/bower_components/fullpage.js/jquery.fullPage.css" />
+  <script type="text/javascript" src="demo/bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="demo/bower_components/fullpage.js/jquery.fullPage.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="demo/bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="demo/bower_components/c3/c3.css" />
+  <link rel="stylesheet" type="text/css" href="angular-chart.min.css">
+  <link rel="stylesheet" type="text/css" href="demo/demo.css"/>
+
+  <script type="text/javascript" src="demo/bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="demo/bower_components/d3/d3.min.js"></script>
+  <script type="text/javascript" src="demo/bower_components/c3/c3.min.js"></script>
+  <script type="text/javascript" src="angular-chart.min.js"></script>
+  <script type="text/javascript" src="demo/data.js"></script>
+  <script type="text/javascript" src="demo/options.js"></script>
+  <script type="text/javascript" src="demo/index.js"></script>
+
 </head>
-<body ng-controller="Controller">
+<body ng-controller="IndexController">
 
-  <!-- Fixed navbar -->
-  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">angular-chart</a>
+  <div id="fullpage">
+
+    <!-- home -->
+    <div class="section section-home">
+      <div class="container">
+        <h1>angular-chart</h1>
+        <h3>
+          AngularJS directive for adjustable dynamically updating c3 charts
+        </h3>
+        <angularChart options="optionsShowcase" dataset="dataObject" schema="schemaObject"></angularChart>
+        <a class="next-section btn btn-info" href="#features">Why should I use angular-chart?</a>
       </div>
-      <div class="hidden-xs">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="https://github.com/maxklenk/angular-chart/#usage">Getting Started</a></li>
-          <li><a href="https://github.com/maxklenk/angular-chart/#options">Reference</a></li>
-          <li><a href="https://github.com/maxklenk/angular-chart">Source</a></li>
-        </ul>
-      </div><!--/.nav-collapse -->
     </div>
-  </div>
 
-  <!-- Main jumbotron -->
-  <div class="jumbotron chart">
-    <div class="container">
-      <div class="alerts">
-        <div ng-show="showInfo" class="alert alert-info" role="alert">
-          <strong>{{optionsObject.name}}</strong> {{optionsObject.description}}
+    <!-- features -->
+    <div class="section section-feature">
+
+      <!-- features - stateful -->
+      <div class="slide slide-stateful">
+        <div class="container">
+          <h1>stateful</h1>
+          <h3>
+            All interactions with the chart are saved to options to create a sharable state of the chart
+          </h3>
+          <div class="row">
+            <div class="col-md-6">
+              <angularChart options="optionsStateful" dataset="dataObject" schema="schemaObject"></angularChart>
+            </div>
+            <div class="col-md-6">
+              <h2>Zoomed</h2>
+
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label for="inputFrom" class="col-xs-2 col-sm-offset-2 col-md-offset-1 control-label">From</label>
+                  <div class="col-xs-5 col-sm-3">
+                    <input ng-model="optionsStateful.zoom.range[0]" type="number" class="form-control" id="inputFrom" placeholder="From"></div>
+                  <div class="col-xs-5 col-sm-3">
+                    (
+                    <span class="hidden-xs">first visible month:</span>
+                    {{ dataObject[ (optionsStateful.zoom.range[0] | number:0) ].month }} )
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputTo" class="col-xs-2 col-sm-offset-2 col-md-offset-1 control-label">To</label>
+                  <div class="col-xs-5 col-sm-3">
+                    <input ng-model="optionsStateful.zoom.range[1]" type="number" class="form-control" id="inputTo" placeholder="To"></div>
+                  <div class="col-xs-5 col-sm-3">
+                    (
+                    <span class="hidden-xs">last visible month:</span>
+                    {{ dataObject[ (optionsStateful.zoom.range[1] | number:0) - 1 ].month }} )
+                  </div>
+                </div>
+              </form>
+
+            </div>
+          </div>
+
+          <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
         </div>
       </div>
-      
-      <angularChart options="optionsObject.options" dataset="dataObject" schema="schemaObject"></angularChart>
+
+      <!-- features - inplace -->
+      <div class="slide slide-inplace">
+        <div class="container">
+          <h1>in-place editor</h1>
+          <h3>
+            Similar to a WYSIWYG editor angular-chart offers ways to choose the optional visualization
+          </h3>
+          <div class="row">
+            <div class="col-md-6">
+              <angularChart options="optionsInplace" dataset="dataObject" schema="schemaObject"></angularChart>
+            </div>
+            <div class="col-md-6">
+              <h2>Row types</h2>
+
+              <form class="form-horizontal">
+
+                <div class="form-group" ng-repeat="key in optionsInplace.rows">
+                  <label for="input{{key}}" class="col-xs-2 col-xs-offset-2 control-label">{{key.key}}</label>
+                  <div class="col-xs-6">
+                    <select id="input{{key}}" ng-options="type for type in types" ng-model="key.type" class="form-control"></select>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+
+          <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+        </div>
+      </div>
+
+      <!-- features - schema -->
+      <div class="slide slide-schema">
+        <div class="container">
+          <h1>schema</h1>
+          <h3>
+            the schema allows to specify date formats and if post- or prefixes should be added
+          </h3>
+          <div class="row">
+            <div class="col-md-6">
+              <angularChart options="optionsSchema" dataset="dataObject" schema="schemaSchema"></angularChart>
+            </div>
+            <div class="col-md-6">
+
+              <form class="form-horizontal">
+
+                <div ng-repeat="row in schemaSchema | filter:{key:'raindays'}">
+                  <h2 class="col-xs-12">{{row.key}}</h2>
+                  <div class="form-group col-xs-6">
+                    <label for="input{{key}}" class="col-xs-4 control-label">prefix</label>
+                    <div class="col-xs-8">
+                      <input ng-model="row.prefix" type="text" class="form-control" id="inputTo" placeholder="prefix"></div>
+                  </div>
+
+                  <div class="form-group col-xs-6">
+                    <label for="input{{key}}" class="col-xs-4 control-label">postfix</label>
+                    <div class="col-xs-8">
+                      <input ng-model="row.postfix" type="text" class="form-control" id="inputTo" placeholder="postfix"></div>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+
+          <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+        </div>
+      </div>
+
+      <!-- features - realtime -->
+      <div class="slide slide-realtime">
+        <div class="container">
+          <h1>real-time updates</h1>
+          <h3>
+            angular-chart adds 2-Way-Databinding to c3 to keep data/options and the visualization in sync
+          </h3>
+          <div class="row">
+            <div class="col-md-6">
+              <angularChart options="optionsRealtime" dataset="dataObject" schema="schemaObject"></angularChart>
+            </div>
+            <div class="col-md-6">
+              <angularChart options="optionsRealtime" dataset="dataObject" schema="schemaObject"></angularChart>
+            </div>
+          </div>
+
+          <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+        </div>
+      </div>
+
+      <!-- features - more -->
+      <div class="slide slide-more">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-md-6">
+              <h1>HTML5 / SVG</h1>
+              <h3>
+                the visualization is based on SVG to support most kinds of browsers an screen sizes
+              </h3>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <h1>customizable</h1>
+              <!--<h3>style charts using CSS3</h3>
+            -->
+            <angularChart options="optionsCustomizable" dataset="dataObject" schema="schemaObject" class="customizable"></angularChart>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <h1>shareable</h1>
+            <h3>
+              the options object always represents the current state of the chart, it can be passed to other clients to share the same view
+            </h3>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <h1>data formats</h1>
+            <h3>
+              angular-chart supports row/column based data as well as json data, just update the
+              <code>data.orientation</code>
+              key in the options
+            </h3>
+          </div>
+        </div>
+
+        <a class="next-section btn btn-info" href="#usage">So how to integrate it in my project now?</a>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- usage -->
+  <div class="section section-usage">
+    <div class="container">
+      <h1>usage</h1>
+
+      <p>
+        You can get it from
+        <a href="http://bower.io/">Bower</a>
+        :
+      </p>
+
+      <div class="highlight highlight-sh">
+        <pre>bower install angular-chart</pre>
+      </div>
+
+      <p>
+        Use
+        <a href="https://github.com/ck86/main-bower-files#usage-with-gulp">gulp</a>
+        or
+        <a href="https://github.com/ck86/main-bower-files#usage-with-grunt">grunt</a>
+        to add the dependencies to your index.html or do in
+        <a href="https://github.com/maxklenk/angular-chart#usage">manually</a>
+      </p>
+
+      <p>Specify the directive in your module dependencies:</p>
+
+      <div class="highlight highlight-javascript">
+        <pre>angular.module(<span class="pl-s1"><span class="pl-pds">'</span>myApp<span class="pl-pds">'</span></span>, [<span class="pl-s1"><span class="pl-pds">'</span>angularChart<span class="pl-pds">'</span></span>])</pre>
+      </div>
+
+      <p>Add the corresponding data in your controller:</p>
+
+      <div class="highlight highlight-javascript">
+        <pre>$scope.dataset <span class="pl-k">=</span> [
+        {
+          <span class="pl-s1"><span class="pl-pds">'</span>day<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>2013-01-02_00:00:00<span class="pl-pds">'</span></span>,
+          <span class="pl-s1"><span class="pl-pds">'</span>sales<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-c1">13461.295202</span>,
+          <span class="pl-s1"><span class="pl-pds">'</span>income<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-c1">12365.053</span>
+        }
+      ];
+
+      $scope.schema <span class="pl-k">=</span> {
+        day<span class="pl-k">:</span> {
+          type<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>datetime<span class="pl-pds">'</span></span>,
+          format<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>%Y-%m-%d_%H:%M:%S<span class="pl-pds">'</span></span>,
+          name<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>Date<span class="pl-pds">'</span></span>
+        }
+      };
+
+      $scope.<span class="pl-sc">options</span> <span class="pl-k">=</span> {
+        rows<span class="pl-k">:</span> [{
+          key<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>income<span class="pl-pds">'</span></span>,
+          type<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>
+        }, {
+          key<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>sales<span class="pl-pds">'</span></span>
+        }],
+        xAxis<span class="pl-k">:</span> {
+          key<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>day<span class="pl-pds">'</span></span>,
+          displayFormat<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>%Y-%m-%d %H:%M:%S<span class="pl-pds">'</span></span>
+        }
+      };</pre>
+      </div>
+
+      <p>Then you are ready to use the directive in your view:</p>
+
+      <div class="highlight highlight-html">
+        <pre>
+      &lt;<span class="pl-ent">angularchart</span>
+        <span class="pl-e">dataset</span>=<span class="pl-s1"><span class="pl-pds">"</span>dataset<span class="pl-pds">"</span></span>
+        <span class="pl-e">schema</span>=<span class="pl-s1"><span class="pl-pds">"</span>schema<span class="pl-pds">"</span></span>
+        <span class="pl-e">options</span>=<span class="pl-s1"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>&gt;
+      &lt;/<span class="pl-ent">angularchart</span>&gt;</pre>
+      </div>
+
+      <a class="next-section btn btn-info" href="#examples">You need more examples?</a>
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <h2>Options</h2>
-        <hr>
+  <!-- examples -->
+  <div class="section section-examples">
+    <div class="container">
+      <h1>examples</h1>
+      <div ng-repeat="category in exampleCategories">
+        <h3>{{category.title}}</h3>
+        <div class="row">
+          <div ng-repeat="example in category.examples" class="col-xs-6 col-sm-4 col-md-3">
+            <a class="example" href="examples.html#/?category={{category.slug}}&example={{example.slug}}">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <h3>{{example.title}}</h3>
+                  <p class="hidden-xs">{{example.subtitle}}</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
-
-      <div class="col-sm-4">
-        <ul class="nav nav-pills nav-stacked">
-          <li ng-repeat="options in optionsArray" ng-class="{'active': options.id === optionsObject.id}" >
-            <a href="" ng-click="loadOptions(options)" >{{options.name}}</a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="col-sm-8">
-        <div ng-model="optionsObject.string" ui-ace="optionsAceConfig"></div>
-      </div>
-
     </div>
+  </div>
 
-    <div class="row">
-      <div class="col-sm-12">
-        <h2>Data</h2>
-        <hr>
-      </div>
+</div>
 
-      <div class="col-sm-4">
-        <ul class="nav nav-pills nav-stacked">
-          <li ng-repeat="data in dataArray" ng-class="{'active': dataName === data.name}" >
-            <a href="" ng-click="loadData(data)" >{{data.name}}</a>
-          </li>
-        </ul>
-      </div>
+<div id="github">
+  <a class="badge" href="https://github.com/maxklenk/angular-chart">Download on Github</a>
+</div>
 
-      <div class="col-sm-8">
-        <div ng-model="dataString" ui-ace="optionsAceConfig"></div>
-      </div>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#fullpage').fullpage({
+        //Navigation
+        menu: '#sectionMenu',
+        anchors:['home', 'features', 'usage', 'examples'],
+        //navigation: false,
+        //navigationPosition: 'right',
+        //navigationTooltips: ['firstSlide', 'secondSlide'],
+        //slidesNavigation: true,
+        //slidesNavPosition: 'bottom',
 
-    </div>
+        //Scrolling
+        //css3: true,
+        //scrollingSpeed: 700,
+        //autoScrolling: true,
+        //scrollBar: false,
+        //easing: 'easeInQuart',
+        //easingcss3: 'ease',
+        //loopBottom: false,
+        //loopTop: false,
+        //loopHorizontal: true,
+        //continuousVertical: false,
+        //normalScrollElements: '#element1, .element2',
+        //scrollOverflow: false,
+        //touchSensitivity: 15,
+        //normalScrollElementTouchThreshold: 5,
 
-    <hr>
+        //Accessibility
+        //keyboardScrolling: true,
+        //animateAnchor: true,
 
-    <footer>
-      <p>&copy; Max Klenk 2014</p>
-    </footer>
+        //Design
+        //controlArrows: true,
+        //verticalCentered: true,
+        //resize : true,
+        //sectionsColor : ['#ccc', '#fff'],
+        //paddingTop: '3em',
+        //paddingBottom: '10px',
+        //fixedElements: '#header, .footer',
+        //responsive: 0,
 
-  </div> <!-- /container -->
+        ////Custom selectors
+        //sectionSelector: '.section',
+        //slideSelector: '.slide',
+
+        //events
+        //onLeave: function(index, nextIndex, direction){},
+        //afterLoad: function(anchorLink, index){},
+        //afterRender: function(){},
+        //afterResize: function(){},
+        //afterSlideLoad: function(anchorLink, index, slideAnchor, slideIndex){},
+        //onSlideLeave: function(anchorLink, index, slideIndex, direction){}
+    });
+});
+</script>
 
 </body>
 </html>
