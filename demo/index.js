@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation'])
+angular.module('angular-chart-demo', ['angularChart'])
 
-.controller('HomeController', function($scope, $filter, $timeout) {
+.controller('IndexController', function($scope, $filter, $timeout) {
 
   $scope.types = [
     'line',
@@ -99,8 +99,9 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
       selector: true
     }
   };
-  
+
   $scope.schemaSchema = window.dataArray[1].schema;
+  delete $scope.schemaSchema.raindays;
 
   $scope.optionsCustomizable = {
     size: {
@@ -123,38 +124,32 @@ angular.module('angular-chart-demo', ['angularChart', 'angularCircularNavigation
     }
   };
 
+  $scope.optionsRealtime = {
+    size: {
+      height: 200
+    },
+    rows: [{
+      key: 'temp',
+      color: '#F37934'
+    }, {
+      key: 'rain',
+      type: 'bar',
+      axis: 'y2',
+      color: '#2C82C9'
+    }],
+    xAxis: {
+      key: 'month'
+    },
+    legend: {
+      selector: true
+    },
+    selection: {
+      enabled: true
+    }
+  };
+
   $scope.optionsArray = window.optionsArray;
-  $scope.exampleCategories = [{
-    title: 'First',
-    examples: [{
-      title: 'One Example',
-      description: 'test',
-      options: {
-
-      }
-    }, {
-      title: 'One Example',
-      description: 'test',
-      options: {
-
-      }
-    }]
-  }, {
-    title: 'Second',
-    examples: [{
-      title: 'One Example',
-      description: 'test',
-      options: {
-
-      }
-    }, {
-      title: 'One Example',
-      description: 'test',
-      options: {
-
-      }
-    }]
-  }];
+  $scope.exampleCategories = window.exampleCategories;
 
   $scope.schemaObject = window.dataArray[1].schema;
   $scope.dataObject = window.dataArray[1].data;
