@@ -592,20 +592,21 @@ circular, .circular {
 /* line 5, scss/angular-chart.scss */
 angularchart, .angularchart {
   display: block;
+  position: relative;
 }
 
-/* line 9, scss/angular-chart.scss */
+/* line 10, scss/angular-chart.scss */
 .chooseXAxis select {
   margin: auto;
   display: block;
 }
 
-/* line 14, scss/angular-chart.scss */
+/* line 15, scss/angular-chart.scss */
 .chooseChartType {
   float: right;
 }
 
-/* line 18, scss/angular-chart.scss */
+/* line 19, scss/angular-chart.scss */
 .toggleSubchart {
   float: right;
 }
