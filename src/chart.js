@@ -52,10 +52,14 @@
                 tick: {}
               },
               y: {
-                label: ''
+                label: '',
+                min: null,
+                max: null
               },
               y2: {
-                label: ''
+                label: '',
+                min: null,
+                max: null
               }
             },
             legend: {
@@ -157,9 +161,14 @@
                   element.axis = 'y';
                 }
                 scope.configuration.data.axes[element.key] = element.axis;
-                scope.configuration.axis[element.axis] = {
-                  show: true
-                };
+                if (angular.isObject(scope.configuration.axis[element.axis])) {
+                  scope.configuration.axis[element.axis].show = true;
+                } else {
+                  scope.configuration.axis[element.axis] = {
+                    show: true
+                  };
+                }
+
               });
 
             }
@@ -258,12 +267,46 @@
               scope.configuration.subchart.show = false;
             }
 
-            // Y label
+            // Y settings
             //
-            if (scope.options.yAxis && scope.options.yAxis.label) {
-              scope.configuration.axis.y.label = scope.options.yAxis.label;
-            } else {
-              scope.configuration.axis.y.label = '';
+            if (angular.isObject(scope.options.yAxis)) {
+              //label
+              if (!angular.isUndefined(scope.options.yAxis.label)) {
+                scope.configuration.axis.y.label = scope.options.yAxis.label;
+              } else {
+                scope.configuration.axis.y.label = '';
+              }
+
+              //max value
+              if (!angular.isUndefined(scope.options.yAxis.max)) {
+                scope.configuration.axis.y.max = scope.options.yAxis.max;
+              }
+
+              //min value
+              if (!angular.isUndefined(scope.options.yAxis.min)) {
+                scope.configuration.axis.y.min = scope.options.yAxis.min;
+              }
+            }
+
+            // Y2 settings
+            //
+            if (angular.isObject(scope.options.y2Axis)) {
+              //label
+              if (!angular.isUndefined(scope.options.y2Axis.label)) {
+                scope.configuration.axis.y2.label = scope.options.y2Axis.label;
+              } else {
+                scope.configuration.axis.y2.label = '';
+              }
+
+              //max value
+              if (!angular.isUndefined(scope.options.y2Axis.max)) {
+                scope.configuration.axis.y2.max = scope.options.y2Axis.max;
+              }
+
+              //min value
+              if (!angular.isUndefined(scope.options.y2Axis.min)) {
+                scope.configuration.axis.y2.min = scope.options.y2Axis.min;
+              }
             }
 
             // Legend
@@ -359,8 +402,7 @@
 
             // Donut Options
             //
-            if(scope.options.donut)
-            {
+            if (scope.options.donut) {
               scope.configuration.donut = scope.options.donut;
             }
 
@@ -777,10 +819,10 @@
 
           // Registers a $destroy listeners for cleanup purposes
           //
-          scope.registerDestroyListener = function() {
-            scope.$on('$destroy', function() {
-                scope.chart.destroy();
-                element.remove();
+          scope.registerDestroyListener = function () {
+            scope.$on('$destroy', function () {
+              scope.chart.destroy();
+              element.remove();
             });
           };
 

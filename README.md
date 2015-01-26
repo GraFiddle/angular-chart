@@ -174,6 +174,29 @@ Defines yAxis display.
 ##### yAxis.label : String
 Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
+---
+##### yAxis.min : String
+Lets you define the range for the [Y axis](http://c3js.org/samples/axes_y_range.html)
+
+---
+##### yAxis.max : String
+Lets you define the range for the [Y axis](http://c3js.org/samples/axes_y_range.html)
+
+---
+#### y2Axis : Object
+Defines y2Axis display.
+
+---
+##### y2Axis.label : String
+Label displayed for the [Y2 axis](http://c3js.org/samples/axes_label.html)
+
+---
+##### y2Axis.min : String
+Lets you define the range for the [Y2 axis](http://c3js.org/samples/axes_y_range.html)
+
+---
+##### y2Axis.max : String
+Lets you define the range for the [Y2 axis](http://c3js.org/samples/axes_y_range.html)
 
 ---
 #### size : Object

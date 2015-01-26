@@ -417,6 +417,99 @@ describe('angularChart:', function () {
 
         });
 
+        describe('. min', function () {
+
+          it('- Chart should add min value on y-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y.min).toBe(null);
+
+            // set option
+            var yAxis = {
+              min: 50
+            };
+            $scope.options.yAxis = yAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y.min).toBe(yAxis.min);
+          });
+        });
+
+        describe('. max', function () {
+
+          it('- Chart should add max value on y-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y.max).toBe(null);
+
+            // set option
+            var yAxis = {
+              max: 100
+            };
+            $scope.options.yAxis = yAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y.max).toBe(yAxis.max);
+          });
+        });
+
+      });
+
+      describe('. y2Axis', function () {
+
+        describe('. label', function () {
+
+          it('- Chart should add label on y-2-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y2.label).toBe('');
+
+            // set option
+            var y2Axis = {
+              label: 'y2Axis label'
+            };
+            $scope.options.y2Axis = y2Axis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y2.label).toBe(y2Axis.label);
+          });
+        });
+
+        describe('. min', function () {
+
+          it('- Chart should add min value on y-2-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y2.min).toBe(null);
+            // set option
+            var y2Axis = {
+              min: 50
+            };
+            $scope.options.y2Axis = y2Axis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y2.min).toBe(y2Axis.min);
+          });
+        });
+
+        describe('. max', function () {
+
+          it('- Chart should add max value on y-2-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y.max).toBe(null);
+
+            // set option
+            var y2Axis = {
+              max: 100
+            };
+            $scope.options.y2Axis = y2Axis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y2.max).toBe(y2Axis.max);
+          });
+        });
+
       });
 
       describe('. rows', function () {
