@@ -54,13 +54,18 @@
               y: {
                 label: '',
                 min: null,
-                max: null
+                max: null,
+                tick: {}
               },
               y2: {
                 label: '',
                 min: null,
-                max: null
+                max: null,
+                tick: {}
               }
+            },
+            tooltip: {
+              format: {}
             },
             legend: {
               show: true
@@ -286,6 +291,11 @@
               if (!angular.isUndefined(scope.options.yAxis.min)) {
                 scope.configuration.axis.y.min = scope.options.yAxis.min;
               }
+
+              //format
+              if (!angular.isUndefined(scope.options.yAxis.displayFormat)) {
+                scope.configuration.axis.y.tick.format = scope.options.yAxis.displayFormat;
+              }
             }
 
             // Y2 settings
@@ -306,6 +316,19 @@
               //min value
               if (!angular.isUndefined(scope.options.y2Axis.min)) {
                 scope.configuration.axis.y2.min = scope.options.y2Axis.min;
+              }
+
+              //format
+              if (!angular.isUndefined(scope.options.y2Axis.displayFormat)) {
+                scope.configuration.axis.y2.tick.format = scope.options.y2Axis.displayFormat;
+              }
+            }
+
+            // Tooltip
+            //
+            if (scope.options.tooltip) {
+              if (scope.options.tooltip.displayFormat) {
+                scope.configuration.tooltip.format.value = scope.options.tooltip.displayFormat;
               }
             }
 

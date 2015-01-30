@@ -453,6 +453,25 @@ describe('angularChart:', function () {
           });
         });
 
+        describe('. displayFormat', function () {
+
+          it('- Chart should add displayFormat value on y-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y.tick.format).toBe(undefined);
+
+            // set option
+            var yAxis = {
+              displayFormat: function () {
+              }
+            };
+            $scope.options.yAxis = yAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y.tick.format).toBe(yAxis.displayFormat);
+          });
+        });
+
       });
 
       describe('. y2Axis', function () {
@@ -507,6 +526,25 @@ describe('angularChart:', function () {
 
             // check configuration change
             expect(elementScope.configuration.axis.y2.max).toBe(y2Axis.max);
+          });
+        });
+
+        describe('. displayFormat', function () {
+
+          it('- Chart should add displayFormat value on y-2-axis.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.y2.tick.format).toBe(undefined);
+
+            // set option
+            var y2Axis = {
+              displayFormat: function () {
+              }
+            };
+            $scope.options.y2Axis = y2Axis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.y2.tick.format).toBe(y2Axis.displayFormat);
           });
         });
 
@@ -957,6 +995,25 @@ describe('angularChart:', function () {
         });
 
       });
+      describe('. tooltip', function () {
+        it(' - Tooltip function should be passed to Chart', function () {
+
+          // check configuration before
+          expect(elementScope.configuration.tooltip.format.value).toBe(undefined);
+
+          // set option
+          var tooltip = {
+            displayFormat: function () {
+            }
+          };
+
+          $scope.options.tooltip = tooltip;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.tooltip.format.value).toBe(tooltip.displayFormat);
+        });
+      });
 
       describe('. legend', function () {
 
@@ -1272,60 +1329,60 @@ describe('angularChart:', function () {
 
       describe('. size', function () {
 
-          it('- Chart should be sized.', function () {
-            // check configuration before
-            // expect(elementScope.configuration.size).toBe({});
+        it('- Chart should be sized.', function () {
+          // check configuration before
+          // expect(elementScope.configuration.size).toBe({});
 
-            // set option
-            var size = {
-              width: 200,
-              heigth: 200
-            };
-            $scope.options.size = size;
-            $scope.$apply();
+          // set option
+          var size = {
+            width: 200,
+            heigth: 200
+          };
+          $scope.options.size = size;
+          $scope.$apply();
 
-            // check configuration change
-            expect(elementScope.configuration.size).toBe(size);
-          });
+          // check configuration change
+          expect(elementScope.configuration.size).toBe(size);
+        });
 
       });
 
       describe('. donut', function () {
 
-          it('- Chart should be a donut with title set.', function () {
-            // check configuration before
-            // expect(elementScope.configuration.donut).toBe({});
+        it('- Chart should be a donut with title set.', function () {
+          // check configuration before
+          // expect(elementScope.configuration.donut).toBe({});
 
-            // set option
-            var donut = {
-              title: 'Yummy Donut'
-            };
-            $scope.options.donut = donut;
-            $scope.$apply();
+          // set option
+          var donut = {
+            title: 'Yummy Donut'
+          };
+          $scope.options.donut = donut;
+          $scope.$apply();
 
-            // check configuration change
-            expect(elementScope.configuration.donut).toBe(donut);
-          });
+          // check configuration change
+          expect(elementScope.configuration.donut).toBe(donut);
+        });
 
       });
 
       describe('. resize', function () {
 
-          it('- Chart should be resized when called.', function () {
-            // setup spys
-            spyOn(elementScope.chart, 'resize');
+        it('- Chart should be resized when called.', function () {
+          // setup spys
+          spyOn(elementScope.chart, 'resize');
 
-            // set option
-            var size = {
-              width: 300,
-              heigth: 100
-            };
-            $scope.options.resize(size);
+          // set option
+          var size = {
+            width: 300,
+            heigth: 100
+          };
+          $scope.options.resize(size);
 
-            // check configuration change
-            expect(elementScope.configuration.size).toBe(size);
-            expect(elementScope.chart.resize).toHaveBeenCalled();
-          });
+          // check configuration change
+          expect(elementScope.configuration.size).toBe(size);
+          expect(elementScope.chart.resize).toHaveBeenCalled();
+        });
 
       });
 
