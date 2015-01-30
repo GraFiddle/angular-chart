@@ -106,11 +106,20 @@
                 tick: {}
               },
               y: {
-                label: ''
+                label: '',
+                min: null,
+                max: null,
+                tick: {}
               },
               y2: {
-                label: ''
+                label: '',
+                min: null,
+                max: null,
+                tick: {}
               }
+            },
+            tooltip: {
+              format: {}
             },
             legend: {
               show: true
@@ -211,9 +220,14 @@
                   element.axis = 'y';
                 }
                 scope.configuration.data.axes[element.key] = element.axis;
-                scope.configuration.axis[element.axis] = {
-                  show: true
-                };
+                if (angular.isObject(scope.configuration.axis[element.axis])) {
+                  scope.configuration.axis[element.axis].show = true;
+                } else {
+                  scope.configuration.axis[element.axis] = {
+                    show: true
+                  };
+                }
+
               });
 
             }
@@ -246,6 +260,10 @@
               // add specific display Format
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
+              } else {
+                if (!angular.isUndefined(scope.configuration.axis.x.tick.format)) {
+                  delete scope.configuration.axis.x.tick.format;
+                }
               }
 
               // is xAxis type specified?
@@ -312,12 +330,80 @@
               scope.configuration.subchart.show = false;
             }
 
-            // Y label
+            // Y settings
             //
-            if (scope.options.yAxis && scope.options.yAxis.label) {
-              scope.configuration.axis.y.label = scope.options.yAxis.label;
-            } else {
-              scope.configuration.axis.y.label = '';
+            if (angular.isObject(scope.options.yAxis)) {
+              //label
+              if (!angular.isUndefined(scope.options.yAxis.label)) {
+                scope.configuration.axis.y.label = scope.options.yAxis.label;
+              } else {
+                scope.configuration.axis.y.label = '';
+              }
+
+              //max value
+              if (!angular.isUndefined(scope.options.yAxis.max)) {
+                scope.configuration.axis.y.max = scope.options.yAxis.max;
+              } else {
+                scope.configuration.axis.y.max = null;
+              }
+
+              //min value
+              if (!angular.isUndefined(scope.options.yAxis.min)) {
+                scope.configuration.axis.y.min = scope.options.yAxis.min;
+              } else {
+                scope.configuration.axis.y.min = null;
+              }
+
+              //format
+              if (!angular.isUndefined(scope.options.yAxis.displayFormat)) {
+                scope.configuration.axis.y.tick.format = scope.options.yAxis.displayFormat;
+              } else {
+                scope.configuration.axis.y.tick.format = null;
+              }
+            }
+
+            // Y2 settings
+            //
+            if (angular.isObject(scope.options.y2Axis)) {
+              //label
+              if (!angular.isUndefined(scope.options.y2Axis.label)) {
+                scope.configuration.axis.y2.label = scope.options.y2Axis.label;
+              } else {
+                scope.configuration.axis.y2.label = '';
+              }
+
+              //max value
+              if (!angular.isUndefined(scope.options.y2Axis.max)) {
+                scope.configuration.axis.y2.max = scope.options.y2Axis.max;
+              } else {
+                scope.configuration.axis.y2.max = null;
+              }
+
+              //min value
+              if (!angular.isUndefined(scope.options.y2Axis.min)) {
+                scope.configuration.axis.y2.min = scope.options.y2Axis.min;
+              } else {
+                scope.configuration.axis.y2.min = null;
+              }
+
+              //format
+              if (!angular.isUndefined(scope.options.y2Axis.displayFormat)) {
+                scope.configuration.axis.y2.tick.format = scope.options.y2Axis.displayFormat;
+              } else {
+                scope.configuration.axis.y2.tick.format = null;
+              }
+            }
+
+            // Tooltip
+            //
+            if (scope.options.tooltip) {
+              if (scope.options.tooltip.displayFormat) {
+                scope.configuration.tooltip.format.value = scope.options.tooltip.displayFormat;
+              } else {
+                if (!angular.isUndefined(scope.configuration.tooltip.format.value)) {
+                  delete scope.configuration.tooltip.format.value;
+                }
+              }
             }
 
             // Legend
@@ -413,8 +499,7 @@
 
             // Donut Options
             //
-            if(scope.options.donut)
-            {
+            if (scope.options.donut) {
               scope.configuration.donut = scope.options.donut;
             }
 
@@ -831,10 +916,10 @@
 
           // Registers a $destroy listeners for cleanup purposes
           //
-          scope.registerDestroyListener = function() {
-            scope.$on('$destroy', function() {
-                scope.chart.destroy();
-                element.remove();
+          scope.registerDestroyListener = function () {
+            scope.$on('$destroy', function () {
+              scope.chart.destroy();
+              element.remove();
             });
           };
 
