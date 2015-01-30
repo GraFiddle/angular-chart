@@ -162,18 +162,11 @@
                 }
 
                 // axis
-                if (!element.axis) {
+                if (!element.axis || element.axis !== 'y2') {
                   element.axis = 'y';
                 }
                 scope.configuration.data.axes[element.key] = element.axis;
-                if (angular.isObject(scope.configuration.axis[element.axis])) {
-                  scope.configuration.axis[element.axis].show = true;
-                } else {
-                  scope.configuration.axis[element.axis] = {
-                    show: true
-                  };
-                }
-
+                scope.configuration.axis[element.axis].show = true;
               });
 
             }
@@ -206,10 +199,6 @@
               // add specific display Format
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
-              } else {
-                if (!angular.isUndefined(scope.configuration.axis.x.tick.format)) {
-                  delete scope.configuration.axis.x.tick.format;
-                }
               }
 
               // is xAxis type specified?
@@ -342,13 +331,10 @@
 
             // Tooltip
             //
+            scope.configuration.tooltip.format = {};
             if (scope.options.tooltip) {
               if (scope.options.tooltip.displayFormat) {
                 scope.configuration.tooltip.format.value = scope.options.tooltip.displayFormat;
-              } else {
-                if (!angular.isUndefined(scope.configuration.tooltip.format.value)) {
-                  delete scope.configuration.tooltip.format.value;
-                }
               }
             }
 
