@@ -611,6 +611,21 @@ describe('angularChart:', function () {
           expect(elementScope.configuration.data.keys.value.length).toBe(3);
         });
 
+        it('- Chart rows can be rendered on an additional axis.', function () {
+          var row = $scope.options.rows[0];
+
+          // check configuration before
+          expect(elementScope.configuration.data.keys.value.length).toBe(4);
+
+          // set option
+          row.axis = 'y2';
+          $scope.options.rows[0] = row;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.data.axes[row.key]).toBe(row.axis);
+        });
+
       });
 
       describe('Rows/Type', function () {
@@ -766,7 +781,7 @@ describe('angularChart:', function () {
           // ToDo: add expect
           it('- Chart should add x-axis with specific format.', function () {
             // check configuration before
-            // expect(elementScope.configuration.axis.x.label).toBe('');
+            expect(elementScope.configuration.axis.x.tick.format).not.toBeDefined();
 
             // set option
             var xAxis = {
@@ -777,7 +792,33 @@ describe('angularChart:', function () {
             $scope.$apply();
 
             // check configuration change
-            // expect(elementScope.configuration.axis.x.label).toBe(xAxis.label);
+            expect(elementScope.configuration.axis.x.tick.format).toBe(xAxis.displayFormat);
+          });
+
+          it('- Chart remove add x-axis format when changing configuration.', function () {
+            // check configuration before
+            expect(elementScope.configuration.axis.x.tick.format).not.toBeDefined();
+
+            // set option
+            var xAxis = {
+              key: 'day',
+              displayFormat: '%Y-%m-%d'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.tick.format).toBe(xAxis.displayFormat);
+
+            // remove option
+            xAxis = {
+              key: 'day'
+            };
+            $scope.options.xAxis = xAxis;
+            $scope.$apply();
+
+            // check configuration change
+            expect(elementScope.configuration.axis.x.tick.format).not.toBeDefined();
           });
 
         });
@@ -996,9 +1037,10 @@ describe('angularChart:', function () {
         });
 
       });
-      describe('. tooltip', function () {
-        it(' - Tooltip function should be passed to Chart', function () {
 
+      describe('. tooltip', function () {
+
+        it(' - Tooltip format function should be passed to Chart', function () {
           // check configuration before
           expect(elementScope.configuration.tooltip.format.value).not.toBeDefined();
 
@@ -1015,8 +1057,30 @@ describe('angularChart:', function () {
           expect(elementScope.configuration.tooltip.format.value).toBe(tooltip.displayFormat);
         });
 
-        it('- Do not format tooltip if no displayFormat is defined.', function () {
+        it(' - Tooltip format function should removed when configuration changes.', function () {
+          // check configuration before
+          expect(elementScope.configuration.tooltip.format.value).not.toBeDefined();
 
+          // set option
+          var tooltip = {
+            displayFormat: function () {
+            }
+          };
+          $scope.options.tooltip = tooltip;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.tooltip.format.value).toBe(tooltip.displayFormat);
+
+          // update option
+          $scope.options.tooltip = undefined;
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.tooltip.format.value).not.toBeDefined();
+        });
+
+        it('- Do not format tooltip if no displayFormat is defined.', function () {
           // check configuration before
           expect(elementScope.configuration.tooltip.format.value).not.toBeDefined();
 
