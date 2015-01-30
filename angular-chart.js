@@ -260,6 +260,10 @@
               // add specific display Format
               if (scope.options.xAxis.displayFormat) {
                 scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
+              } else {
+                if (!angular.isUndefined(scope.configuration.axis.x.tick.format)) {
+                  delete scope.configuration.axis.x.tick.format;
+                }
               }
 
               // is xAxis type specified?
@@ -339,16 +343,22 @@
               //max value
               if (!angular.isUndefined(scope.options.yAxis.max)) {
                 scope.configuration.axis.y.max = scope.options.yAxis.max;
+              } else {
+                scope.configuration.axis.y.max = null;
               }
 
               //min value
               if (!angular.isUndefined(scope.options.yAxis.min)) {
                 scope.configuration.axis.y.min = scope.options.yAxis.min;
+              } else {
+                scope.configuration.axis.y.min = null;
               }
 
               //format
               if (!angular.isUndefined(scope.options.yAxis.displayFormat)) {
                 scope.configuration.axis.y.tick.format = scope.options.yAxis.displayFormat;
+              } else {
+                scope.configuration.axis.y.tick.format = null;
               }
             }
 
@@ -365,16 +375,22 @@
               //max value
               if (!angular.isUndefined(scope.options.y2Axis.max)) {
                 scope.configuration.axis.y2.max = scope.options.y2Axis.max;
+              } else {
+                scope.configuration.axis.y2.max = null;
               }
 
               //min value
               if (!angular.isUndefined(scope.options.y2Axis.min)) {
                 scope.configuration.axis.y2.min = scope.options.y2Axis.min;
+              } else {
+                scope.configuration.axis.y2.min = null;
               }
 
               //format
               if (!angular.isUndefined(scope.options.y2Axis.displayFormat)) {
                 scope.configuration.axis.y2.tick.format = scope.options.y2Axis.displayFormat;
+              } else {
+                scope.configuration.axis.y2.tick.format = null;
               }
             }
 
@@ -383,6 +399,10 @@
             if (scope.options.tooltip) {
               if (scope.options.tooltip.displayFormat) {
                 scope.configuration.tooltip.format.value = scope.options.tooltip.displayFormat;
+              } else {
+                if (!angular.isUndefined(scope.configuration.tooltip.format.value)) {
+                  delete scope.configuration.tooltip.format.value;
+                }
               }
             }
 

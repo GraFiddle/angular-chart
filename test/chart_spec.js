@@ -329,7 +329,8 @@ describe('angularChart:', function () {
           expect(elementScope.configuration.data.onclick).toBe(angular.noop);
 
           // set option
-          var handler = function () {};
+          var handler = function () {
+          };
           $scope.options.onclick = handler;
           $scope.$apply();
 
@@ -999,7 +1000,7 @@ describe('angularChart:', function () {
         it(' - Tooltip function should be passed to Chart', function () {
 
           // check configuration before
-          expect(elementScope.configuration.tooltip.format.value).toBe(undefined);
+          expect(elementScope.configuration.tooltip.format.value).not.toBeDefined();
 
           // set option
           var tooltip = {
@@ -1012,6 +1013,19 @@ describe('angularChart:', function () {
 
           // check configuration change
           expect(elementScope.configuration.tooltip.format.value).toBe(tooltip.displayFormat);
+        });
+
+        it('- Do not format tooltip if no displayFormat is defined.', function () {
+
+          // check configuration before
+          expect(elementScope.configuration.tooltip.format.value).not.toBeDefined();
+
+          // set option
+          $scope.options.tooltip = {};
+          $scope.$apply();
+
+          // check configuration change
+          expect(elementScope.configuration.tooltip.format.value).not.toBeDefined();
         });
       });
 
@@ -1294,7 +1308,8 @@ describe('angularChart:', function () {
             // set option
             var zoom = {
               enabled: true,
-              onzoom: function () {}
+              onzoom: function () {
+              }
             };
             $scope.options.zoom = zoom;
             $scope.$apply();
@@ -1312,7 +1327,8 @@ describe('angularChart:', function () {
             // set option
             var zoom = {
               enabled: true,
-              onzoom: function () {}
+              onzoom: function () {
+              }
             };
             $scope.options.zoom = zoom;
             $scope.$apply();
@@ -1606,7 +1622,8 @@ describe('angularChart:', function () {
             // set option
             var selection = {
               enabled: true,
-              onselected: function () {}
+              onselected: function () {
+              }
             };
             $scope.options.selection = selection;
             $scope.$apply();
@@ -1622,7 +1639,8 @@ describe('angularChart:', function () {
             // set option
             var selection = {
               enabled: true,
-              onunselected: function () {}
+              onunselected: function () {
+              }
             };
             $scope.options.selection = selection;
             $scope.$apply();
