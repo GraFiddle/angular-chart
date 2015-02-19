@@ -113,6 +113,9 @@
 
 
             // Add data
+            delete scope.configuration.data.columns;
+            delete scope.configuration.data.rows;
+            delete scope.configuration.data.json;
             if (!scope.dataset) {
               throw 'No data provided. The dataset has to be an array with the records.';
             } else {
