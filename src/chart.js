@@ -28,6 +28,7 @@
           scope.chart = null;
           scope.configuration = {
             data: {
+              x: '',
               keys: {
                 value: [],
                 x: ''
@@ -195,6 +196,7 @@
 
               // set x Axis
               scope.configuration.data.keys.x = scope.options.xAxis.key;
+              scope.configuration.data.x = scope.options.xAxis.key;
 
               // add specific display Format
               if (scope.options.xAxis.displayFormat) {
