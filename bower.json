@@ -31,7 +31,7 @@
     "fonts/flaticon.eot",
     "fonts/flaticon.svg",
     "fonts/flaticon.ttf",
-    "fonts/flaticon.woff",
+    "fonts/flaticon.woff"
   ],
   "dependencies": {
     "c3": "~0.4.x",
