@@ -171,15 +171,15 @@ Shows the dropdown to choose which xAxis you want to use. Default: `false`
 Defines yAxis display.
 
 ---
-##### yAxis.label : String
+##### yAxis.label : String ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=yAxis&example=label)) 
 Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
 ---
-##### yAxis.min : String
+##### yAxis.min : String ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=yAxis&example=minmax))
 Lets you define the range for the [Y axis](http://c3js.org/samples/axes_y_range.html)
 
 ---
-##### yAxis.max : String
+##### yAxis.max : String ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=yAxis&example=minmax))
 Lets you define the range for the [Y axis](http://c3js.org/samples/axes_y_range.html)
 
 ---
