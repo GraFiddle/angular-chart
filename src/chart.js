@@ -671,7 +671,9 @@
                   scope.options.selection.selected.push(selection);
                 });
                 if (scope.options.selection.onselected) {
-                  scope.options.selection.onselected();
+                  scope.$apply(function(){
+                    scope.options.selection.onselected();
+                  });
                 }
               }
             },
@@ -685,7 +687,9 @@
                   })
                 );
                 if (scope.options.selection.onunselected) {
-                  scope.options.selection.onunselected();
+                  scope.$apply(function(){
+                    scope.options.selection.onunselected();
+                  });
                 }
               }
             },
