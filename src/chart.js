@@ -8,7 +8,7 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   var angularChart = angular.module('angularChart', ['angularCircularNavigation'])
-    .directive('angularchart', ['$compile', function ($compile) {
+    .directive('angularchart', ['$compile', '$q', function ($compile, $q) {
 
       var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
       var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require('d3') : undefined;
@@ -28,6 +28,7 @@
           scope.chart = null;
           scope.configuration = {
             data: {
+              x: '',
               keys: {
                 value: [],
                 x: ''
@@ -52,11 +53,20 @@
                 tick: {}
               },
               y: {
-                label: ''
+                label: '',
+                min: null,
+                max: null,
+                tick: {}
               },
               y2: {
-                label: ''
+                label: '',
+                min: null,
+                max: null,
+                tick: {}
               }
+            },
+            tooltip: {
+              format: {}
             },
             legend: {
               show: true
@@ -97,30 +107,26 @@
           // generate or update chart with options
           //
           scope.updateChart = function () {
-            // Options
-            scope.options.selection = scope.options.selection ? scope.options.selection : {};
-            scope.options.selection.selected = scope.options.selection.selected ? scope.options.selection.selected : [];
-
-
             // Add data
-            if (!scope.dataset) {
-              throw 'No data provided. The dataset has to be an array with the records.';
-            } else {
-              if (scope.options.data && scope.options.data.orientation === 'columns') {
-                scope.configuration.data.columns = scope.dataset;
-              } else if (scope.options.data && scope.options.data.orientation === 'rows') {
-                scope.configuration.data.rows = scope.dataset;
-              } else {
-                scope.configuration.data.json = scope.dataset;
-              }
+            delete scope.configuration.data.columns;
+            delete scope.configuration.data.rows;
+            delete scope.configuration.data.json;
+
+            var data = scope.dataset;
+            if (!angular.isArray(data)) {
+              data = [];
             }
 
+            if (scope.options.data && scope.options.data.orientation === 'columns') {
+              scope.configuration.data.columns = data;
+            } else if (scope.options.data && scope.options.data.orientation === 'rows') {
+              scope.configuration.data.rows = data;
+            } else {
+              scope.configuration.data.json = data;
+            }
 
             // Chart type
             //
-            if (!scope.options.type) {
-              scope.options.type = 'line';
-            }
             scope.configuration.data.type = scope.options.type;
 
             // Add lines
@@ -128,7 +134,7 @@
             scope.configuration.axis.y.show = false;
             scope.configuration.axis.y2.show = false;
             scope.configuration.data.keys.value = [];
-            if (scope.options.rows) {
+            if (angular.isArray(scope.options.rows)) {
               scope.options.rows.forEach(function (element) {
                 if (element.show === undefined || element.show) {
                   scope.configuration.data.keys.value.push(element.key);
@@ -145,6 +151,7 @@
                 if (!element.type) {
                   element.type = scope.options.type;
                 }
+
                 scope.configuration.data.types[element.key] = element.type;
 
                 // color
@@ -153,13 +160,12 @@
                 }
 
                 // axis
-                if (!element.axis) {
-                  element.axis = 'y';
+                if (element.axis) {
+                  scope.configuration.data.axes[element.key] = element.axis;
+                  scope.configuration.axis[element.axis].show = true;
+                } else {
+                  scope.configuration.axis.y.show = true;
                 }
-                scope.configuration.data.axes[element.key] = element.axis;
-                scope.configuration.axis[element.axis] = {
-                  show: true
-                };
               });
 
             }
@@ -171,23 +177,25 @@
               scope.configuration.data.selection.enabled = scope.options.selection.enabled;
               scope.configuration.data.selection.multiple = scope.options.selection.multiple;
             }
-            if (scope.options.xAxis && scope.options.xAxis.key) {
-              // key selection changed?
-              if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
-                scope.options.selection.selected = [];
-              }
-            }
+            //if (scope.options.selection && scope.options.xAxis && scope.options.xAxis.key) {
+            //  // key selection changed?
+            //  if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
+            //    scope.options.selection.selected = [];
+            //  }
+            //}
 
 
             // Add x-axis
             //
             scope.configuration.data.keys.x = '';
+            scope.configuration.data.x = '';
             scope.configuration.axis.x.type = 'category';
             scope.configuration.axis.x.tick.format = undefined;
             if (scope.options.xAxis && scope.options.xAxis.key) {
 
               // set x Axis
               scope.configuration.data.keys.x = scope.options.xAxis.key;
+              scope.configuration.data.x = scope.options.xAxis.key;
 
               // add specific display Format
               if (scope.options.xAxis.displayFormat) {
@@ -244,7 +252,7 @@
 
             // onclick
             //
-            if (scope.options.onclick) {
+            if (angular.isFunction(scope.options.onclick)) {
               scope.configuration.data.onclick = scope.options.onclick;
             } else {
               scope.configuration.data.onclick = angular.noop;
@@ -258,12 +266,73 @@
               scope.configuration.subchart.show = false;
             }
 
-            // Y label
+            // Y settings
             //
-            if (scope.options.yAxis && scope.options.yAxis.label) {
-              scope.configuration.axis.y.label = scope.options.yAxis.label;
-            } else {
-              scope.configuration.axis.y.label = '';
+            scope.configuration.axis.y.label = '';
+            scope.configuration.axis.y.max = null;
+            scope.configuration.axis.y.min = null;
+            scope.configuration.axis.y.tick.format = undefined;
+            if (angular.isObject(scope.options.yAxis)) {
+              // label
+              if (angular.isDefined(scope.options.yAxis.label)) {
+                scope.configuration.axis.y.label = scope.options.yAxis.label;
+              }
+
+              // max value
+              if (angular.isDefined(scope.options.yAxis.max)) {
+                scope.configuration.axis.y.max = scope.options.yAxis.max;
+              }
+
+              // min value
+              if (angular.isDefined(scope.options.yAxis.min)) {
+                scope.configuration.axis.y.min = scope.options.yAxis.min;
+              }
+
+              // format
+              if (angular.isDefined(scope.options.yAxis.displayFormat)) {
+                scope.configuration.axis.y.tick.format = scope.options.yAxis.displayFormat;
+              }
+            }
+
+            // Y2 settings
+            //
+            if (angular.isObject(scope.options.y2Axis)) {
+              //label
+              if (!angular.isUndefined(scope.options.y2Axis.label)) {
+                scope.configuration.axis.y2.label = scope.options.y2Axis.label;
+              } else {
+                scope.configuration.axis.y2.label = '';
+              }
+
+              //max value
+              if (!angular.isUndefined(scope.options.y2Axis.max)) {
+                scope.configuration.axis.y2.max = scope.options.y2Axis.max;
+              } else {
+                scope.configuration.axis.y2.max = null;
+              }
+
+              //min value
+              if (!angular.isUndefined(scope.options.y2Axis.min)) {
+                scope.configuration.axis.y2.min = scope.options.y2Axis.min;
+              } else {
+                scope.configuration.axis.y2.min = null;
+              }
+
+              //format
+              if (!angular.isUndefined(scope.options.y2Axis.displayFormat)) {
+                scope.configuration.axis.y2.tick.format = scope.options.y2Axis.displayFormat;
+              } else {
+                scope.configuration.axis.y2.tick.format = null;
+              }
+            }
+
+            // Tooltip
+            //
+            scope.configuration.tooltip.format = {};
+            if (scope.options.tooltip) {
+              if (scope.options.tooltip.displayFormat) {
+                scope.configuration.tooltip.format.value = scope.options.tooltip.displayFormat;
+              }
             }
 
             // Legend
@@ -283,7 +352,7 @@
             scope.configuration.grid.y.lines = [];
             scope.configuration.grid.x.lines = [];
 
-            if (scope.options.annotation) {
+            if (scope.options.annotation && scope.options.type !== 'pie' && scope.options.type !== 'donut') {
               scope.options.annotation.forEach(function (annotation) {
                 switch (annotation.axis) {
                   case 'x':
@@ -319,20 +388,10 @@
               scope.configuration.size = {};
             }
 
-            // expose resize function of c3 to outside
-            //
-            scope.options.resize = function (size) {
-              scope.options.size = size;
-              scope.configuration.size = size;
-              scope.chart.resize(size);
-            };
-
             // Zoom
             //
             if (scope.options.zoom) {
               scope.configuration.zoom.enabled = scope.options.zoom.enabled;
-            } else {
-              scope.options.zoom = {};
             }
 
             // callback for onzoom
@@ -359,8 +418,7 @@
 
             // Donut Options
             //
-            if(scope.options.donut)
-            {
+            if (scope.options.donut) {
               scope.configuration.donut = scope.options.donut;
             }
 
@@ -371,15 +429,6 @@
             // Draw chart
             //
             scope.chart = c3.generate(scope.configuration);
-
-
-            // Get Colors
-            //
-            if (scope.options.rows) {
-              scope.options.rows.forEach(function (element) {
-                element.color = scope.chart.color(element.key);
-              });
-            }
 
             // In-place editing
             //
@@ -534,13 +583,13 @@
                 index: index,
                 isOpen: false,
                 toggleOnClick: true,
-                background: show ? scope.options.rows[index].color : 'gray',
+                background: show ? scope.options.rows[index].color || scope.chart.color(scope.options.rows[index].key) : 'gray',
                 color: 'white',
                 size: '',
                 button: {
                   content: '',
-                  cssClass: typeIcons[scope.options.rows[index].type],
-                  background: show ? scope.options.rows[index].color : 'gray',
+                  cssClass: typeIcons[scope.options.rows[index].type] || typeIcons.spline,
+                  background: show ? scope.options.rows[index].color || scope.chart.color(scope.options.rows[index].key) : 'gray',
                   color: 'white',
                   size: 'small'
                 },
@@ -569,7 +618,7 @@
                   type: 'area-spline',
                   onclick: scope.switchType,
                   isActive: scope.options.rows[index].type === 'area' || scope.options.rows[index].type === 'area-spline',
-                  cssClass: typeIcons['area-spline'],
+                  cssClass: typeIcons['area-spline']
                 }, {
                   title: 'display data as bar chart',
                   type: 'bar',
@@ -610,25 +659,36 @@
             // handle chart event onselection
             addSelected: function (selection) {
               if (!this.avoidSelections) {
-                scope.$apply(
-                  scope.options.selection.selected.push(selection)
-                );
+                if (!angular.isObject(scope.options.selection)) {
+                  scope.options.selection = {};
+                }
+                if (!angular.isArray(scope.options.selection.selected)) {
+                  scope.options.selection.selected = [];
+                }
+
+                scope.$apply(function() {
+                  scope.options.selection.selected.push(selection);
+                });
                 if (scope.options.selection.onselected) {
-                  scope.options.selection.onselected();
+                  scope.$apply(function(){
+                    scope.options.selection.onselected();
+                  });
                 }
               }
             },
 
             // handle chart event onunselection
             removeSelected: function (selection) {
-              if (!this.avoidSelections) {
+              if (!this.avoidSelections && angular.isObject(scope.options.selection) && angular.isArray(scope.options.selection.selected)) {
                 scope.$apply(
                   scope.options.selection.selected = scope.options.selection.selected.filter(function (selected) {
                     return selected.id !== selection.id || selected.index !== selection.index;
                   })
                 );
                 if (scope.options.selection.onunselected) {
-                  scope.options.selection.onunselected();
+                  scope.$apply(function(){
+                    scope.options.selection.onunselected();
+                  });
                 }
               }
             },
@@ -662,7 +722,7 @@
                 oldSelections.forEach(function (old) {
                   if (old.id === elm.id && old.index === elm.index) {
                     isNew = false;
-                    return;
+                    return isNew;
                   }
                 });
                 return isNew;
@@ -674,7 +734,7 @@
                 newSelections.forEach(function (old) {
                   if (old.id === elm.id && old.index === elm.index) {
                     isOld = false;
-                    return;
+                    return isOld;
                   }
                 });
                 return isOld;
@@ -721,6 +781,11 @@
                 }
               }
 
+              // data watchLimit
+              if (angular.isObject(newValue.data) && !angular.isObject(oldValue.data) || !angular.equals(newValue.data, oldValue.data)) {
+                scope.startDatasetWatcher();
+              }
+
               scope.updateChart();
             }, true); // checks for changes inside options
           };
@@ -732,8 +797,10 @@
           //
           scope.startSmallDatasetWatcher = function () {
             return scope.$watchCollection('dataset', function (newValue, oldValue) {
-              scope.updateChart();
-              scope.startDatasetWatcher();
+              if (!angular.equals(newValue, oldValue)) {
+                scope.updateChart();
+                scope.startDatasetWatcher();
+              }
             });
           };
 
@@ -743,14 +810,22 @@
             return scope.$watch(function () {
               return scope.dataset.length;
             }, function (newValue, oldValue) {
-              scope.updateChart();
-              scope.startDatasetWatcher();
+              if (!angular.equals(newValue, oldValue)) {
+                scope.updateChart();
+                scope.startDatasetWatcher();
+              }
             });
           };
 
           // choose watcher for changes in datasets
           //
           scope.startDatasetWatcher = function () {
+            if (angular.isArray(scope.dataset)) {
+              scope.chooseDatasetWatcher();
+            }
+          };
+
+          scope.chooseDatasetWatcher = function () {
             var limit = (scope.options.data && scope.options.data.watchLimit) ? scope.options.data.watchLimit : 100;
             if (scope.dataset.length < limit) {
               // start small watcher
@@ -777,21 +852,34 @@
 
           // Registers a $destroy listeners for cleanup purposes
           //
-          scope.registerDestroyListener = function() {
-            scope.$on('$destroy', function() {
-                scope.chart.destroy();
-                element.remove();
+          scope.registerDestroyListener = function () {
+            scope.$on('$destroy', function () {
+              scope.chart.destroy();
+              element.remove();
             });
           };
 
           // startup
           scope.addIdentifier();
-          scope.updateChart();
 
-          scope.selections.performSelections(scope.options.selection.selected);
-          scope.startOptionsWatcher();
-          scope.startDatasetWatcher();
-          scope.registerDestroyListener();
+          $q.all([
+            $q.when(scope.dataset).then(function(data) {
+              scope.dataset = data;
+            }),
+            $q.when(scope.options).then(function(options) {
+              scope.options = options;
+            }),
+            $q.when(scope.schema).then(function(schema) {
+              scope.schema = schema;
+            })
+          ]).then(function(){
+            //if (angular.isObject(scope.options.selection)) {
+            //  scope.selections.performSelections(scope.options.selection.selected);
+            //}
+            scope.startOptionsWatcher();
+            scope.startDatasetWatcher();
+            scope.registerDestroyListener();
+          });
         }
       };
     }]);

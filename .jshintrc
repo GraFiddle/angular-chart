@@ -19,6 +19,7 @@
   "browser": true,
   "devel": true,
   "predef": [
-    "angular"
+    "angular",
+    "expect"
   ]
 }

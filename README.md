@@ -171,9 +171,44 @@ Shows the dropdown to choose which xAxis you want to use. Default: `false`
 Defines yAxis display.
 
 ---
-##### yAxis.label : String
+##### yAxis.label : String ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=yAxis&example=label)) 
 Label displayed for the [Y axis](http://c3js.org/samples/axes_label.html)
 
+---
+##### yAxis.min : String ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=yAxis&example=minmax))
+Lets you define the range for the [Y axis](http://c3js.org/samples/axes_y_range.html)
+
+---
+##### yAxis.max : String ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=yAxis&example=minmax))
+Lets you define the range for the [Y axis](http://c3js.org/samples/axes_y_range.html)
+
+---
+##### yAxis.displayFormat : function
+Set the tick format [Y axis](http://c3js.org/reference.html#axis-y-tick-format)
+e.g. yAxis.displayFormat = d3.format(".0%") to get a percentage format. 
+A reference of all d3 format functions can be found [here](https://github.com/mbostock/d3/wiki/Formatting)
+
+---
+#### y2Axis : Object
+Defines y2Axis display.
+
+---
+##### y2Axis.label : String
+Label displayed for the [Y2 axis](http://c3js.org/samples/axes_label.html)
+
+---
+##### y2Axis.min : String
+Lets you define the range for the [Y2 axis](http://c3js.org/samples/axes_y_range.html)
+
+---
+##### y2Axis.max : String
+Lets you define the range for the [Y2 axis](http://c3js.org/samples/axes_y_range.html)
+
+---
+##### yAxis.displayFormat : function
+Set the tick format [Y2 axis](http://c3js.org/reference.html#axis-y-tick-format)
+e.g. y2Axis.displayFormat = d3.format(".0%") to get a percentage format. 
+A reference of all d3 format functions can be found [here](https://github.com/mbostock/d3/wiki/Formatting)
 
 ---
 #### size : Object
@@ -186,11 +221,6 @@ A fixed height of the chart.
 ---
 ##### size.width : Int ([see example](http://maxklenk.github.io/angular-chart/examples.html#?category=size&example=width))
 A fixed width of the chart.
-
-
----
-#### resize: function(size)
-Resize the chart, to a provided size or without parameters to fill the suronding element.
 
 
 ---
@@ -229,7 +259,15 @@ The current zoomed in range can get and set here. Works also for the subchart.
 ##### zoom.onzoom : function
 Callback whenever a zoom event is fired. Works also for the subchart.
 
+---
+#### tooltip : Object
+Defines the tooltip.
 
+---
+##### tooltip.displayFormat : function 
+Defines the format for the numbers in the tooltip. 
+e.g. tooltip.displayFormat = d3.format(".0%") to get a percentage format. 
+A reference of all d3 format functions can be found [here](https://github.com/mbostock/d3/wiki/Formatting)
 
 ---
 #### legend : Object

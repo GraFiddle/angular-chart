@@ -216,6 +216,38 @@ var exampleCategories = {
     }
   },
 
+  'yAxis': {
+    slug: 'yAxis',
+    title: 'y-Axis',
+    examples: {
+      'single': {
+        slug: 'minmax',
+        title: 'minimal / maximal',
+        subtitle: '',
+        description: 'Choose where the y-Axis should start and end.',
+        options: {
+          rows: rows,
+          yAxis: {
+            min: 100,
+            max: 400
+          }
+        }
+      },
+      'multiple': {
+        slug: 'label',
+        title: 'Custom Label',
+        subtitle: '',
+        description: 'Add a label for your axis.',
+        options: {
+          rows: rows,
+          yAxis: {
+            label: 'The amazing Axis'
+          }
+        }
+      }
+    }
+  },
+
 };
 
 // To be Added
