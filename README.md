@@ -224,11 +224,6 @@ A fixed width of the chart.
 
 
 ---
-#### resize: function(size)
-Resize the chart, to a provided size or without parameters to fill the suronding element.
-
-
----
 #### groups : Array
 Stacks bar together, like in this [example](http://c3js.org/samples/chart_bar_stacked.html).
 

@@ -161,11 +161,6 @@
           // generate or update chart with options
           //
           scope.updateChart = function () {
-            // Options
-            scope.options.selection = scope.options.selection ? scope.options.selection : {};
-            scope.options.selection.selected = scope.options.selection.selected ? scope.options.selection.selected : [];
-
-
             // Add data
             delete scope.configuration.data.columns;
             delete scope.configuration.data.rows;
@@ -185,9 +180,6 @@
 
             // Chart type
             //
-            if (!scope.options.type) {
-              scope.options.type = 'line';
-            }
             scope.configuration.data.type = scope.options.type;
 
             // Add lines
@@ -220,11 +212,10 @@
                 }
 
                 // axis
-                if (!element.axis || element.axis !== 'y2') {
-                  element.axis = 'y';
+                if (element.axis) {
+                  scope.configuration.data.axes[element.key] = element.axis;
+                  scope.configuration.axis[element.axis].show = true;
                 }
-                scope.configuration.data.axes[element.key] = element.axis;
-                scope.configuration.axis[element.axis].show = true;
               });
 
             }
@@ -450,20 +441,10 @@
               scope.configuration.size = {};
             }
 
-            // expose resize function of c3 to outside
-            //
-            scope.options.resize = function (size) {
-              scope.options.size = size;
-              scope.configuration.size = size;
-              scope.chart.resize(size);
-            };
-
             // Zoom
             //
             if (scope.options.zoom) {
               scope.configuration.zoom.enabled = scope.options.zoom.enabled;
-            } else {
-              scope.options.zoom = {};
             }
 
             // callback for onzoom
@@ -501,15 +482,6 @@
             // Draw chart
             //
             scope.chart = c3.generate(scope.configuration);
-
-
-            // Get Colors
-            //
-            if (scope.options.rows) {
-              scope.options.rows.forEach(function (element) {
-                element.color = scope.chart.color(element.key);
-              });
-            }
 
             // In-place editing
             //
@@ -862,8 +834,10 @@
           //
           scope.startSmallDatasetWatcher = function () {
             return scope.$watchCollection('dataset', function (newValue, oldValue) {
-              scope.updateChart();
-              scope.startDatasetWatcher();
+              if (!angular.equals(newValue, oldValue)) {
+                scope.updateChart();
+                scope.startDatasetWatcher();
+              }
             });
           };
 
@@ -873,8 +847,10 @@
             return scope.$watch(function () {
               return scope.dataset.length;
             }, function (newValue, oldValue) {
-              scope.updateChart();
-              scope.startDatasetWatcher();
+              if (!angular.equals(newValue, oldValue)) {
+                scope.updateChart();
+                scope.startDatasetWatcher();
+              }
             });
           };
 
@@ -916,9 +892,9 @@
 
           // startup
           scope.addIdentifier();
-          scope.updateChart();
-
-          scope.selections.performSelections(scope.options.selection.selected);
+          if (scope.options.selection) {
+            scope.selections.performSelections(scope.options.selection.selected);
+          }
           scope.startOptionsWatcher();
           scope.startDatasetWatcher();
           scope.registerDestroyListener();
