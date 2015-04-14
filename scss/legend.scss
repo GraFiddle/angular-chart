@@ -19,6 +19,27 @@ $a-big-size: 14em;
 
 
 // -------------------------------------
+//   Label
+// -------------------------------------
+
+.customLegend-item {
+  padding: 10px;
+  display: inline-block;
+}
+
+.customLegend-label {
+  padding-left: 30px;
+  font-size: 20px;
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+
+// -------------------------------------
 //   Sizing
 // -------------------------------------
 

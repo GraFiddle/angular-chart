@@ -66,7 +66,25 @@
   content: "\e009";
 }
 
-/* line 34, scss/legend.scss */
+/* line 25, scss/legend.scss */
+.customLegend-item {
+  padding: 10px;
+  display: inline-block;
+}
+
+/* line 30, scss/legend.scss */
+.customLegend-label {
+  padding-left: 30px;
+  font-size: 20px;
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+/* line 55, scss/legend.scss */
 .cn-button {
   margin-top: -1.5em;
   margin-left: -1.5em;
@@ -74,7 +92,7 @@
   height: 3em;
 }
 
-/* line 40, scss/legend.scss */
+/* line 61, scss/legend.scss */
 .cn-button.small {
   margin-top: -1em;
   margin-left: -1em;
@@ -82,7 +100,7 @@
   height: 2em;
 }
 
-/* line 46, scss/legend.scss */
+/* line 67, scss/legend.scss */
 .cn-button.big {
   margin-top: -2em;
   margin-left: -2em;
@@ -90,7 +108,7 @@
   height: 4em;
 }
 
-/* line 54, scss/legend.scss */
+/* line 75, scss/legend.scss */
 .cn-wrapper {
   margin-top: -8.75em;
   margin-left: -8.75em;
@@ -98,7 +116,7 @@
   height: 17.5em;
 }
 
-/* line 60, scss/legend.scss */
+/* line 81, scss/legend.scss */
 .cn-wrapper.small {
   margin-top: -7em;
   margin-left: -7em;
@@ -106,7 +124,7 @@
   height: 14em;
 }
 
-/* line 66, scss/legend.scss */
+/* line 87, scss/legend.scss */
 .cn-wrapper.big {
   margin-top: -12.25em;
   margin-left: -12.25em;
@@ -114,7 +132,7 @@
   height: 24.5em;
 }
 
-/* line 74, scss/legend.scss */
+/* line 95, scss/legend.scss */
 .cn-wrapper li {
   margin-top: -3.3em;
   margin-left: -10em;
@@ -122,7 +140,7 @@
   height: 10em;
 }
 
-/* line 80, scss/legend.scss */
+/* line 101, scss/legend.scss */
 .cn-wrapper.small li {
   margin-top: -2.6em;
   margin-left: -8em;
@@ -130,7 +148,7 @@
   height: 8em;
 }
 
-/* line 86, scss/legend.scss */
+/* line 107, scss/legend.scss */
 .cn-wrapper.big li {
   margin-top: -4.5em;
   margin-left: -14em;
@@ -138,7 +156,7 @@
   height: 14em;
 }
 
-/* line 93, scss/legend.scss */
+/* line 114, scss/legend.scss */
 .cn-wrapper li a {
   right: -5em;
   bottom: -5em;
@@ -146,7 +164,7 @@
   height: 10em;
 }
 
-/* line 99, scss/legend.scss */
+/* line 120, scss/legend.scss */
 .cn-wrapper.small li a {
   right: -4em;
   bottom: -4em;
@@ -154,7 +172,7 @@
   height: 8em;
 }
 
-/* line 105, scss/legend.scss */
+/* line 126, scss/legend.scss */
 .cn-wrapper.big li a {
   right: -7em;
   bottom: -7em;
@@ -162,7 +180,7 @@
   height: 14em;
 }
 
-/* line 117, scss/legend.scss */
+/* line 138, scss/legend.scss */
 circular *, .circular * {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -172,14 +190,14 @@ circular *, .circular * {
   position: relative;
 }
 
-/* line 126, scss/legend.scss */
+/* line 147, scss/legend.scss */
 circular, .circular {
   position: absolute;
   top: 100%;
   left: 50%;
 }
 
-/* line 137, scss/legend.scss */
+/* line 158, scss/legend.scss */
 .cn-button {
   position: absolute;
   top: 100%;
@@ -197,12 +215,12 @@ circular, .circular {
   -webkit-backface-visibility: hidden;
   outline: 0;
 }
-/* line 154, scss/legend.scss */
+/* line 175, scss/legend.scss */
 .cn-button:before {
   font-size: 24px;
 }
 
-/* line 162, scss/legend.scss */
+/* line 183, scss/legend.scss */
 .cn-wrapper {
   position: absolute;
   top: 100%;
@@ -220,7 +238,7 @@ circular, .circular {
   overflow: hidden;
 }
 
-/* line 179, scss/legend.scss */
+/* line 200, scss/legend.scss */
 .opened-nav {
   border-radius: 50%;
   opacity: 1;
@@ -233,7 +251,7 @@ circular, .circular {
   pointer-events: auto;
 }
 
-/* line 196, scss/legend.scss */
+/* line 217, scss/legend.scss */
 .cn-wrapper li {
   position: absolute;
   top: 50%;
@@ -248,7 +266,7 @@ circular, .circular {
   pointer-events: none;
 }
 
-/* line 210, scss/legend.scss */
+/* line 231, scss/legend.scss */
 .cn-wrapper li a {
   position: absolute;
   display: block;
@@ -266,26 +284,26 @@ circular, .circular {
   cursor: pointer;
 }
 
-/* line 227, scss/legend.scss */
+/* line 248, scss/legend.scss */
 .cn-wrapper li a.is-active {
   opacity: 1;
 }
 
-/* line 231, scss/legend.scss */
+/* line 252, scss/legend.scss */
 .cn-wrapper li a:hover,
 .cn-wrapper li a:active,
 .cn-wrapper li a:focus {
   opacity: 0.9;
 }
 
-/* line 237, scss/legend.scss */
+/* line 258, scss/legend.scss */
 .cn-wrapper li a.is-active:hover,
 .cn-wrapper li a.is-active:active,
 .cn-wrapper li a.is-active:focus {
   opacity: 0.9;
 }
 
-/* line 242, scss/legend.scss */
+/* line 263, scss/legend.scss */
 .cn-wrapper li a span {
   position: relative;
   top: 1.8em;
@@ -295,292 +313,292 @@ circular, .circular {
   text-transform: uppercase;
 }
 
-/* line 251, scss/legend.scss */
+/* line 272, scss/legend.scss */
 .opened-nav li {
   -webkit-transition: all .3s ease .3s;
   -moz-transition: all .3s ease .3s;
   transition: all .3s ease .3s;
 }
-/* line 255, scss/legend.scss */
+/* line 276, scss/legend.scss */
 .opened-nav li a:before {
   display: block;
   font-size: 24px;
 }
 
-/* line 274, scss/legend.scss */
+/* line 295, scss/legend.scss */
 .item-odd-left-5, .opened-nav.items-11 li:first-child {
   -webkit-transform: rotate(-85deg) skew(60deg);
   -ms-transform: rotate(-85deg) skew(60deg);
   transform: rotate(-85deg) skew(60deg);
 }
-/* line 276, scss/legend.scss */
+/* line 297, scss/legend.scss */
 .item-odd-left-5 a:before, .opened-nav.items-11 li:first-child a:before {
   -webkit-transform: rotate(160deg);
   -ms-transform: rotate(160deg);
   transform: rotate(160deg);
 }
 
-/* line 280, scss/legend.scss */
+/* line 301, scss/legend.scss */
 .item-odd-left-4, .opened-nav.items-9 li:first-child, .opened-nav.items-11 li:nth-child(2) {
   -webkit-transform: rotate(-53deg) skew(60deg);
   -ms-transform: rotate(-53deg) skew(60deg);
   transform: rotate(-53deg) skew(60deg);
 }
-/* line 282, scss/legend.scss */
+/* line 303, scss/legend.scss */
 .item-odd-left-4 a:before, .opened-nav.items-9 li:first-child a:before, .opened-nav.items-11 li:nth-child(2) a:before {
   -webkit-transform: rotate(128deg);
   -ms-transform: rotate(128deg);
   transform: rotate(128deg);
 }
 
-/* line 286, scss/legend.scss */
+/* line 307, scss/legend.scss */
 .item-odd-left-3, .opened-nav.items-7 li:first-child, .opened-nav.items-9 li:nth-child(2), .opened-nav.items-11 li:nth-child(3) {
   -webkit-transform: rotate(-21deg) skew(60deg);
   -ms-transform: rotate(-21deg) skew(60deg);
   transform: rotate(-21deg) skew(60deg);
 }
-/* line 288, scss/legend.scss */
+/* line 309, scss/legend.scss */
 .item-odd-left-3 a:before, .opened-nav.items-7 li:first-child a:before, .opened-nav.items-9 li:nth-child(2) a:before, .opened-nav.items-11 li:nth-child(3) a:before {
   -webkit-transform: rotate(96deg);
   -ms-transform: rotate(96deg);
   transform: rotate(96deg);
 }
 
-/* line 292, scss/legend.scss */
+/* line 313, scss/legend.scss */
 .item-odd-left-2, .opened-nav.items-5 li:first-child, .opened-nav.items-7 li:nth-child(2), .opened-nav.items-9 li:nth-child(3), .opened-nav.items-11 li:nth-child(4) {
   -webkit-transform: rotate(11deg) skew(60deg);
   -ms-transform: rotate(11deg) skew(60deg);
   transform: rotate(11deg) skew(60deg);
 }
-/* line 294, scss/legend.scss */
+/* line 315, scss/legend.scss */
 .item-odd-left-2 a:before, .opened-nav.items-5 li:first-child a:before, .opened-nav.items-7 li:nth-child(2) a:before, .opened-nav.items-9 li:nth-child(3) a:before, .opened-nav.items-11 li:nth-child(4) a:before {
   -webkit-transform: rotate(64deg);
   -ms-transform: rotate(64deg);
   transform: rotate(64deg);
 }
 
-/* line 298, scss/legend.scss */
+/* line 319, scss/legend.scss */
 .item-odd-left-1, .opened-nav.items-3 li:first-child, .opened-nav.items-5 li:nth-child(2), .opened-nav.items-7 li:nth-child(3), .opened-nav.items-9 li:nth-child(4), .opened-nav.items-11 li:nth-child(5) {
   -webkit-transform: rotate(43deg) skew(60deg);
   -ms-transform: rotate(43deg) skew(60deg);
   transform: rotate(43deg) skew(60deg);
 }
-/* line 300, scss/legend.scss */
+/* line 321, scss/legend.scss */
 .item-odd-left-1 a:before, .opened-nav.items-3 li:first-child a:before, .opened-nav.items-5 li:nth-child(2) a:before, .opened-nav.items-7 li:nth-child(3) a:before, .opened-nav.items-9 li:nth-child(4) a:before, .opened-nav.items-11 li:nth-child(5) a:before {
   -webkit-transform: rotate(32deg);
   -ms-transform: rotate(32deg);
   transform: rotate(32deg);
 }
 
-/* line 304, scss/legend.scss */
+/* line 325, scss/legend.scss */
 .item-odd-center, .cn-wrapper li, .opened-nav.items-1 li:first-child, .opened-nav.items-3 li:nth-child(2), .opened-nav.items-5 li:nth-child(3), .opened-nav.items-7 li:nth-child(4), .opened-nav.items-9 li:nth-child(5), .opened-nav.items-11 li:nth-child(6) {
   -webkit-transform: rotate(75deg) skew(60deg);
   -ms-transform: rotate(75deg) skew(60deg);
   transform: rotate(75deg) skew(60deg);
 }
-/* line 306, scss/legend.scss */
+/* line 327, scss/legend.scss */
 .item-odd-center a:before, .cn-wrapper li a:before, .opened-nav.items-1 li:first-child a:before, .opened-nav.items-3 li:nth-child(2) a:before, .opened-nav.items-5 li:nth-child(3) a:before, .opened-nav.items-7 li:nth-child(4) a:before, .opened-nav.items-9 li:nth-child(5) a:before, .opened-nav.items-11 li:nth-child(6) a:before {
   -webkit-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
 
-/* line 310, scss/legend.scss */
+/* line 331, scss/legend.scss */
 .item-odd-right-1, .opened-nav.items-3 li:nth-child(3), .opened-nav.items-5 li:nth-child(4), .opened-nav.items-7 li:nth-child(5), .opened-nav.items-9 li:nth-child(6), .opened-nav.items-11 li:nth-child(7) {
   -webkit-transform: rotate(107deg) skew(60deg);
   -ms-transform: rotate(107deg) skew(60deg);
   transform: rotate(107deg) skew(60deg);
 }
-/* line 312, scss/legend.scss */
+/* line 333, scss/legend.scss */
 .item-odd-right-1 a:before, .opened-nav.items-3 li:nth-child(3) a:before, .opened-nav.items-5 li:nth-child(4) a:before, .opened-nav.items-7 li:nth-child(5) a:before, .opened-nav.items-9 li:nth-child(6) a:before, .opened-nav.items-11 li:nth-child(7) a:before {
   -webkit-transform: rotate(-32deg);
   -ms-transform: rotate(-32deg);
   transform: rotate(-32deg);
 }
 
-/* line 316, scss/legend.scss */
+/* line 337, scss/legend.scss */
 .item-odd-right-2, .opened-nav.items-5 li:nth-child(5), .opened-nav.items-7 li:nth-child(6), .opened-nav.items-9 li:nth-child(7), .opened-nav.items-11 li:nth-child(8) {
   -webkit-transform: rotate(139deg) skew(60deg);
   -ms-transform: rotate(139deg) skew(60deg);
   transform: rotate(139deg) skew(60deg);
 }
-/* line 318, scss/legend.scss */
+/* line 339, scss/legend.scss */
 .item-odd-right-2 a:before, .opened-nav.items-5 li:nth-child(5) a:before, .opened-nav.items-7 li:nth-child(6) a:before, .opened-nav.items-9 li:nth-child(7) a:before, .opened-nav.items-11 li:nth-child(8) a:before {
   -webkit-transform: rotate(-64deg);
   -ms-transform: rotate(-64deg);
   transform: rotate(-64deg);
 }
 
-/* line 322, scss/legend.scss */
+/* line 343, scss/legend.scss */
 .item-odd-right-3, .opened-nav.items-7 li:nth-child(7), .opened-nav.items-9 li:nth-child(8), .opened-nav.items-11 li:nth-child(9) {
   -webkit-transform: rotate(171deg) skew(60deg);
   -ms-transform: rotate(171deg) skew(60deg);
   transform: rotate(171deg) skew(60deg);
 }
-/* line 324, scss/legend.scss */
+/* line 345, scss/legend.scss */
 .item-odd-right-3 a:before, .opened-nav.items-7 li:nth-child(7) a:before, .opened-nav.items-9 li:nth-child(8) a:before, .opened-nav.items-11 li:nth-child(9) a:before {
   -webkit-transform: rotate(-96deg);
   -ms-transform: rotate(-96deg);
   transform: rotate(-96deg);
 }
 
-/* line 328, scss/legend.scss */
+/* line 349, scss/legend.scss */
 .item-odd-right-4, .opened-nav.items-9 li:nth-child(9), .opened-nav.items-11 li:nth-child(10) {
   -webkit-transform: rotate(203deg) skew(60deg);
   -ms-transform: rotate(203deg) skew(60deg);
   transform: rotate(203deg) skew(60deg);
 }
-/* line 330, scss/legend.scss */
+/* line 351, scss/legend.scss */
 .item-odd-right-4 a:before, .opened-nav.items-9 li:nth-child(9) a:before, .opened-nav.items-11 li:nth-child(10) a:before {
   -webkit-transform: rotate(-128deg);
   -ms-transform: rotate(-128deg);
   transform: rotate(-128deg);
 }
 
-/* line 334, scss/legend.scss */
+/* line 355, scss/legend.scss */
 .item-odd-right-5, .opened-nav.items-11 li:nth-child(11) {
   -webkit-transform: rotate(235deg) skew(60deg);
   -ms-transform: rotate(235deg) skew(60deg);
   transform: rotate(235deg) skew(60deg);
 }
-/* line 336, scss/legend.scss */
+/* line 357, scss/legend.scss */
 .item-odd-right-5 a:before, .opened-nav.items-11 li:nth-child(11) a:before {
   -webkit-transform: rotate(-160deg);
   -ms-transform: rotate(-160deg);
   transform: rotate(-160deg);
 }
 
-/* line 342, scss/legend.scss */
+/* line 363, scss/legend.scss */
 .item-even-left-5, .opened-nav.items-10 li:first-child {
   -webkit-transform: rotate(-69deg) skew(60deg);
   -ms-transform: rotate(-69deg) skew(60deg);
   transform: rotate(-69deg) skew(60deg);
 }
-/* line 344, scss/legend.scss */
+/* line 365, scss/legend.scss */
 .item-even-left-5 a:before, .opened-nav.items-10 li:first-child a:before {
   -webkit-transform: rotate(144deg);
   -ms-transform: rotate(144deg);
   transform: rotate(144deg);
 }
 
-/* line 348, scss/legend.scss */
+/* line 369, scss/legend.scss */
 .item-even-left-4, .opened-nav.items-8 li:first-child, .opened-nav.items-10 li:nth-child(2) {
   -webkit-transform: rotate(-37deg) skew(60deg);
   -ms-transform: rotate(-37deg) skew(60deg);
   transform: rotate(-37deg) skew(60deg);
 }
-/* line 350, scss/legend.scss */
+/* line 371, scss/legend.scss */
 .item-even-left-4 a:before, .opened-nav.items-8 li:first-child a:before, .opened-nav.items-10 li:nth-child(2) a:before {
   -webkit-transform: rotate(112deg);
   -ms-transform: rotate(112deg);
   transform: rotate(112deg);
 }
 
-/* line 354, scss/legend.scss */
+/* line 375, scss/legend.scss */
 .item-even-left-3, .opened-nav.items-6 li:first-child, .opened-nav.items-8 li:nth-child(2), .opened-nav.items-10 li:nth-child(3) {
   -webkit-transform: rotate(-5deg) skew(60deg);
   -ms-transform: rotate(-5deg) skew(60deg);
   transform: rotate(-5deg) skew(60deg);
 }
-/* line 356, scss/legend.scss */
+/* line 377, scss/legend.scss */
 .item-even-left-3 a:before, .opened-nav.items-6 li:first-child a:before, .opened-nav.items-8 li:nth-child(2) a:before, .opened-nav.items-10 li:nth-child(3) a:before {
   -webkit-transform: rotate(80deg);
   -ms-transform: rotate(80deg);
   transform: rotate(80deg);
 }
 
-/* line 360, scss/legend.scss */
+/* line 381, scss/legend.scss */
 .item-even-left-2, .opened-nav.items-4 li:first-child, .opened-nav.items-6 li:nth-child(2), .opened-nav.items-8 li:nth-child(3), .opened-nav.items-10 li:nth-child(4) {
   -webkit-transform: rotate(27deg) skew(60deg);
   -ms-transform: rotate(27deg) skew(60deg);
   transform: rotate(27deg) skew(60deg);
 }
-/* line 362, scss/legend.scss */
+/* line 383, scss/legend.scss */
 .item-even-left-2 a:before, .opened-nav.items-4 li:first-child a:before, .opened-nav.items-6 li:nth-child(2) a:before, .opened-nav.items-8 li:nth-child(3) a:before, .opened-nav.items-10 li:nth-child(4) a:before {
   -webkit-transform: rotate(48deg);
   -ms-transform: rotate(48deg);
   transform: rotate(48deg);
 }
 
-/* line 366, scss/legend.scss */
+/* line 387, scss/legend.scss */
 .item-even-left-1, .opened-nav.items-2 li:first-child, .opened-nav.items-4 li:nth-child(2), .opened-nav.items-6 li:nth-child(3), .opened-nav.items-8 li:nth-child(4), .opened-nav.items-10 li:nth-child(5) {
   -webkit-transform: rotate(59deg) skew(60deg);
   -ms-transform: rotate(59deg) skew(60deg);
   transform: rotate(59deg) skew(60deg);
 }
-/* line 368, scss/legend.scss */
+/* line 389, scss/legend.scss */
 .item-even-left-1 a:before, .opened-nav.items-2 li:first-child a:before, .opened-nav.items-4 li:nth-child(2) a:before, .opened-nav.items-6 li:nth-child(3) a:before, .opened-nav.items-8 li:nth-child(4) a:before, .opened-nav.items-10 li:nth-child(5) a:before {
   -webkit-transform: rotate(16deg);
   -ms-transform: rotate(16deg);
   transform: rotate(16deg);
 }
 
-/* line 372, scss/legend.scss */
+/* line 393, scss/legend.scss */
 .item-even-right-1, .opened-nav.items-2 li:nth-child(2), .opened-nav.items-4 li:nth-child(3), .opened-nav.items-6 li:nth-child(4), .opened-nav.items-8 li:nth-child(5), .opened-nav.items-10 li:nth-child(6) {
   -webkit-transform: rotate(91deg) skew(60deg);
   -ms-transform: rotate(91deg) skew(60deg);
   transform: rotate(91deg) skew(60deg);
 }
-/* line 374, scss/legend.scss */
+/* line 395, scss/legend.scss */
 .item-even-right-1 a:before, .opened-nav.items-2 li:nth-child(2) a:before, .opened-nav.items-4 li:nth-child(3) a:before, .opened-nav.items-6 li:nth-child(4) a:before, .opened-nav.items-8 li:nth-child(5) a:before, .opened-nav.items-10 li:nth-child(6) a:before {
   -webkit-transform: rotate(-16deg);
   -ms-transform: rotate(-16deg);
   transform: rotate(-16deg);
 }
 
-/* line 378, scss/legend.scss */
+/* line 399, scss/legend.scss */
 .item-even-right-2, .opened-nav.items-4 li:nth-child(4), .opened-nav.items-6 li:nth-child(5), .opened-nav.items-8 li:nth-child(6), .opened-nav.items-10 li:nth-child(7) {
   -webkit-transform: rotate(123deg) skew(60deg);
   -ms-transform: rotate(123deg) skew(60deg);
   transform: rotate(123deg) skew(60deg);
 }
-/* line 380, scss/legend.scss */
+/* line 401, scss/legend.scss */
 .item-even-right-2 a:before, .opened-nav.items-4 li:nth-child(4) a:before, .opened-nav.items-6 li:nth-child(5) a:before, .opened-nav.items-8 li:nth-child(6) a:before, .opened-nav.items-10 li:nth-child(7) a:before {
   -webkit-transform: rotate(-48deg);
   -ms-transform: rotate(-48deg);
   transform: rotate(-48deg);
 }
 
-/* line 384, scss/legend.scss */
+/* line 405, scss/legend.scss */
 .item-even-right-3, .opened-nav.items-6 li:nth-child(6), .opened-nav.items-8 li:nth-child(7), .opened-nav.items-10 li:nth-child(8) {
   -webkit-transform: rotate(155deg) skew(60deg);
   -ms-transform: rotate(155deg) skew(60deg);
   transform: rotate(155deg) skew(60deg);
 }
-/* line 386, scss/legend.scss */
+/* line 407, scss/legend.scss */
 .item-even-right-3 a:before, .opened-nav.items-6 li:nth-child(6) a:before, .opened-nav.items-8 li:nth-child(7) a:before, .opened-nav.items-10 li:nth-child(8) a:before {
   -webkit-transform: rotate(-80deg);
   -ms-transform: rotate(-80deg);
   transform: rotate(-80deg);
 }
 
-/* line 390, scss/legend.scss */
+/* line 411, scss/legend.scss */
 .item-even-right-4, .opened-nav.items-8 li:nth-child(8), .opened-nav.items-10 li:nth-child(9) {
   -webkit-transform: rotate(187deg) skew(60deg);
   -ms-transform: rotate(187deg) skew(60deg);
   transform: rotate(187deg) skew(60deg);
 }
-/* line 392, scss/legend.scss */
+/* line 413, scss/legend.scss */
 .item-even-right-4 a:before, .opened-nav.items-8 li:nth-child(8) a:before, .opened-nav.items-10 li:nth-child(9) a:before {
   -webkit-transform: rotate(-112deg);
   -ms-transform: rotate(-112deg);
   transform: rotate(-112deg);
 }
 
-/* line 396, scss/legend.scss */
+/* line 417, scss/legend.scss */
 .item-even-right-5, .opened-nav.items-10 li:nth-child(10) {
   -webkit-transform: rotate(219deg) skew(60deg);
   -ms-transform: rotate(219deg) skew(60deg);
   transform: rotate(219deg) skew(60deg);
 }
-/* line 398, scss/legend.scss */
+/* line 419, scss/legend.scss */
 .item-even-right-5 a:before, .opened-nav.items-10 li:nth-child(10) a:before {
   -webkit-transform: rotate(-144deg);
   -ms-transform: rotate(-144deg);
   transform: rotate(-144deg);
 }
 
-/* line 408, scss/legend.scss */
+/* line 429, scss/legend.scss */
 .cn-wrapper li a {
   -webkit-transform: skew(-60deg) rotate(-75deg) scale(1);
   -ms-transform: skew(-60deg) rotate(-75deg) scale(1);
