@@ -401,11 +401,21 @@ describe('angularChart:', function () {
 
         });
 
-        describe('', function () {
-          it('', function () {
+        describe('On directive creation', function () {
+
+          it('check watch Limit.', function () {
             $scope.options.data = {
               watchLimit: 2
             };
+            chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
+
+            $scope.$digest();
+            // get elements scope
+            elementScope = $scope.getElementScope(chartElement);
+          });
+
+          it('handle invalid dataset.', function () {
+            $scope.dataset = {};
             chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
 
             $scope.$digest();

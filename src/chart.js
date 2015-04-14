@@ -8,7 +8,7 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   var angularChart = angular.module('angularChart', ['angularCircularNavigation'])
-    .directive('angularchart', ['$compile', function ($compile) {
+    .directive('angularchart', ['$compile', '$q', function ($compile, $q) {
 
       var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
       var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require('d3') : undefined;
@@ -112,14 +112,18 @@
             delete scope.configuration.data.rows;
             delete scope.configuration.data.json;
 
-            if (scope.options.data && scope.options.data.orientation === 'columns') {
-              scope.configuration.data.columns = scope.dataset;
-            } else if (scope.options.data && scope.options.data.orientation === 'rows') {
-              scope.configuration.data.rows = scope.dataset;
-            } else {
-              scope.configuration.data.json = scope.dataset;
+            var data = scope.dataset;
+            if (!angular.isArray(data)) {
+              data = [];
             }
 
+            if (scope.options.data && scope.options.data.orientation === 'columns') {
+              scope.configuration.data.columns = data;
+            } else if (scope.options.data && scope.options.data.orientation === 'rows') {
+              scope.configuration.data.rows = data;
+            } else {
+              scope.configuration.data.json = data;
+            }
 
             // Chart type
             //
@@ -854,12 +858,25 @@
 
           // startup
           scope.addIdentifier();
-          //if (angular.isObject(scope.options.selection)) {
-          //  scope.selections.performSelections(scope.options.selection.selected);
-          //}
-          scope.startOptionsWatcher();
-          scope.startDatasetWatcher();
-          scope.registerDestroyListener();
+
+          $q.all([
+            $q.when(scope.dataset).then(function(data) {
+              scope.dataset = data;
+            }),
+            $q.when(scope.options).then(function(options) {
+              scope.options = options;
+            }),
+            $q.when(scope.schema).then(function(schema) {
+              scope.schema = schema;
+            })
+          ]).then(function(){
+            //if (angular.isObject(scope.options.selection)) {
+            //  scope.selections.performSelections(scope.options.selection.selected);
+            //}
+            scope.startOptionsWatcher();
+            scope.startDatasetWatcher();
+            scope.registerDestroyListener();
+          });
         }
       };
     }]);
