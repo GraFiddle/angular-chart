@@ -205,6 +205,7 @@
                 if (!element.type) {
                   element.type = scope.options.type;
                 }
+
                 scope.configuration.data.types[element.key] = element.type;
 
                 // color
@@ -405,7 +406,7 @@
             scope.configuration.grid.y.lines = [];
             scope.configuration.grid.x.lines = [];
 
-            if (scope.options.annotation) {
+            if (scope.options.annotation && scope.options.type !== 'pie' && scope.options.type !== 'donut') {
               scope.options.annotation.forEach(function (annotation) {
                 switch (annotation.axis) {
                   case 'x':
