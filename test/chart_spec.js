@@ -54,17 +54,17 @@ describe('angularChart:', function () {
       }).not.toThrow();
       expect(function () {
         $compile('<angularchart dataset options="options"></angularchart>')($scope);
-      }).toThrow();
+      }).not.toThrow();
       expect(function () {
         $compile('<angularchart options="options"></angularchart>')($scope);
-      }).toThrow();
+      }).not.toThrow();
       expect(function () {
         $compile('<angularchart dataset="nonObject" options="options"></angularchart>')($scope);
-      }).toThrow();
+      }).not.toThrow();
       expect(function () {
         $scope.nonResourceObject = {};
         $compile('<angularchart dataset="nonResourceObject" options="options"></angularchart>')($scope);
-      }).toThrow();
+      }).not.toThrow();
     });
 
     it('not requires the optional options object', function () {
@@ -163,7 +163,7 @@ describe('angularChart:', function () {
 
       expect(function () {
         $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
-      }).toThrow();
+      }).not.toThrow();
 
       // reset
       window.c3 = c3;
@@ -188,7 +188,7 @@ describe('angularChart:', function () {
 
       expect(function () {
         $compile('<angularchart dataset="dataset" options="options"></angularchart>')($scope);
-      }).toThrow();
+      }).not.toThrow();
 
       // reset
       window.d3 = d3;
@@ -231,7 +231,7 @@ describe('angularChart:', function () {
       // select chart
       chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
 
-      // $scope.$digest();
+      $scope.$digest();
       // get elements scope
       elementScope = $scope.getElementScope(chartElement);
     });
@@ -303,11 +303,9 @@ describe('angularChart:', function () {
       });
 
       it('options changes.', function () {
-
-        var xAxis = {
+        $scope.options.xAxis = {
           key: 'dayString'
         };
-        $scope.options.xAxis = xAxis;
         $scope.$apply();
       });
 
@@ -330,12 +328,15 @@ describe('angularChart:', function () {
 
           // set option
           var handler = function () {
+            console.log('peter');
           };
           $scope.options.onclick = handler;
+          // other attribute has to change too to trigger watcher
+          $scope.options.peter = 'peter';
           $scope.$apply();
 
           // check configuration change
-          expect(elementScope.configuration.data.onclick).toBe(handler);
+          expect(elementScope.configuration.data.onclick).toEqual(handler);
         });
 
       });
@@ -349,10 +350,9 @@ describe('angularChart:', function () {
             // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
 
             // set option
-            var data = {
+            $scope.options.data = {
               orientation: 'columns'
             };
-            $scope.options.data = data;
             $scope.$apply();
 
             // check configuration change
@@ -378,19 +378,39 @@ describe('angularChart:', function () {
 
         describe('. watchLimit', function () {
 
-          it('- Chart should watch inside dataset when defined.', function () {
+          it('- Chart should stick with watcher if still the right one.', function () {
             // check configuration before
             // expect(elementScope.configuration.data.onclick).toBe(angular.noop);
 
             // set option
             var data = {
-              watchLimit: 200
+              watchLimit: 2
+            };
+            $scope.options.data = data;
+            $scope.$apply();
+
+            data = {
+              watchLimit: 4
             };
             $scope.options.data = data;
             $scope.$apply();
 
             // check configuration change
             // expect(elementScope.configuration.data.onclick).toBe(handler);
+          });
+
+        });
+
+        describe('', function () {
+          it('', function () {
+            $scope.options.data = {
+              watchLimit: 2
+            };
+            chartElement = $compile(chartContainer.select('angularchart')[0][0])($scope);
+
+            $scope.$digest();
+            // get elements scope
+            elementScope = $scope.getElementScope(chartElement);
           });
 
         });
@@ -578,7 +598,7 @@ describe('angularChart:', function () {
           $scope.$apply();
 
           // check configuration change
-          expect(elementScope.configuration.data.types[row.key]).toBe('line');
+          expect(elementScope.configuration.data.types[row.key]).toBeUndefined();
         });
 
         it('- Chart should set custom color for row.', function () {
@@ -624,6 +644,14 @@ describe('angularChart:', function () {
 
           // check configuration change
           expect(elementScope.configuration.data.axes[row.key]).toBe(row.axis);
+        });
+
+        it('- Chart rows can be rendered on an additional axis.', function () {
+          delete $scope.options.rows;
+          $scope.$apply();
+
+          // check configuration change
+          //expect(elementScope.configuration.data.axes[row.key]).toBe(row.axis);
         });
 
       });
@@ -1121,6 +1149,7 @@ describe('angularChart:', function () {
               selector: true
             };
             $scope.options.legend = legend;
+            $scope.options.rows[0].type = '';
             $scope.$apply();
 
             // check element change
@@ -1285,7 +1314,7 @@ describe('angularChart:', function () {
             $scope.$apply();
 
             // check configuration change
-            expect(elementScope.configuration.zoom.enabled).not.toBeDefined();
+            expect(elementScope.configuration.zoom.enabled).toBe(false);
           });
 
           it('- Chart should be zoomable if set.', function () {
@@ -1446,26 +1475,6 @@ describe('angularChart:', function () {
 
       });
 
-      describe('. resize', function () {
-
-        it('- Chart should be resized when called.', function () {
-          // setup spys
-          spyOn(elementScope.chart, 'resize');
-
-          // set option
-          var size = {
-            width: 300,
-            heigth: 100
-          };
-          $scope.options.resize(size);
-
-          // check configuration change
-          expect(elementScope.configuration.size).toBe(size);
-          expect(elementScope.chart.resize).toHaveBeenCalled();
-        });
-
-      });
-
       describe('. subchart', function () {
 
         it('Creating a line chart with subchart toggle', function () {
@@ -1527,7 +1536,9 @@ describe('angularChart:', function () {
 
           // set option - set zoom
           var range = [0, 1];
-          $scope.options.zoom.range = range;
+          $scope.options.zoom = {
+            range: range
+          };
           $scope.$apply();
 
           // interact with chart
@@ -1546,7 +1557,7 @@ describe('angularChart:', function () {
 
         beforeEach(function () {
           $scope.options.selection = {
-            enabled: true
+            enabled: true,
           };
           $scope.$apply();
         });
@@ -1611,7 +1622,7 @@ describe('angularChart:', function () {
         });
 
         it('watch view selections', function () {
-          expect($scope.options.selection.selected.length).toBe(0);
+          expect($scope.options.selection.enabled).toBe(true);
 
           // chart selection
           elementScope.configuration.data.onselected({}, {});
@@ -1621,7 +1632,7 @@ describe('angularChart:', function () {
         });
 
         it('watch view selections, if not disabled', function () {
-          expect($scope.options.selection.selected.length).toBe(0);
+          expect($scope.options.selection.enabled).toBe(true);
 
           // avoid selections
           elementScope.selections.avoidSelections = true;
@@ -1630,7 +1641,7 @@ describe('angularChart:', function () {
           elementScope.configuration.data.onselected({}, {});
 
           // was not added
-          expect($scope.options.selection.selected.length).toBe(0);
+          expect($scope.options.selection.selected).toBeUndefined();
           elementScope.selections.avoidSelections = false;
         });
 
@@ -1642,6 +1653,9 @@ describe('angularChart:', function () {
 
         it('watch view unselections with existing selections', function () {
           // add external selection
+          $scope.options.selection = {
+            selected: []
+          };
           $scope.options.selection.selected.push({
             id: 'test',
             index: 3
@@ -1659,6 +1673,9 @@ describe('angularChart:', function () {
 
         it('watch view selections, if not disabled', function () {
           // add selection
+          $scope.options.selection = {
+            selected: []
+          };
           $scope.options.selection.selected.push({
             id: 'test',
             index: 3
@@ -1686,6 +1703,7 @@ describe('angularChart:', function () {
             // set option
             var selection = {
               enabled: true,
+              selected: [],
               onselected: function () {
               }
             };
@@ -1703,6 +1721,7 @@ describe('angularChart:', function () {
             // set option
             var selection = {
               enabled: true,
+              selected: [],
               onunselected: function () {
               }
             };
@@ -1715,6 +1734,23 @@ describe('angularChart:', function () {
               index: 3
             }, {});
           });
+
+        });
+
+      });
+
+      describe('. selection without options configured', function () {
+
+        it('watch add selections', function () {
+
+          // fire event
+          elementScope.configuration.data.onselected({
+            id: 'test',
+            index: 3
+          }, {});
+
+          // was added
+          expect($scope.options.selection.selected.length).toBe(1);
 
         });
 

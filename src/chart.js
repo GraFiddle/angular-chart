@@ -111,16 +111,13 @@
             delete scope.configuration.data.columns;
             delete scope.configuration.data.rows;
             delete scope.configuration.data.json;
-            if (!scope.dataset) {
-              throw 'No data provided. The dataset has to be an array with the records.';
+
+            if (scope.options.data && scope.options.data.orientation === 'columns') {
+              scope.configuration.data.columns = scope.dataset;
+            } else if (scope.options.data && scope.options.data.orientation === 'rows') {
+              scope.configuration.data.rows = scope.dataset;
             } else {
-              if (scope.options.data && scope.options.data.orientation === 'columns') {
-                scope.configuration.data.columns = scope.dataset;
-              } else if (scope.options.data && scope.options.data.orientation === 'rows') {
-                scope.configuration.data.rows = scope.dataset;
-              } else {
-                scope.configuration.data.json = scope.dataset;
-              }
+              scope.configuration.data.json = scope.dataset;
             }
 
 
@@ -133,7 +130,7 @@
             scope.configuration.axis.y.show = false;
             scope.configuration.axis.y2.show = false;
             scope.configuration.data.keys.value = [];
-            if (scope.options.rows) {
+            if (angular.isArray(scope.options.rows)) {
               scope.options.rows.forEach(function (element) {
                 if (element.show === undefined || element.show) {
                   scope.configuration.data.keys.value.push(element.key);
@@ -173,17 +170,18 @@
               scope.configuration.data.selection.enabled = scope.options.selection.enabled;
               scope.configuration.data.selection.multiple = scope.options.selection.multiple;
             }
-            if (scope.options.xAxis && scope.options.xAxis.key) {
-              // key selection changed?
-              if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
-                scope.options.selection.selected = [];
-              }
-            }
+            //if (scope.options.selection && scope.options.xAxis && scope.options.xAxis.key) {
+            //  // key selection changed?
+            //  if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
+            //    scope.options.selection.selected = [];
+            //  }
+            //}
 
 
             // Add x-axis
             //
             scope.configuration.data.keys.x = '';
+            scope.configuration.data.x = '';
             scope.configuration.axis.x.type = 'category';
             scope.configuration.axis.x.tick.format = undefined;
             if (scope.options.xAxis && scope.options.xAxis.key) {
@@ -247,7 +245,7 @@
 
             // onclick
             //
-            if (scope.options.onclick) {
+            if (angular.isFunction(scope.options.onclick)) {
               scope.configuration.data.onclick = scope.options.onclick;
             } else {
               scope.configuration.data.onclick = angular.noop;
@@ -582,13 +580,13 @@
                 index: index,
                 isOpen: false,
                 toggleOnClick: true,
-                background: show ? scope.options.rows[index].color : 'gray',
+                background: show ? scope.options.rows[index].color || scope.chart.color(scope.options.rows[index].key) : 'gray',
                 color: 'white',
                 size: '',
                 button: {
                   content: '',
-                  cssClass: typeIcons[scope.options.rows[index].type],
-                  background: show ? scope.options.rows[index].color : 'gray',
+                  cssClass: typeIcons[scope.options.rows[index].type] || typeIcons.spline,
+                  background: show ? scope.options.rows[index].color || scope.chart.color(scope.options.rows[index].key) : 'gray',
                   color: 'white',
                   size: 'small'
                 },
@@ -617,7 +615,7 @@
                   type: 'area-spline',
                   onclick: scope.switchType,
                   isActive: scope.options.rows[index].type === 'area' || scope.options.rows[index].type === 'area-spline',
-                  cssClass: typeIcons['area-spline'],
+                  cssClass: typeIcons['area-spline']
                 }, {
                   title: 'display data as bar chart',
                   type: 'bar',
@@ -658,9 +656,16 @@
             // handle chart event onselection
             addSelected: function (selection) {
               if (!this.avoidSelections) {
-                scope.$apply(
-                  scope.options.selection.selected.push(selection)
-                );
+                if (!angular.isObject(scope.options.selection)) {
+                  scope.options.selection = {};
+                }
+                if (!angular.isArray(scope.options.selection.selected)) {
+                  scope.options.selection.selected = [];
+                }
+
+                scope.$apply(function() {
+                  scope.options.selection.selected.push(selection);
+                });
                 if (scope.options.selection.onselected) {
                   scope.options.selection.onselected();
                 }
@@ -669,7 +674,7 @@
 
             // handle chart event onunselection
             removeSelected: function (selection) {
-              if (!this.avoidSelections) {
+              if (!this.avoidSelections && angular.isObject(scope.options.selection) && angular.isArray(scope.options.selection.selected)) {
                 scope.$apply(
                   scope.options.selection.selected = scope.options.selection.selected.filter(function (selected) {
                     return selected.id !== selection.id || selected.index !== selection.index;
@@ -710,7 +715,7 @@
                 oldSelections.forEach(function (old) {
                   if (old.id === elm.id && old.index === elm.index) {
                     isNew = false;
-                    return;
+                    return isNew;
                   }
                 });
                 return isNew;
@@ -722,7 +727,7 @@
                 newSelections.forEach(function (old) {
                   if (old.id === elm.id && old.index === elm.index) {
                     isOld = false;
-                    return;
+                    return isOld;
                   }
                 });
                 return isOld;
@@ -769,6 +774,11 @@
                 }
               }
 
+              // data watchLimit
+              if (angular.isObject(newValue.data) && !angular.isObject(oldValue.data) || !angular.equals(newValue.data, oldValue.data)) {
+                scope.startDatasetWatcher();
+              }
+
               scope.updateChart();
             }, true); // checks for changes inside options
           };
@@ -803,6 +813,12 @@
           // choose watcher for changes in datasets
           //
           scope.startDatasetWatcher = function () {
+            if (angular.isArray(scope.dataset)) {
+              scope.chooseDatasetWatcher();
+            }
+          };
+
+          scope.chooseDatasetWatcher = function () {
             var limit = (scope.options.data && scope.options.data.watchLimit) ? scope.options.data.watchLimit : 100;
             if (scope.dataset.length < limit) {
               // start small watcher
@@ -838,9 +854,9 @@
 
           // startup
           scope.addIdentifier();
-          if (scope.options.selection) {
-            scope.selections.performSelections(scope.options.selection.selected);
-          }
+          //if (angular.isObject(scope.options.selection)) {
+          //  scope.selections.performSelections(scope.options.selection.selected);
+          //}
           scope.startOptionsWatcher();
           scope.startDatasetWatcher();
           scope.registerDestroyListener();
