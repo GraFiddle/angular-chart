@@ -32,9 +32,9 @@ module.exports = function (grunt) {
     compass: {
       dist: {
         options: {
-          sassDir: 'scss',
-          specify: 'scss/angular-chart.scss', // only compile this
-          cssDir: '.',
+          sassDir: 'src/scss',
+          specify: 'src/scss/angular-chart.scss', // only compile this
+          cssDir: 'css'
         }
       }
     },
@@ -44,7 +44,7 @@ module.exports = function (grunt) {
     cssmin: {
       target: {
         files: {
-          'angular-chart.min.css': ['angular-chart.css']
+          'css/angular-chart.min.css': ['css/angular-chart.css']
         }
       }
     },
@@ -53,9 +53,9 @@ module.exports = function (grunt) {
     //
     concat: {
       dist: {
-        src: ['src/legend.js', 'src/chart.js'],
-        dest: 'angular-chart.js',
-      },
+        src: ['src/js/legend.js', 'src/js/chart.js'],
+        dest: 'angular-chart.js'
+      }
     },
 
     // Minifies the JavaScript code
@@ -63,7 +63,7 @@ module.exports = function (grunt) {
     uglify: {
       dist: {
         files: {
-          'angular-chart.min.js': ['src/legend.js', 'src/chart.js']
+          'angular-chart.min.js': ['src/js/legend.js', 'src/js/chart.js']
         }
       }
     },
@@ -101,7 +101,7 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       },
       gruntfile: 'Gruntfile.js',
-      src: 'src/*.js',
+      src: 'src/js/*.js',
       test: 'test/*.js',
       demo: 'demo/*.js'
     }
