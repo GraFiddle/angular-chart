@@ -3,19 +3,19 @@
   ICONS
  */
 @font-face {
-  font-family: "Flaticon";
-  src: url("fonts/flaticon.eot");
-  src: url("fonts/flaticon.eot#iefix") format("embedded-opentype"),
-  url("fonts/flaticon.woff") format("woff"),
-  url("fonts/flaticon.ttf") format("truetype"),
-  url("fonts/flaticon.svg") format("svg");
+  font-family: "ChartIconFont";
+  src: url("../fonts/chartIconFont.eot");
+  src: url("../fonts/chartIconFont.eot#iefix") format("embedded-opentype"),
+  url("../fonts/chartIconFont.woff") format("woff"),
+  url("../fonts/chartIconFont.ttf") format("truetype"),
+  url("../fonts/chartIconFont.svg") format("svg");
   font-weight: normal;
   font-style: normal;
 }
 
 [class^="flaticon-"]:before, [class*=" flaticon-"]:before,
 [class^="flaticon-"]:after, [class*=" flaticon-"]:after {
-  font-family: Flaticon;
+  font-family: ChartIconFont;
   font-size: 14px;
   font-style: normal;
 }

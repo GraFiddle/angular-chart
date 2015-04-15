@@ -886,7 +886,7 @@
 
   /* istanbul ignore next */
   if (typeof define === 'function' && define.amd) {
-    define('angularChart', ['c3', 'angular'], angularChart);
+    define('angularChart', ['../../bower_components/c3/c3', 'angular'], angularChart);
   } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
     module.exports = angularChart;
   }

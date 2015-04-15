@@ -1,6 +1,6 @@
 {
   "name": "angular-chart",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "authors": [
     "Max Klenk <max@klenk.biz>"
   ],
@@ -27,7 +27,7 @@
   ],
   "main": [
     "angular-chart.js",
-    "angular-chart.css",
+    "css/angular-chart.css",
     "fonts/flaticon.eot",
     "fonts/flaticon.svg",
     "fonts/flaticon.ttf",

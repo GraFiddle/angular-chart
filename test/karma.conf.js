@@ -13,8 +13,8 @@ module.exports = function (config) {
       'bower_components/c3/c3.js',
 
       // the directives
-      'src/chart.js',
-      'src/legend.js',
+      'src/js/legend.js',
+      'src/js/chart.js',
 
       // data
       'test/test-data.js',
