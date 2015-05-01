@@ -288,6 +288,14 @@
               }
             }
 
+            // xAxis tick settings
+            if (scope.options.xAxis && scope.options.xAxis.tickOptions) {
+              angular.extend(
+                scope.configuration.axis.x.tick,
+                scope.options.xAxis.tickOptions
+              );
+            }
+            
             // xAxis Label
             //
             if (scope.options.xAxis && scope.options.xAxis.label) {
@@ -346,6 +354,14 @@
               if (angular.isDefined(scope.options.yAxis.displayFormat)) {
                 scope.configuration.axis.y.tick.format = scope.options.yAxis.displayFormat;
               }
+            }
+
+            // yAxis tick settings
+            if (scope.options.yAxis && scope.options.yAxis.tickOptions) {
+              angular.extend(
+                scope.configuration.axis.y.tick,
+                scope.options.yAxis.tickOptions
+              );
             }
 
             // Y2 settings

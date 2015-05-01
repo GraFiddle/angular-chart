@@ -503,6 +503,19 @@ describe('angularChart:', function () {
           });
         });
 
+        describe('. tickOptions', function () {
+            it('- Chart should add tickOptions to y-axis tick options', function () {
+                var CULLING = {max: 10};
+
+                expect(elementScope.configuration.axis.y.tick.culling).toBe(undefined);
+
+                $scope.options.yAxis = {tickOptions: {culling: CULLING}};
+                $scope.$apply();
+
+                expect(elementScope.configuration.axis.y.tick.culling).toBe(CULLING);
+            });
+        });
+
       });
 
       describe('. y2Axis', function () {
@@ -998,6 +1011,19 @@ describe('angularChart:', function () {
             // check configuration change
             expect(elementScope.configuration.axis.x.tick.format).toBeDefined();
           });
+        });
+
+        describe('. tickOptions', function () {
+            it('- Chart should add tickOptions to x-axis tick options', function () {
+                var CULLING = {max: 10};
+
+                expect(elementScope.configuration.axis.x.tick.culling).toBe(undefined);
+
+                $scope.options.xAxis = {tickOptions: {culling: CULLING}};
+                $scope.$apply();
+
+                expect(elementScope.configuration.axis.x.tick.culling).toBe(CULLING);
+            });
         });
 
       });
