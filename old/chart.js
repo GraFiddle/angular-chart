@@ -241,7 +241,7 @@
                 scope.options.xAxis.tickOptions
               );
             }
-            
+
             // xAxis Label
             //
             if (scope.options.xAxis && scope.options.xAxis.label) {
@@ -905,7 +905,7 @@
 
   /* istanbul ignore next */
   if (typeof define === 'function' && define.amd) {
-    define('angularChart', ['../../bower_components/c3/c3', 'angular'], angularChart);
+    define('angularChart', ['../bower_components/c3/c3', 'angular'], angularChart);
   } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
     module.exports = angularChart;
   }

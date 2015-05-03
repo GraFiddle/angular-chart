@@ -16,7 +16,7 @@ module.exports = function (config) {
       'src/js/**/*.js',
 
       // data
-      'test/test-data.js',
+      //'test/test-data.js',
 
       // test
       'test/*_spec.js'
@@ -24,7 +24,15 @@ module.exports = function (config) {
 
     singleRun: true,
 
-    browsers: ['Chrome'],
+    // Start these browsers, currently available:
+    // - Chrome
+    // - ChromeCanary
+    // - Firefox
+    // - Opera
+    // - Safari (only Mac)
+    // - PhantomJS
+    // - IE (only Windows)
+    browsers: ['PhantomJS'],
 
     frameworks: ['jasmine'],
 
@@ -33,10 +41,11 @@ module.exports = function (config) {
     },
 
     plugins: [
-      'karma-chrome-launcher',
-      'karma-firefox-launcher',
       'karma-jasmine',
-      'karma-coverage'
+      'karma-coverage',
+      'karma-phantomjs-launcher',
+      'karma-chrome-launcher',
+      'karma-firefox-launcher'
     ],
 
     // test results reporter to use
