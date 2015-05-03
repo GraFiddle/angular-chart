@@ -890,14 +890,17 @@
           // choose watcher for changes in datasets
           //
           scope.startDatasetWatcher = function () {
-            if (angular.isArray(scope.dataset)) {
-              scope.chooseDatasetWatcher();
-            }
+            scope.chooseDatasetWatcher();
           };
 
           scope.chooseDatasetWatcher = function () {
             var limit = (scope.options.data && scope.options.data.watchLimit) ? scope.options.data.watchLimit : 100;
-            if (scope.dataset.length < limit) {
+            var length = 0;
+            if (angular.isArray(scope.dataset)) {
+              length = scope.dataset.length;
+            }
+
+            if (length < limit) {
               // start small watcher
               if (!scope.smallWatcher) {
                 scope.smallWatcher = scope.startSmallDatasetWatcher();
