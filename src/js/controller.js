@@ -10,10 +10,12 @@
     console.log('init');
     var baseConfiguration = {};
     var configuration;
+    var chart;
 
     addIdentifier();
     angularChartWatcher.init($scope);
     updateCallback();
+    registerDestroyListener();
 
     // register callbacks after first digest cycle
     $timeout(function() {
@@ -21,13 +23,14 @@
       angularChartWatcher.registerDataCallback(updateCallback);
     });
 
+
+
     function updateCallback() {
       configuration = baseConfiguration;
       applyData();
       applyChartOptions();
       generateChart();
     }
-
 
     // add unique identifier for each chart
     //
@@ -56,7 +59,14 @@
     function generateChart() {
       console.log('draw', configuration);
       window.onresize = null;
-      c3.generate(configuration);
+      chart = c3.generate(configuration);
+    }
+
+    function registerDestroyListener() {
+      $scope.$on('$destroy', function () {
+        chart.destroy();
+        $element.remove();
+      });
     }
 
   }
