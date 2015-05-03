@@ -13,8 +13,7 @@ module.exports = function (config) {
       'bower_components/c3/c3.js',
 
       // the directives
-      'src/js/legend.js',
-      'src/js/chart.js',
+      'src/js/**/*.js',
 
       // data
       'test/test-data.js',
@@ -30,8 +29,7 @@ module.exports = function (config) {
     frameworks: ['jasmine'],
 
     preprocessors: {
-      'src/chart.js': 'coverage',
-      'src/legend.js': 'coverage'
+      'src/js/**/*.js': ['coverage']
     },
 
     plugins: [
