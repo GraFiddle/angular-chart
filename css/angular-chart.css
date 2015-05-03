@@ -606,7 +606,7 @@ circular, .circular {
 }
 
 /* line 5, ../src/scss/angular-chart.scss */
-angularchart, .angularchart {
+angular-chart, .angular-chart {
   display: block;
   position: relative;
 }

@@ -6,6 +6,10 @@ angular-chart is a [AngularJS](https://github.com/angular/angular.js) directive,
 
 Everything further down may be outdated.
 
+### Changelog 0.2.X to 0.3.0
+
+* use `<angular-chart></angular-chart>` instead of `<angularchart></angularchart>`
+
 
 ## Usage
 

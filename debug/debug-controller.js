@@ -5,7 +5,15 @@
   function DebugController() {
     var vm = this;
 
-    vm.options = {};
+    vm.options = {
+      chart: {
+        data: {
+          json: {
+            data1: [30]
+          }
+        }
+      }
+    };
   }
 
   angular
