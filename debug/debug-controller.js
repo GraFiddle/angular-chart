@@ -6,17 +6,20 @@
     var vm = this;
 
     vm.options = {
-      chart: {
-        data: {
-          json: {
-            data1: [30]
-          }
-        }
-      }
+      data: {
+        data1: [30]
+      },
+      chart: {}
     };
 
     vm.updateChart = function () {
-      vm.options.chart.data.json.data1.push(Math.random() * 100);
+      vm.options.chart.size = {
+        height: 300 + Math.random() * 100
+      };
+    };
+
+    vm.updateData = function () {
+      vm.options.data.data1.push(Math.random() * 100);
     };
 
     vm.updateSchema = function () {
