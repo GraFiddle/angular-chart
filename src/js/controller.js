@@ -4,10 +4,8 @@
 
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
-  var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
-  function angularChartController($scope, $element, $timeout, angularChartWatcher, angularChartConverter) {
-    console.log('init');
+  function angularChartController($scope, $element, angularChartWatcher, angularChartService) {
     var baseConfiguration = {
       data: {
         keys: {
@@ -22,31 +20,17 @@
         y: {},
         y2: {}
       }
-
     };
-    var configuration;
-    var chart;
 
-    addIdentifier();
-    angularChartWatcher.init($scope);
-    updateCallback();
-    registerDestroyListener();
+    activate();
 
-    // register callbacks after first digest cycle
-    $timeout(function() {
-      angularChartWatcher.registerChartCallback(updateCallback);
-      angularChartWatcher.registerDataCallback(updateCallback);
-    });
+    ////////////
 
-
-
-    function updateCallback() {
-      configuration = baseConfiguration;
-      angularChartConverter.convertData($scope.options, configuration);
-      angularChartConverter.convertDimensions($scope.options, configuration);
-      angularChartConverter.convertSchema($scope.options, configuration);
-      applyChartOptions();
-      generateChart();
+    function activate() {
+      addIdentifier();
+      angularChartWatcher.init($scope);
+      angularChartService.init(baseConfiguration, $scope.options);
+      registerDestroyListener();
     }
 
     // add unique identifier for each chart
@@ -57,23 +41,11 @@
       baseConfiguration.bindto = '#' + $scope.dataAttributeChartID;
     }
 
-    function applyChartOptions() {
-      // TODO replace with angular 1.4.0 angular.merge for deep copy
-      angular.extend(
-        configuration,
-        $scope.options.chart
-      );
-    }
-
-    function generateChart() {
-      console.log('draw', configuration);
-      window.onresize = null;
-      chart = c3.generate(configuration);
-    }
-
+    // remove all references when directive is destroyed
+    //
     function registerDestroyListener() {
       $scope.$on('$destroy', function () {
-        chart.destroy();
+        angularChartService.destroyChart();
         $element.remove();
       });
     }

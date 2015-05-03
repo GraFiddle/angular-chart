@@ -7,7 +7,6 @@
 
   function angularChartConverter() {
 
-
     var service = {
       convertData: convertData,
       convertDimensions: convertDimensions,
@@ -31,6 +30,7 @@
 
       // only show used axes
       configuration.axis.y.show = false;
+
 
       // apply all dimensions
       angular.forEach(options.dimensions, function(dimension, key) {
