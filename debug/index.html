@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../bower_components/c3/c3.js"></script>
     <script type="text/javascript" src="../src/js/directive.js"></script>
     <script type="text/javascript" src="../src/js/controller.js"></script>
+    <script type="text/javascript" src="../src/js/watcher.js"></script>
 
     <!-- debug app -->
     <script type="text/javascript" src="debug-app.js"></script>
@@ -20,5 +21,8 @@
   </head>
   <body ng-app="AngularChartDebug" ng-controller="DebugController as debug">
     <angular-chart options="debug.options"></angular-chart>
+
+    <button ng-click="debug.updateChart()">Update Chart</button>
+    <button ng-click="debug.updateSchema()">Update Schema</button>
   </body>
 </html>

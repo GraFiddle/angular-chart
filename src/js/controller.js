@@ -6,13 +6,19 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
-  function angularChartController($scope, $element) {
+  function angularChartController($scope, $element, angularChartWatcher) {
     console.log('init');
     var configuration = {};
 
     addIdentifier();
-    applyChartOptions();
-    generateChart();
+    angularChartWatcher.init($scope);
+    angularChartWatcher.registerChartCallback(updateCallback);
+
+
+    function updateCallback() {
+      applyChartOptions();
+      generateChart();
+    }
 
 
 

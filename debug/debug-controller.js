@@ -14,6 +14,17 @@
         }
       }
     };
+
+    vm.updateChart = function () {
+      vm.options.chart.data.json.data1.push(Math.random() * 100);
+    };
+
+    vm.updateSchema = function () {
+      vm.options.schema = {
+        data1: {}
+      };
+    };
+
   }
 
   angular
