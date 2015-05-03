@@ -6,8 +6,13 @@
     var vm = this;
 
     vm.options = {
-      data: {
-        data1: [30]
+      data: [
+        {data1: 30}
+      ],
+      dimensions: {
+        data1: {
+          axis: 'y2'
+        }
       },
       chart: {}
     };
@@ -19,7 +24,7 @@
     };
 
     vm.updateData = function () {
-      vm.options.data.data1.push(Math.random() * 100);
+      vm.options.data.push({data1: Math.random() * 100});
     };
 
     vm.updateSchema = function () {

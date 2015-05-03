@@ -6,9 +6,24 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
-  function angularChartController($scope, $element, $timeout, angularChartWatcher) {
+  function angularChartController($scope, $element, $timeout, angularChartWatcher, angularChartConverter) {
     console.log('init');
-    var baseConfiguration = {};
+    var baseConfiguration = {
+      data: {
+        keys: {
+          value: []
+        },
+        names: {},
+        types: {},
+        colors: {},
+        axes: {}
+      },
+      axis: {
+        y: {},
+        y2: {}
+      }
+
+    };
     var configuration;
     var chart;
 
@@ -27,7 +42,9 @@
 
     function updateCallback() {
       configuration = baseConfiguration;
-      applyData();
+      angularChartConverter.convertData($scope.options, configuration);
+      angularChartConverter.convertDimensions($scope.options, configuration);
+      angularChartConverter.convertSchema($scope.options, configuration);
       applyChartOptions();
       generateChart();
     }
@@ -38,14 +55,6 @@
       $scope.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
       angular.element($element).attr('id', $scope.dataAttributeChartID);
       baseConfiguration.bindto = '#' + $scope.dataAttributeChartID;
-    }
-
-    function applyData() {
-      if ($scope.options.data) {
-        configuration.data = {
-          json: $scope.options.data
-        };
-      }
     }
 
     function applyChartOptions() {
