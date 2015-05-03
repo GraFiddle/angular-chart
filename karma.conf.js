@@ -3,7 +3,7 @@
 // Contents of: test/karma.conf.js
 module.exports = function (config) {
   config.set({
-    basePath: '../',
+    basePath: '',
 
     files: [
       // libraries

@@ -2,6 +2,11 @@
 
 angular-chart is a [AngularJS](https://github.com/angular/angular.js) directive, which is build on top of [c3](https://github.com/masayuki0812/c3) a [d3](https://github.com/mbostock/d3)-based chart library.
 
+## WIP on v0.3.0
+
+Everything further down may be outdated.
+
+
 ## Usage
 
 You can get it from [Bower](http://bower.io/):
