@@ -6,26 +6,37 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   function AngularChartWatcher() {
+    var $scope;
+
     // callbacks
     var chartCallback;
+    var stateCallback;
     var dataCallback;
 
     // watcher
     var dataSmallWatcher;
     var dataBigWatcher;
 
+    // disable
+    var disableStateWatcher = false;
+
     var service = {
       init: init,
       registerChartCallback: registerChartCallback,
-      registerDataCallback: registerDataCallback
+      registerStateCallback: registerStateCallback,
+      registerDataCallback: registerDataCallback,
+      updateState: updateState,
+      applyFunction: applyFunction
     };
 
     return service;
 
     ////////////
 
-    function init($scope) {
+    function init(scope) {
+      $scope = scope;
       setupChartWatcher($scope);
+      setupStateWatcher($scope);
       setupDataWatcher($scope);
     }
 
@@ -34,11 +45,19 @@
     ////
 
     function setupChartWatcher($scope) {
-        $scope.$watch('options.chart', function (newValue, oldValue) {
-          if (chartCallback) {
-            chartCallback();
-          }
-        }, true);
+      $scope.$watch('options.chart', function (newValue, oldValue) {
+        if (chartCallback) {
+          chartCallback();
+        }
+      }, true);
+    }
+
+    function setupStateWatcher($scope) {
+      $scope.$watch('options.state', function (newValue, oldValue) {
+        if (!disableStateWatcher && stateCallback) {
+          stateCallback();
+        }
+      }, true);
     }
 
     function setupDataWatcher($scope) {
@@ -109,8 +128,27 @@
       chartCallback = callback;
     }
 
+    function registerStateCallback(callback) {
+      stateCallback = callback;
+    }
+
     function registerDataCallback(callback) {
       dataCallback = callback;
+    }
+
+
+    ////
+    // $apply
+    ////
+
+    function updateState(func) {
+      disableStateWatcher = true;
+      $scope.$apply(func);
+      disableStateWatcher = false;
+    }
+
+    function applyFunction(func) {
+      $scope.$apply(func);
     }
 
   }

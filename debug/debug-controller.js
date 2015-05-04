@@ -20,6 +20,9 @@
         }
       },
       chart: {
+        zoom: {
+          enabled: true
+        }
       }
     };
 
@@ -27,6 +30,7 @@
       vm.options.chart.size = {
         height: 300 + Math.random() * 100
       };
+      console.log('new options', vm.options);
     };
 
     vm.updateData = function () {
@@ -36,6 +40,14 @@
     vm.updateSchema = function () {
       vm.options.schema = {
         data1: {}
+      };
+    };
+
+    vm.updateState = function () {
+      vm.options.state = {
+        zoom: {
+          range: [-0.5, 0.5]
+        }
       };
     };
 

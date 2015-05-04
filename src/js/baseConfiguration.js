@@ -26,7 +26,9 @@
       x: {
         tick: {}
       }
-    }
+    },
+    zoom: {},
+    subchart: {}
   };
 
   angular

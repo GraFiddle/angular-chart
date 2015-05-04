@@ -5,37 +5,84 @@
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  function AngularChartState() {
+  function AngularChartState(AngularChartWatcher) {
+    var service = {
+      syncronizeZoom: syncronizeZoom,
+      applyZoom: applyZoom
+    };
 
-//// callback for onzoom
-//scope.configuration.zoom.onzoomend = function (domain) {
-//  scope.updateOptions(function () {
-//    scope.options.zoom.range = domain;
-//  });
-//
-//  if (scope.options.zoom.onzoom) {
-//    scope.options.zoom.onzoom();
-//  }
-//};
-//
-//// callback for onbrush
-//scope.configuration.subchart.onbrush = function (domain) {
-//  scope.updateOptions(function () {
-//    scope.options.zoom.range = domain;
-//  });
-//
-//  if (scope.options.zoom.onzoom) {
-//    scope.options.zoom.onzoom();
-//  }
-//};
-//
-//// Apply earlier zoom
-////
-//if (scope.options.zoom && scope.options.zoom.range) {
-//  scope.chart.zoom(scope.options.zoom.range);
-//}
-//
-//
+    return service;
+
+    ////////////
+
+    /**
+     * Apply earlier zoom
+     */
+    function applyZoom(options, chart) {
+      if ((angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) ||
+        (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true)) {
+
+        if (angular.isObject(options.state) && angular.isObject(options.state.zoom) && angular.isArray(options.state.zoom.range)) {
+          chart.zoom(options.state.zoom.range);
+        } else {
+          chart.unzoom();
+        }
+
+      }
+    }
+
+    function createZoomRangePath(options) {
+      if (!angular.isObject(options.state)) {
+        options.state = {};
+      }
+      if (!angular.isObject(options.state.zoom)) {
+        options.state.zoom = {};
+      }
+    }
+
+    function syncronizeZoom(options, configuration) {
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) {
+
+        // setup onzoomend listener
+        configuration.zoom.onzoomend = function (domain) {
+
+          // update state
+          // TODO deactivate state watcher?
+          AngularChartWatcher.updateState(function () {
+            createZoomRangePath(options);
+            options.state.zoom.range = domain;
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.zoom.onzoomend)) {
+            AngularChartWatcher.applyFunction(function () {
+              options.chart.zoom.onzoomend(domain);
+            });
+          }
+        };
+      }
+
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true) {
+        // setup onbrush listener
+        configuration.subchart.onbrush = function (domain) {
+
+          // update state
+          // TODO deactivate state watcher?
+          AngularChartWatcher.updateState(function () {
+            createZoomRangePath(options);
+            options.state.zoom.range = domain;
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.subchart.onbrush)) {
+            AngularChartWatcher.applyFunction(function () {
+              options.chart.subchart.onbrush(domain);
+            });
+          }
+        };
+      }
+    }
+
 //// Selections
 ////
 //scope.selections = {

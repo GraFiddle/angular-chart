@@ -6,7 +6,7 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
-  function AngularChartService($timeout, AngularChartWatcher, AngularChartConverter) {
+  function AngularChartService($timeout, AngularChartWatcher, AngularChartConverter, AngularChartState) {
     var chart;
     var baseConfiguration;
     var configuration;
@@ -25,11 +25,13 @@
       baseConfiguration = baseConfig;
       options = optionsReference;
       updateCallback();
+      stateCallback();
 
       // register callbacks after first digest cycle
       $timeout(function () {
         AngularChartWatcher.registerChartCallback(updateCallback);
         AngularChartWatcher.registerDataCallback(updateCallback);
+        AngularChartWatcher.registerStateCallback(stateCallback);
       });
     }
 
@@ -39,7 +41,12 @@
       AngularChartConverter.convertDimensions(options, configuration);
       AngularChartConverter.convertSchema(options, configuration);
       applyChartOptions();
+      AngularChartState.syncronizeZoom(options, configuration);
       generateChart();
+    }
+
+    function stateCallback() {
+      AngularChartState.applyZoom(options, chart);
     }
 
     function applyChartOptions() {
