@@ -5,22 +5,8 @@
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  function angularChartController($scope, $element, angularChartWatcher, angularChartService) {
-    var baseConfiguration = {
-      data: {
-        keys: {
-          value: []
-        },
-        names: {},
-        types: {},
-        colors: {},
-        axes: {}
-      },
-      axis: {
-        y: {},
-        y2: {}
-      }
-    };
+  function AngularChartController($scope, $element, baseConfiguration, AngularChartWatcher, AngularChartService) {
+    var configuration = baseConfiguration;
 
     activate();
 
@@ -28,8 +14,8 @@
 
     function activate() {
       addIdentifier();
-      angularChartWatcher.init($scope);
-      angularChartService.init(baseConfiguration, $scope.options);
+      AngularChartWatcher.init($scope);
+      AngularChartService.init(configuration, $scope.options);
       registerDestroyListener();
     }
 
@@ -45,7 +31,7 @@
     //
     function registerDestroyListener() {
       $scope.$on('$destroy', function () {
-        angularChartService.destroyChart();
+        AngularChartService.destroyChart();
         $element.remove();
       });
     }
@@ -54,6 +40,6 @@
 
   angular
     .module('angularChart')
-    .controller('angularChartController', angularChartController);
+    .controller('AngularChartController', AngularChartController);
 
 })();

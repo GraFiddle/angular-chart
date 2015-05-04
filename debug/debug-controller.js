@@ -7,14 +7,20 @@
 
     vm.options = {
       data: [
-        {data1: 30}
+        {data1: 30, value: 10}
       ],
       dimensions: {
         data1: {
-          axis: 'y2'
+          axis: 'y'
+        },
+        value: {
+          type: 'bar',
+          label: true,
+          displayFormat: d3.format("$,")
         }
       },
-      chart: {}
+      chart: {
+      }
     };
 
     vm.updateChart = function () {

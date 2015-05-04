@@ -5,7 +5,7 @@
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  function angularChartConverter() {
+  function AngularChartConverter() {
 
     var service = {
       convertData: convertData,
@@ -60,23 +60,30 @@
           configuration.data.axes[key] = 'y2';
           configuration.axis.y2.show = true;
         } else if (dimension.axis === 'x') {
-
           configuration.data.keys.x = key;
           configuration.data.x = key;
-
-          if (angular.isDefined(dimension.displayFormat)) {
-            configuration.axis.x.tick.format = dimension.displayFormat;
-          }
-
         } else {
           configuration.axis.y.show = true;
         }
 
+        // displayFormat
+        if (angular.isDefined(dimension.displayFormat) && dimension.axis === 'x') {
+          configuration.axis.x.tick.format = dimension.displayFormat;
+        }
+        if (dimension.label === true) {
+          if (angular.isDefined(dimension.displayFormat)) {
+            configuration.data.labels.format[key] = dimension.displayFormat;
+          } else {
+            configuration.data.labels.format[key] = true;
+          }
+        }
+        // TODO configure http://c3js.org/samples/axes_y_tick_format.html
+        // TODO configure http://c3js.org/samples/tooltip_format.html
       });
-
     }
 
     function convertSchema(options, configuration) {
+      // TODO configure
       //  else if (angular.isObject(options.schema) && angular.isObject(options.schema[key]) && angular.isString(options.schema[key].name)) {
       //    configuration.data.names[key] = options.schema[key].name;
       //  }
@@ -90,7 +97,7 @@
 
   angular
     .module('angularChart')
-    .service('angularChartConverter', angularChartConverter);
+    .service('AngularChartConverter', AngularChartConverter);
 
 })();
 

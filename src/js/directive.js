@@ -15,7 +15,7 @@
       scope: {
         options: '='
       },
-      controller: 'angularChartController'
+      controller: 'AngularChartController'
     };
   }
 

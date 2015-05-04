@@ -1,0 +1,11 @@
+{
+  "files": [
+    "bower_components/angular/angular.js",
+    "bower_components/angular-mocks/angular-mocks.js",
+    "src/js/directive.js",
+    "src/js/**/*.js"
+  ],
+  "tests": [
+    "test/**/*_spec.js"
+  ]
+}

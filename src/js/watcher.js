@@ -5,7 +5,7 @@
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  function angularChartWatcher() {
+  function AngularChartWatcher() {
     // callbacks
     var chartCallback;
     var dataCallback;
@@ -117,6 +117,6 @@
 
   angular
     .module('angularChart')
-    .service('angularChartWatcher', angularChartWatcher);
+    .service('AngularChartWatcher', AngularChartWatcher);
 
 })();

@@ -6,7 +6,7 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
-  function angularChartService($timeout, angularChartWatcher, angularChartConverter) {
+  function AngularChartService($timeout, AngularChartWatcher, AngularChartConverter) {
     var chart;
     var baseConfiguration;
     var configuration;
@@ -28,23 +28,22 @@
 
       // register callbacks after first digest cycle
       $timeout(function () {
-        angularChartWatcher.registerChartCallback(updateCallback);
-        angularChartWatcher.registerDataCallback(updateCallback);
+        AngularChartWatcher.registerChartCallback(updateCallback);
+        AngularChartWatcher.registerDataCallback(updateCallback);
       });
     }
 
     function updateCallback() {
       configuration = baseConfiguration;
-      angularChartConverter.convertData(options, configuration);
-      angularChartConverter.convertDimensions(options, configuration);
-      angularChartConverter.convertSchema(options, configuration);
+      AngularChartConverter.convertData(options, configuration);
+      AngularChartConverter.convertDimensions(options, configuration);
+      AngularChartConverter.convertSchema(options, configuration);
       applyChartOptions();
       generateChart();
     }
 
     function applyChartOptions() {
-      // TODO replace with angular 1.4.0 angular.merge for deep copy
-      angular.extend(
+      angular.merge(
         configuration,
         options.chart
       );
@@ -66,7 +65,7 @@
 
   angular
     .module('angularChart')
-    .service('angularChartService', angularChartService);
+    .service('AngularChartService', AngularChartService);
 
 })();
 
