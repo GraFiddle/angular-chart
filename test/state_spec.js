@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Service: AngularChartConverter', function() {
+describe('Service: AngularChartConverter', function () {
 
   //////////////////////////////////
   //      SETUP / INJECTION       //
@@ -17,14 +17,22 @@ describe('Service: AngularChartConverter', function() {
   beforeEach(inject(function (_AngularChartWatcher_) {
     AngularChartWatcher = _AngularChartWatcher_;
     spyOn(AngularChartWatcher, 'updateState')
-      .and.callFake(function(func) {
+      .and.callFake(function (func) {
         func();
       });
     spyOn(AngularChartWatcher, 'applyFunction')
-      .and.callFake(function(func) {
+      .and.callFake(function (func) {
         func();
       });
   }));
+
+  var pointSelection = {
+    id: 'data1',
+    index: 0,
+    name: 'data1',
+    value: 30,
+    x: 0
+  };
 
   // get the service to test
   var AngularChartState;
@@ -36,12 +44,12 @@ describe('Service: AngularChartConverter', function() {
   //          UNIT TESTS          //
   //////////////////////////////////
 
-  // syncronizeZoom()
+  // synchronizeZoom()
   it('should do nothing when zoom is not enabled.', function () {
     // setup
     var options = {};
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
 
     // result
     expect(configuration).toEqual(baseConfiguration);
@@ -57,7 +65,7 @@ describe('Service: AngularChartConverter', function() {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
 
     // result
     expect(configuration.zoom.onzoomend).toBeDefined();
@@ -73,14 +81,14 @@ describe('Service: AngularChartConverter', function() {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
 
     // event
     var range = [0, 1];
     configuration.zoom.onzoomend(range);
 
     // result
-    expect(options.state.zoom.range).toEqual(range);
+    expect(options.state.range).toEqual(range);
   });
 
   it('should update range and call callback when onzoomend is fired.', function () {
@@ -94,16 +102,16 @@ describe('Service: AngularChartConverter', function() {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
     spyOn(options.chart.zoom, 'onzoomend');
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
 
     // event
     var range = [0, 1];
     configuration.zoom.onzoomend(range);
 
     // result
-    expect(options.state.zoom.range).toEqual(range);
+    expect(options.state.range).toEqual(range);
     expect(options.chart.zoom.onzoomend).toHaveBeenCalled();
   });
 
@@ -117,7 +125,7 @@ describe('Service: AngularChartConverter', function() {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
 
     // result
     expect(configuration.subchart.onbrush).toBeDefined();
@@ -133,15 +141,15 @@ describe('Service: AngularChartConverter', function() {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.syncronizeZoom(options, configuration);
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
 
     // event
     var range = [0, 1];
     configuration.subchart.onbrush(range);
 
     // result
-    expect(options.state.zoom.range).toEqual(range);
+    expect(options.state.range).toEqual(range);
   });
 
   it('should update range and call callback when onbrush is fired.', function () {
@@ -155,7 +163,7 @@ describe('Service: AngularChartConverter', function() {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.syncronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration);
     spyOn(options.chart.subchart, 'onbrush');
 
     // event
@@ -163,7 +171,7 @@ describe('Service: AngularChartConverter', function() {
     configuration.subchart.onbrush(range);
 
     // result
-    expect(options.state.zoom.range).toEqual(range);
+    expect(options.state.range).toEqual(range);
     expect(options.chart.subchart.onbrush).toHaveBeenCalled();
   });
 
@@ -282,6 +290,262 @@ describe('Service: AngularChartConverter', function() {
     // TODO spy does not work?!
     //expect(chart.zoom).toHaveBeenCalled();
     expect(chart.unzoom).not.toHaveBeenCalled();
+  });
+
+
+  // synchronizeSelection()
+  it('should do nothing if selections are not enabled.', function () {
+    // setup
+    var options = {};
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+
+    // result
+    expect(configuration).toEqual(baseConfiguration);
+  });
+
+  it('should add add selection listener.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+
+    // result
+    expect(configuration.data.onselected).toBeDefined();
+  });
+
+  it('should add remove selection listener.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+
+    // result
+    expect(configuration.data.onunselected).toBeDefined();
+
+  });
+
+  it('should add selection when add selection is fired.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+
+    // event
+    configuration.data.onselected(pointSelection);
+
+    // result
+    expect(options.state.selected.length).toBe(1);
+    expect(options.state.selected[0]).toEqual(pointSelection);
+  });
+
+  it('should remove selection when remove selection is fired.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      },
+      state: {
+        selected: [pointSelection]
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+
+    // event
+    configuration.data.onunselected(pointSelection);
+
+    // result
+    expect(options.state.selected.length).toBe(0);
+  });
+
+  it('should not add selection when add selection is fired but the disabled flag is set.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+
+    // event
+    AngularChartState.disableSelectionListener = true;
+    configuration.data.onselected(pointSelection);
+
+    // result
+    expect(options.state).toBeUndefined();
+  });
+
+  it('should remove selection when remove selection is fired but the disabled flag is set.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      },
+      state: {
+        selected: [pointSelection]
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+
+    // event
+    AngularChartState.disableSelectionListener = true;
+    configuration.data.onunselected(pointSelection);
+
+    // result
+    expect(options.state.selected.length).toBe(1);
+  });
+
+  it('should add selection and call callback when add selection is fired.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          },
+          onselected: angular.noop
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+    spyOn(options.chart.data, 'onselected');
+
+    // event
+    configuration.data.onselected(pointSelection);
+
+    // result
+    expect(options.state.selected.length).toBe(1);
+    expect(options.state.selected[0]).toEqual(pointSelection);
+    expect(options.chart.data.onselected).toHaveBeenCalled();
+  });
+
+  it('should remove selection and call callback when remove selection is fired.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          },
+          onunselected: angular.noop
+        }
+      },
+      state: {
+        selected: [pointSelection]
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartState.synchronizeSelection(options, configuration);
+    spyOn(options.chart.data, 'onunselected');
+
+    // event
+    configuration.data.onunselected(pointSelection);
+
+    // result
+    expect(options.state.selected.length).toBe(0);
+    expect(options.chart.data.onunselected).toHaveBeenCalled();
+  });
+
+
+  // applySelection()
+  it('should not apply selections if selections are not enabled.', function () {
+    // setup
+    var options = {};
+    var chart = {
+      select: angular.noop
+    };
+    AngularChartState.applySelection(options, chart);
+    spyOn(chart, 'select');
+
+    // result
+    expect(chart.select).not.toHaveBeenCalled();
+  });
+
+  it('should reset selections if none provided and selections are enabled.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      }
+    };
+    var chart = {
+      unselect: angular.noop
+    };
+    AngularChartState.applySelection(options, chart);
+    spyOn(chart, 'unselect');
+
+    // result
+    // TODO spy doesn't work
+    //expect(chart.unselect).toHaveBeenCalled();
+  });
+
+  it('should apply provided selections if selections are enabled.', function () {
+    // setup
+    var options = {
+      chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        }
+      },
+      state: {
+        selected: [pointSelection]
+      }
+    };
+    var chart = {
+      select: angular.noop
+    };
+    AngularChartState.applySelection(options, chart);
+    spyOn(chart, 'select');
+
+    // result
+    // TODO spy doesn't work
+    //expect(chart.select).toHaveBeenCalled();
   });
 
 });

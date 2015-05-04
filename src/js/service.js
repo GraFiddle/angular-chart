@@ -25,7 +25,6 @@
       baseConfiguration = baseConfig;
       options = optionsReference;
       updateCallback();
-      stateCallback();
 
       // register callbacks after first digest cycle
       $timeout(function () {
@@ -41,12 +40,15 @@
       AngularChartConverter.convertDimensions(options, configuration);
       AngularChartConverter.convertSchema(options, configuration);
       applyChartOptions();
-      AngularChartState.syncronizeZoom(options, configuration);
+      AngularChartState.synchronizeZoom(options, configuration);
+      AngularChartState.synchronizeSelection(options, configuration);
       generateChart();
+      stateCallback();
     }
 
     function stateCallback() {
       AngularChartState.applyZoom(options, chart);
+      AngularChartState.applySelection(options, chart);
     }
 
     function applyChartOptions() {

@@ -20,9 +20,20 @@
         }
       },
       chart: {
+        data: {
+          selection: {
+            enabled: true
+          }
+        },
         zoom: {
           enabled: true
         }
+      },
+      state: {
+        selected: [{
+          id: 'data1',
+          index: 0
+        }]
       }
     };
 
@@ -44,11 +55,10 @@
     };
 
     vm.updateState = function () {
-      vm.options.state = {
-        zoom: {
-          range: [-0.5, 0.5]
-        }
-      };
+      vm.options.state.selected.push({
+        id: 'value',
+        index: 0
+      });
     };
 
   }

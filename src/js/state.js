@@ -7,8 +7,11 @@
 
   function AngularChartState(AngularChartWatcher) {
     var service = {
-      syncronizeZoom: syncronizeZoom,
-      applyZoom: applyZoom
+      disableSelectionListener: false,
+      synchronizeZoom: synchronizeZoom,
+      applyZoom: applyZoom,
+      synchronizeSelection: synchronizeSelection,
+      applySelection: applySelection
     };
 
     return service;
@@ -31,26 +34,31 @@
       }
     }
 
+    /**
+     * Create nested options objects.
+     */
     function createZoomRangePath(options) {
       if (!angular.isObject(options.state)) {
         options.state = {};
       }
-      if (!angular.isObject(options.state.zoom)) {
-        options.state.zoom = {};
+      if (!angular.isObject(options.state.range)) {
+        options.state.range = [];
       }
     }
 
-    function syncronizeZoom(options, configuration) {
+    /**
+     * Setup zoom event listeners which update the state
+     */
+    function synchronizeZoom(options, configuration) {
       if (angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) {
 
         // setup onzoomend listener
         configuration.zoom.onzoomend = function (domain) {
 
           // update state
-          // TODO deactivate state watcher?
           AngularChartWatcher.updateState(function () {
             createZoomRangePath(options);
-            options.state.zoom.range = domain;
+            options.state.range = domain;
           });
 
           // call user defined callback
@@ -67,10 +75,9 @@
         configuration.subchart.onbrush = function (domain) {
 
           // update state
-          // TODO deactivate state watcher?
           AngularChartWatcher.updateState(function () {
             createZoomRangePath(options);
-            options.state.zoom.range = domain;
+            options.state.range = domain;
           });
 
           // call user defined callback
@@ -83,110 +90,149 @@
       }
     }
 
-//// Selections
-////
-//scope.selections = {
-//  avoidSelections: false,
-//
-//  // handle chart event onselection
-//  addSelected: function (selection) {
-//    if (!this.avoidSelections) {
-//      if (!angular.isObject(scope.options.selection)) {
-//        scope.options.selection = {};
-//      }
-//      if (!angular.isArray(scope.options.selection.selected)) {
-//        scope.options.selection.selected = [];
-//      }
-//
-//      scope.$apply(function() {
-//        scope.options.selection.selected.push(selection);
-//      });
-//      if (scope.options.selection.onselected) {
-//        scope.$apply(function(){
-//          scope.options.selection.onselected();
-//        });
-//      }
-//    }
-//  },
-//
-//  // handle chart event onunselection
-//  removeSelected: function (selection) {
-//    if (!this.avoidSelections && angular.isObject(scope.options.selection) && angular.isArray(scope.options.selection.selected)) {
-//      scope.$apply(
-//        scope.options.selection.selected = scope.options.selection.selected.filter(function (selected) {
-//          return selected.id !== selection.id || selected.index !== selection.index;
-//        })
-//      );
-//      if (scope.options.selection.onunselected) {
-//        scope.$apply(function(){
-//          scope.options.selection.onunselected();
-//        });
-//      }
-//    }
-//  },
-//
-//  // select elements inside the chart
-//  performSelections: function (selections) {
-//    this.avoidSelections = true;
-//    selections.forEach(function (selection) {
-//      scope.chart.select([selection.id], [selection.index]);
-//    });
-//    this.avoidSelections = false;
-//  },
-//
-//  // unselect elements inside the chart
-//  performUnselections: function (selections) {
-//    this.avoidSelections = true;
-//    selections.forEach(function (selection) {
-//      scope.chart.unselect([selection.id], [selection.index]);
-//    });
-//    this.avoidSelections = false;
-//  },
-//
-//  // search options for added or removed selections
-//  watchOptions: function (newValue, oldValue) {
-//    var oldSelections = oldValue.selection && oldValue.selection.selected ? oldValue.selection.selected : [];
-//    var newSelections = newValue.selection && newValue.selection.selected ? newValue.selection.selected : [];
-//
-//    // addedSelections
-//    var addedSelections = newSelections.filter(function (elm) {
-//      var isNew = true;
-//      oldSelections.forEach(function (old) {
-//        if (old.id === elm.id && old.index === elm.index) {
-//          isNew = false;
-//          return isNew;
-//        }
-//      });
-//      return isNew;
-//    });
-//
-//    // removedSelections
-//    var removedSelections = oldSelections.filter(function (elm) {
-//      var isOld = true;
-//      newSelections.forEach(function (old) {
-//        if (old.id === elm.id && old.index === elm.index) {
-//          isOld = false;
-//          return isOld;
-//        }
-//      });
-//      return isOld;
-//    });
-//
-//    //do actual removal /adding of selections and return if something happened.
-//    var didSomething = false;
-//    if (addedSelections.length > 0) {
-//      this.performSelections(addedSelections);
-//      didSomething = true;
-//    }
-//
-//    if (removedSelections.length > 0) {
-//      this.performUnselections(removedSelections);
-//      didSomething = true;
-//    }
-//
-//    return didSomething;
-//  }
-//};
+    /**
+     * Add passed selection to the chart.
+     */
+    function addSelections(chart, selections) {
+      service.disableSelectionListener = true;
+      selections.forEach(function (selection) {
+        chart.select([selection.id], [selection.index]);
+      });
+      service.disableSelectionListener = false;
+    }
+
+    /**
+     * Remove passed selections from the chart.
+     */
+    //function removeSelections(chart, selections) {
+    //  disableSelectionListener = true;
+    //  selections.forEach(function (selection) {
+    //    chart.unselect([selection.id], [selection.index]);
+    //  });
+    //  disableSelectionListener = false;
+    //}
+
+    /**
+     * Remove all selections present in the chart.
+     */
+    function removeAllSelections(chart) {
+      service.disableSelectionListener = true;
+      chart.unselect();
+      service.disableSelectionListener = false;
+    }
+
+    /**
+     * Apply earlier selections.
+     */
+    function applySelection(options, chart) {
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
+
+        if (angular.isObject(options.state) && angular.isArray(options.state.selected)) {
+          // TODO: get new selections
+          // TODO: get removed selections
+          // var chartSelections = chart.selected();
+          //    // addedSelections
+          //    var addedSelections = newSelections.filter(function (elm) {
+          //      var isNew = true;
+          //      oldSelections.forEach(function (old) {
+          //        if (old.id === elm.id && old.index === elm.index) {
+          //          isNew = false;
+          //          return isNew;
+          //        }
+          //      });
+          //      return isNew;
+          //    });
+          //
+          //    // removedSelections
+          //    var removedSelections = oldSelections.filter(function (elm) {
+          //      var isOld = true;
+          //      newSelections.forEach(function (old) {
+          //        if (old.id === elm.id && old.index === elm.index) {
+          //          isOld = false;
+          //          return isOld;
+          //        }
+          //      });
+          //      return isOld;
+          //    });
+
+          // alternative: deselect all and select again
+          //removeAllSelections(chart);
+          addSelections(chart, options.state.selected);
+
+        } else {
+          removeAllSelections(chart);
+        }
+      }
+    }
+
+    /**
+     * Create nested options object.
+     */
+    function createSelectionsPath(options) {
+      if (!angular.isObject(options.state)) {
+        options.state = {};
+      }
+      if (!angular.isArray(options.state.selected)) {
+        options.state.selected = [];
+      }
+    }
+
+    /**
+     * Listen to chart events to save selections into to state object.
+     */
+    function synchronizeSelection(options, configuration) {
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
+
+        // add onselected listener
+        configuration.data.onselected = function (data, element) {
+
+          // check if listener is disabled currently
+          if (service.disableSelectionListener) {
+            return;
+          }
+
+          // update state
+          AngularChartWatcher.updateState(function () {
+            createSelectionsPath(options);
+            options.state.selected.push(data);
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.data.onselected)) {
+            AngularChartWatcher.applyFunction(function () {
+              options.chart.data.onselected(data, element);
+            });
+          }
+
+        };
+
+        // add onunselection listener
+        configuration.data.onunselected = function (data, element) {
+
+          // check if listener is disabled currently
+          if (service.disableSelectionListener) {
+            return;
+          }
+
+          // update state
+          AngularChartWatcher.updateState(function () {
+            createSelectionsPath(options);
+            options.state.selected = options.state.selected.filter(function (selected) {
+              return selected.id !== data.id || selected.index !== data.index;
+            });
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.data.onunselected)) {
+            AngularChartWatcher.applyFunction(function () {
+              options.chart.data.onunselected(data, element);
+            });
+          }
+
+        };
+
+      }
+    }
 
   }
 
