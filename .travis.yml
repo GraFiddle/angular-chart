@@ -9,14 +9,12 @@ before_install:
 before_script:
   - 'npm install -g bower grunt-cli'
   - 'npm install -g codeclimate-test-reporter'
+  - 'npm install'
   - 'bower install'
 
 script:
-  - 'grunt jshint --verbose'
-  - 'grunt karma:unit --verbose'
-
-after_success:
-  - 'grunt coverage'
+  - 'gulp jshint --verbose'
+  - 'gulp test --verbose'
 
 after_script:
   - codeclimate < coverage/**/lcov.info

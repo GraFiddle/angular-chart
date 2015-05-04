@@ -15,8 +15,7 @@
         },
         value: {
           type: 'bar',
-          label: true,
-          displayFormat: d3.format("$,")
+          label: true
         }
       },
       chart: {

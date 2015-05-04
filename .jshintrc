@@ -25,6 +25,7 @@
     "describe",
     "beforeEach",
     "inject",
-    "spyOn"
+    "spyOn",
+    "define"
   ]
 }

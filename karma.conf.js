@@ -13,10 +13,8 @@ module.exports = function (config) {
       'bower_components/c3/c3.js',
 
       // the directives
+      'src/js/directive.js', // module has to be loaded first
       'src/js/**/*.js',
-
-      // data
-      //'test/test-data.js',
 
       // test
       'test/*_spec.js'
@@ -32,7 +30,7 @@ module.exports = function (config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['PhantomJS', 'Chrome', 'Firefox'],
 
     frameworks: ['jasmine'],
 
@@ -45,12 +43,13 @@ module.exports = function (config) {
       'karma-coverage',
       'karma-phantomjs-launcher',
       'karma-chrome-launcher',
-      'karma-firefox-launcher'
+      'karma-firefox-launcher',
+      'karma-coveralls'
     ],
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit'
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'coveralls'],
 
     coverageReporter: {
       type: 'lcov', // lcov or lcovonly are required for generating lcov.info files
