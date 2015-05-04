@@ -45,7 +45,7 @@
 
   /* istanbul ignore next */
   if (typeof define === 'function' && define.amd) {
-    define('circular', ['../bower_components/angular/angular'], circular);
+    define('circular', ['../../bower_components/angular/angular'], circular);
   } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
     module.exports = circular;
   }

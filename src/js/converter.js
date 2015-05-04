@@ -19,6 +19,7 @@
 
     function convertData(options, configuration) {
       if (options.data) {
+        // TODO support different data formats
         configuration.data.json = options.data;
       }
     }
@@ -59,17 +60,11 @@
         if (dimension.axis === 'y2') {
           configuration.data.axes[key] = 'y2';
           configuration.axis.y2.show = true;
-        } else if (dimension.axis === 'x') {
-          configuration.data.keys.x = key;
-          configuration.data.x = key;
-        } else {
+        } else if (dimension.axis !== 'x') {
           configuration.axis.y.show = true;
         }
 
-        // displayFormat
-        if (angular.isDefined(dimension.displayFormat) && dimension.axis === 'x') {
-          configuration.axis.x.tick.format = dimension.displayFormat;
-        }
+        // label
         if (dimension.label === true) {
           if (angular.isDefined(dimension.displayFormat)) {
             configuration.data.labels.format[key] = dimension.displayFormat;
@@ -77,8 +72,21 @@
             configuration.data.labels.format[key] = true;
           }
         }
+
         // TODO configure http://c3js.org/samples/axes_y_tick_format.html
         // TODO configure http://c3js.org/samples/tooltip_format.html
+
+
+        // x-Axis
+        if (dimension.axis === 'x') {
+          configuration.data.keys.x = key;
+          configuration.data.x = key;
+
+          if (angular.isDefined(dimension.displayFormat)) {
+            configuration.axis.x.tick.format = dimension.displayFormat;
+          }
+        }
+
       });
     }
 
@@ -91,6 +99,21 @@
       //  else if (angular.isObject(options.schema) && angular.isObject(options.schema[key]) && angular.isString(options.schema[key].color)) {
       //    configuration.data.colors[key] = options.schema[key].color;
       //  }
+
+      // TODO apply pre/postfixes
+      //if (dimension.type === 'datetime') {
+      //  configuration.axis.x.type = 'timeseries';
+      //  if (dimension.dataFormat) {
+      //    configuration.data.xFormat = dimension.dataFormat;
+      //  } else {
+      //    configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
+      //    // TODO brute force (and check) right format
+      //  }
+      //} else if (dimension.type === 'numeric') {
+      //  configuration.axis.x.type = 'numeric';
+      //} else {
+      //  // TODO check for optimal type if nothing was provided
+      //}
     }
 
   }
