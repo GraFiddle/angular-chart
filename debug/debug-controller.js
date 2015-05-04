@@ -27,12 +27,6 @@
         zoom: {
           enabled: true
         }
-      },
-      state: {
-        selected: [{
-          id: 'data1',
-          index: 0
-        }]
       }
     };
 

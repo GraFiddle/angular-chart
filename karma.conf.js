@@ -30,7 +30,7 @@ module.exports = function (config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS', 'Chrome', 'Firefox'],
+    browsers: ['PhantomJS', 'Firefox'],
 
     frameworks: ['jasmine'],
 
@@ -42,7 +42,6 @@ module.exports = function (config) {
       'karma-jasmine',
       'karma-coverage',
       'karma-phantomjs-launcher',
-      'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-coveralls'
     ],
