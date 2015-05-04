@@ -62,9 +62,9 @@
 
     function setupDataWatcher($scope) {
       // variables
-      var limit = ($scope.options.chart && $scope.options.chart.data && angular.isNumber($scope.options.chart.data.watchLimit)) ? $scope.options.chart.data.watchLimit : 1;
+      var limit = (angular.isObject($scope.options) && angular.isObject($scope.options.chart) && $scope.options.chart.data && angular.isNumber($scope.options.chart.data.watchLimit)) ? $scope.options.chart.data.watchLimit : 1;
       var numberOfDataRecords = 0;
-      if (angular.isArray($scope.options.data)) {
+      if (angular.isObject($scope.options) && angular.isArray($scope.options.data)) {
         numberOfDataRecords = $scope.options.data.length;
       }
 

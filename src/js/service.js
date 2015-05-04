@@ -59,7 +59,6 @@
     }
 
     function generateChart() {
-      console.log('draw', configuration);
       window.onresize = null;
       chart = c3.generate(configuration);
     }
