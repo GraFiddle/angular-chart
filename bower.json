@@ -35,6 +35,6 @@
     "angular": "~1.4.x"
   },
   "devDependencies": {
-    "angular-mocks": "~1.x"
+    "angular-mocks": "~1.4.x"
   }
 }
