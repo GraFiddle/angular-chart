@@ -37,6 +37,7 @@
       $scope = scope;
       setupChartWatcher();
       setupStateWatcher();
+      setupWatchLimitWatcher();
       setupDataWatcher();
     }
 
@@ -45,7 +46,7 @@
     ////
 
     function setupChartWatcher() {
-      $scope.$watch('options.chart', function (newValue, oldValue) {
+      $scope.$watch('options.chart', function () {
         if (chartCallback) {
           chartCallback();
         }
@@ -53,16 +54,22 @@
     }
 
     function setupStateWatcher() {
-      $scope.$watch('options.state', function (newValue, oldValue) {
+      $scope.$watch('options.state', function () {
         if (!disableStateWatcher && stateCallback) {
           stateCallback();
         }
       }, true);
     }
 
+    function setupWatchLimitWatcher() {
+      $scope.$watch('options.chart.data.watchLimit', function () {
+        setupDataWatcher();
+      });
+    }
+
     function setupDataWatcher() {
       // variables
-      var limit = (angular.isObject($scope.options) && angular.isObject($scope.options.chart) && $scope.options.chart.data && angular.isNumber($scope.options.chart.data.watchLimit)) ? $scope.options.chart.data.watchLimit : 1;
+      var limit = (angular.isObject($scope.options) && angular.isObject($scope.options.chart) && $scope.options.chart.data && angular.isNumber($scope.options.chart.data.watchLimit)) ? $scope.options.chart.data.watchLimit : 100;
       var numberOfDataRecords = 0;
       if (angular.isObject($scope.options) && angular.isArray($scope.options.data)) {
         numberOfDataRecords = $scope.options.data.length;
@@ -72,7 +79,7 @@
       if (numberOfDataRecords < limit) {
         // start small watcher
         if (!dataSmallWatcher) {
-          dataSmallWatcher = setupDataSmallWatcher($scope);
+          dataSmallWatcher = setupDataSmallWatcher();
         }
         // stop big watcher
         if (dataBigWatcher) {
@@ -82,7 +89,7 @@
       } else {
         // start big watcher
         if (!dataBigWatcher) {
-          dataBigWatcher = setupDataBigWatcher($scope);
+          dataBigWatcher = setupDataBigWatcher();
         }
         // stop small watcher
         if (dataSmallWatcher) {
@@ -95,18 +102,19 @@
     /**
      * start watcher changes in small datasets, compares whole object
      */
-    function setupDataSmallWatcher($scope) {
+    function setupDataSmallWatcher() {
       return $scope.$watch('options.data', function (newValue, oldValue) {
         if (dataCallback) {
           dataCallback();
         }
+        setupDataWatcher();
       }, true);
     }
 
     /**
      * start watcher changes in big datasets, compares length of records
      */
-    function setupDataBigWatcher($scope) {
+    function setupDataBigWatcher() {
       return $scope.$watch(function () {
         if ($scope.options.data && angular.isArray($scope.options.data)) {
           return $scope.options.data.length;
@@ -117,6 +125,7 @@
         if (dataCallback) {
           dataCallback();
         }
+        setupDataWatcher();
       });
     }
 
