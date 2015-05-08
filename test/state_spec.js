@@ -160,6 +160,9 @@ describe('Service: AngularChartConverter', function () {
           show: true,
           onbrush: angular.noop
         }
+      },
+      state: {
+        range: [-1, 2]
       }
     };
     var configuration = angular.copy(baseConfiguration);

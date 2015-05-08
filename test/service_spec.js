@@ -19,6 +19,11 @@ describe('Service: AngularChartService', function () {
     $scope = $rootScope.$new();
   }));
 
+  var $timeout;
+  beforeEach(inject(function (_$timeout_) {
+    $timeout = _$timeout_;
+  }));
+
   // get the service to test
   var AngularChartService;
   beforeEach(inject(function (_AngularChartService_) {
@@ -39,6 +44,7 @@ describe('Service: AngularChartService', function () {
     AngularChartService.init(configuration, options);
 
     $scope.$apply();
+    $timeout.flush();
   });
 
 
