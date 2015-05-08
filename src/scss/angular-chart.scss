@@ -1,21 +1,4 @@
-
-@import "icons";
-@import "legend";
-
 angular-chart, .angular-chart {
   display: block;
   position: relative;
-}
-
-.chooseXAxis select {
-  margin: auto;
-  display: block;
-}
-
-.chooseChartType {
-  float: right;
-}
-
-.toggleSubchart {
-  float: right;
 }

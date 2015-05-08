@@ -35,16 +35,16 @@
 
     function init(scope) {
       $scope = scope;
-      setupChartWatcher($scope);
-      setupStateWatcher($scope);
-      setupDataWatcher($scope);
+      setupChartWatcher();
+      setupStateWatcher();
+      setupDataWatcher();
     }
 
     ////
     // SETUP
     ////
 
-    function setupChartWatcher($scope) {
+    function setupChartWatcher() {
       $scope.$watch('options.chart', function (newValue, oldValue) {
         if (chartCallback) {
           chartCallback();
@@ -52,7 +52,7 @@
       }, true);
     }
 
-    function setupStateWatcher($scope) {
+    function setupStateWatcher() {
       $scope.$watch('options.state', function (newValue, oldValue) {
         if (!disableStateWatcher && stateCallback) {
           stateCallback();
@@ -60,7 +60,7 @@
       }, true);
     }
 
-    function setupDataWatcher($scope) {
+    function setupDataWatcher() {
       // variables
       var limit = (angular.isObject($scope.options) && angular.isObject($scope.options.chart) && $scope.options.chart.data && angular.isNumber($scope.options.chart.data.watchLimit)) ? $scope.options.chart.data.watchLimit : 1;
       var numberOfDataRecords = 0;
