@@ -48,10 +48,12 @@
     };
 
     vm.updateState = function () {
-      vm.options.state.selected.push({
-        id: 'value',
-        index: 0
-      });
+      vm.options.state = {
+        selected: [{
+          id: 'value',
+          index: 0
+        }]
+      };
     };
 
   }
