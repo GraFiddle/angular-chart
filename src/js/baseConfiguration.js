@@ -20,15 +20,21 @@
     },
     axis: {
       y: {
-        show: true
+        show: true,
+        tick: {}
       },
-      y2: {},
+      y2: {
+        tick: {}
+      },
       x: {
         tick: {}
       }
     },
     zoom: {},
-    subchart: {}
+    subchart: {},
+    tooltip: {
+      format: {}
+    }
   };
 
   angular

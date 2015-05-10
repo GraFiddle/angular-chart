@@ -32,9 +32,15 @@
       // only show used axes
       configuration.axis.y.show = false;
 
+      // save displayFormat for reuse
+      var displayFormat = {
+        isUse: false,
+        y: [],
+        y2: []
+      };
 
       // apply all dimensions
-      angular.forEach(options.dimensions, function(dimension, key) {
+      angular.forEach(options.dimensions, function (dimension, key) {
         // TODO only when JSON (array of objects) data
         // set dimensions to show
         if (!angular.isDefined(dimension.show) || dimension.show) {
@@ -60,34 +66,101 @@
         if (dimension.axis === 'y2') {
           configuration.data.axes[key] = 'y2';
           configuration.axis.y2.show = true;
+          displayFormat.y2.push(key);
         } else if (dimension.axis !== 'x') {
           configuration.axis.y.show = true;
+          displayFormat.y.push(key);
         }
 
         // label
-        if (dimension.label === true) {
-          if (angular.isDefined(dimension.displayFormat)) {
-            configuration.data.labels.format[key] = dimension.displayFormat;
-          } else {
-            configuration.data.labels.format[key] = true;
-          }
+        displayFormat[key] = true;
+        if (angular.isDefined(dimension.displayFormat)) {
+          displayFormat.inUse = true;
+          displayFormat[key] = dimension.displayFormat;
+        } else if (angular.isDefined(dimension.prefix) || angular.isDefined(dimension.postfix)) {
+          displayFormat.inUse = true;
+          displayFormat[key] = function (label) {
+            console.log(label, 'with fixes');
+            return (dimension.prefix || '') + label + (dimension.postfix || '');
+          };
         }
 
-        // TODO configure http://c3js.org/samples/axes_y_tick_format.html
-        // TODO configure http://c3js.org/samples/tooltip_format.html
-
+        if (dimension.label === true) {
+          configuration.data.labels.format[key] = displayFormat[key];
+        }
 
         // x-Axis
         if (dimension.axis === 'x') {
           configuration.data.keys.x = key;
           configuration.data.x = key;
+          configuration.axis.x.type = 'category';
 
-          if (angular.isDefined(dimension.displayFormat)) {
-            configuration.axis.x.tick.format = dimension.displayFormat;
+          if (angular.isFunction(displayFormat[key])) {
+            configuration.axis.x.tick.format = displayFormat[key];
           }
         }
 
       });
+
+      // Tooltips
+      // http://c3js.org/samples/tooltip_format.html
+      if (displayFormat.inUse) {
+        configuration.tooltip = {
+          format: {
+            value: function (value, ratio, id) {
+              if (angular.isFunction(displayFormat[id])) {
+                return displayFormat[id](value);
+              } else {
+                return value;
+              }
+            }
+          }
+        };
+      }
+
+      // Y-Axes
+      // http://c3js.org/samples/axes_y_tick_format.html
+      angular.forEach(['y', 'y2'], function (axis) {
+        var format = null;
+        var formatKey = null;
+        angular.forEach(displayFormat[axis], function (key) {
+          if (format === null) {
+            format = displayFormat[key];
+            formatKey = key;
+          } else if (
+            format !== displayFormat[key] && !(
+
+              // not two functuins
+            (!angular.isFunction(options.dimensions[formatKey].displayFormat) && !angular.isFunction(options.dimensions[key].displayFormat)) &&
+
+            (
+
+              // not two prefixes
+            (!angular.isDefined(options.dimensions[formatKey].prefix) && !angular.isDefined(options.dimensions[key].prefix)) ||
+
+              // two same prefixes
+            (angular.isDefined(options.dimensions[formatKey].prefix) &&
+            angular.isDefined(options.dimensions[key].prefix) &&
+            options.dimensions[formatKey].prefix === options.dimensions[key].prefix)
+
+            ) && (
+              // not two postfixes
+            (!angular.isDefined(options.dimensions[formatKey].postfix) && !angular.isDefined(options.dimensions[key].postfix)) ||
+
+              // two same postfixes
+            (angular.isDefined(options.dimensions[formatKey].postfix) &&
+            angular.isDefined(options.dimensions[key].postfix) &&
+            options.dimensions[formatKey].postfix === options.dimensions[key].postfix)
+
+            ))) {
+            format = false;
+          }
+        });
+        if (format !== false && format !== true && format !== null) {
+          configuration.axis[axis].tick.format = format;
+        }
+      });
+
     }
 
     function convertSchema(options, configuration) {
