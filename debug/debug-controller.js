@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function DebugController() {
+  function DebugController($q, $timeout) {
     var vm = this;
     var data =  [
       {temp: -1, rain: 100, sun: 2, month: 'Jan', date: '2014-01-01', num: 13},
@@ -69,6 +69,12 @@
         }
       }
     };
+
+    //vm.options = $q(function(resolve) {
+    //  $timeout(function(){
+    //  resolve(options);
+    //  },100);
+    //});
 
     vm.updateChart = function () {
       vm.options = options;

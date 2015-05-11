@@ -13,6 +13,11 @@
     ////////////
 
     function activate() {
+      // unwrap promise
+      $q.when($scope.options, function (options) {
+        $scope.options = options;
+      });
+
       addIdentifier();
       AngularChartWatcher.init($scope);
       AngularChartService.init(configuration, $scope);
