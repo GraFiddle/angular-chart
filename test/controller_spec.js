@@ -50,9 +50,6 @@ describe('Controller: AngularChartController', function() {
   // instantiation
   it('should instantiate DirectiveCtrl.', function() {
     // setup
-    $scope.options = {
-      data: []
-    };
     var controller = setUpController();
 
     // validate result
@@ -62,12 +59,11 @@ describe('Controller: AngularChartController', function() {
   // destroy
   it('should instantiate DirectiveCtrl.', function() {
     // setup
-    $scope.options = {
-      data: []
-    };
+    $scope.options = {};
     var controller = setUpController();
 
     // action
+    expect(controller).toBeDefined();
     $scope.$destroy();
   });
 
