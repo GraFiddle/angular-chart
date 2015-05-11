@@ -61,7 +61,6 @@
     function convertOptions() {
       AngularChartConverter.convertData(options, configuration);
       AngularChartConverter.convertDimensions(options, configuration);
-      AngularChartConverter.convertSchema(options, configuration);
     }
 
     /**

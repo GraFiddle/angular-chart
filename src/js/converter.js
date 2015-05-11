@@ -9,8 +9,7 @@
 
     var service = {
       convertData: convertData,
-      convertDimensions: convertDimensions,
-      convertSchema: convertSchema
+      convertDimensions: convertDimensions
     };
 
     return service;
@@ -80,7 +79,6 @@
         } else if (angular.isDefined(dimension.prefix) || angular.isDefined(dimension.postfix)) {
           displayFormat.inUse = true;
           displayFormat[key] = function (label) {
-            console.log(label, 'with fixes');
             return (dimension.prefix || '') + label + (dimension.postfix || '');
           };
         }
@@ -97,6 +95,20 @@
 
           if (angular.isFunction(displayFormat[key])) {
             configuration.axis.x.tick.format = displayFormat[key];
+          }
+
+          if (dimension.dataType === 'datetime') {
+            configuration.axis.x.type = 'timeseries';
+            if (dimension.dataFormat) {
+              configuration.data.xFormat = dimension.dataFormat;
+            } else {
+              configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
+              // TODO brute force (and check) right format
+            }
+          } else if (dimension.type === 'numeric') {
+            configuration.axis.x.type = 'numeric';
+          } else {
+            // TODO check for optimal type if nothing was provided
           }
         }
 
@@ -161,32 +173,6 @@
         }
       });
 
-    }
-
-    function convertSchema(options, configuration) {
-      // TODO configure
-      //  else if (angular.isObject(options.schema) && angular.isObject(options.schema[key]) && angular.isString(options.schema[key].name)) {
-      //    configuration.data.names[key] = options.schema[key].name;
-      //  }
-      //
-      //  else if (angular.isObject(options.schema) && angular.isObject(options.schema[key]) && angular.isString(options.schema[key].color)) {
-      //    configuration.data.colors[key] = options.schema[key].color;
-      //  }
-
-      // TODO apply pre/postfixes
-      //if (dimension.type === 'datetime') {
-      //  configuration.axis.x.type = 'timeseries';
-      //  if (dimension.dataFormat) {
-      //    configuration.data.xFormat = dimension.dataFormat;
-      //  } else {
-      //    configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
-      //    // TODO brute force (and check) right format
-      //  }
-      //} else if (dimension.type === 'numeric') {
-      //  configuration.axis.x.type = 'numeric';
-      //} else {
-      //  // TODO check for optimal type if nothing was provided
-      //}
     }
 
   }

@@ -539,15 +539,4 @@ describe('Service: AngularChartConverter', function () {
     expect(configuration.axis).toEqual(expectedResult.axis);
   });
 
-  // convertDimensions()
-  it('should do nothing if no schema is provided.', function () {
-    // setup
-    var options = {};
-    var configuration = angular.copy(baseConfiguration);
-    AngularChartConverter.convertSchema(options, configuration);
-
-    // result
-    expect(configuration).toEqual(baseConfiguration);
-  });
-
 });

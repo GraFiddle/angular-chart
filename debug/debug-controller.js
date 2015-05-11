@@ -72,12 +72,6 @@
       vm.options.data.push({data1: Math.random() * 100});
     };
 
-    vm.updateSchema = function () {
-      vm.options.schema = {
-        data1: {}
-      };
-    };
-
     vm.updateState = function () {
       vm.options.state = {
         selected: [{
