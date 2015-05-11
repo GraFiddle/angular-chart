@@ -37,9 +37,9 @@ describe('Service: AngularChartConverter', function () {
   it('should copy provided data into configuration.', function () {
     // setup
     var options = {
-      data: {
+      data: [{
         row1: 10
-      }
+      }]
     };
     var configuration = angular.copy(baseConfiguration);
     AngularChartConverter.convertData(options, configuration);

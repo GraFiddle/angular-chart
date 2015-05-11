@@ -5,7 +5,7 @@
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  function AngularChartController($scope, $element, baseConfiguration, AngularChartWatcher, AngularChartService) {
+  function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartWatcher, AngularChartService) {
     var configuration = baseConfiguration;
 
     activate();
@@ -15,7 +15,7 @@
     function activate() {
       addIdentifier();
       AngularChartWatcher.init($scope);
-      AngularChartService.init(configuration, $scope.options);
+      AngularChartService.init(configuration, $scope);
       registerDestroyListener();
     }
 

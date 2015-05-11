@@ -7,6 +7,7 @@
 
   var baseConfiguration = {
     data: {
+      json: [],
       keys: {
         value: []
       },

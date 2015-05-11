@@ -41,15 +41,13 @@ describe('Directive: angularChart', function () {
   //          UNIT TESTS          //
   //////////////////////////////////
 
-  it('should not compile without attributes given.', function() {
+  it('should compile without attributes given.', function() {
     expect(compileHtmlFunction('<angular-chart></angular-chart>'))
-      .toThrow();
+      .not.toThrow();
   });
 
   it('should compile with all attributes are given.', function() {
-    $scope.options = {
-      data: []
-    };
+    $scope.options = {};
 
     expect(compileHtmlFunction('<angular-chart options="options"></angular-chart>'))
       .not.toThrow();
@@ -57,9 +55,7 @@ describe('Directive: angularChart', function () {
 
   it('should add attributes to element scope.', function() {
     // setup
-    $scope.options = {
-      data: []
-    };
+    $scope.options = {};
     var element = compileHtmlFunction('<angular-chart options="options"></angular-chart>')();
     var elementScope = getElementScope(element);
 

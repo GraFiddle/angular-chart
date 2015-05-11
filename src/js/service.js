@@ -11,6 +11,7 @@
     var chart = null;
     var baseConfiguration = {};
     var configuration = {};
+    var scopeReference = null;
     var options = {};
 
     var service = {
@@ -22,9 +23,9 @@
 
     ////////////
 
-    function init(baseConfig, optionsReference) {
+    function init(baseConfig, scope) {
       baseConfiguration = baseConfig;
-      options = optionsReference;
+      scopeReference = scope;
       updateCallback();
 
       // register callbacks after first digest cycle
@@ -48,11 +49,19 @@
      */
     function updateCallback() {
       configuration = baseConfiguration;
+      buildOptions();
       convertOptions();
       applyChartOptions();
       synchronizeState();
       generateChart();
       stateCallback();
+    }
+
+    /**
+     * Build options based on the values provided from scope.
+     */
+    function buildOptions() {
+      options = angular.isObject(scopeReference.options) ? scopeReference.options : {};
     }
 
     /**

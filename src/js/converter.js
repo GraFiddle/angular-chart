@@ -17,8 +17,8 @@
     ////////////
 
     function convertData(options, configuration) {
-      if (options.data) {
-        // TODO support different data formats
+      // TODO support different data formats
+      if (angular.isArray(options.data)) {
         configuration.data.json = options.data;
       }
     }
