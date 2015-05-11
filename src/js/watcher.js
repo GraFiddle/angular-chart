@@ -9,6 +9,7 @@
     var $scope;
 
     // callbacks
+    var dimensionsCallback;
     var chartCallback;
     var stateCallback;
     var dataCallback;
@@ -22,6 +23,7 @@
 
     var service = {
       init: init,
+      registerDimensionsCallback: registerDimensionsCallback,
       registerChartCallback: registerChartCallback,
       registerStateCallback: registerStateCallback,
       registerDataCallback: registerDataCallback,
@@ -35,6 +37,7 @@
 
     function init(scope) {
       $scope = scope;
+      setupDimensionsWatcher();
       setupChartWatcher();
       setupStateWatcher();
       setupWatchLimitWatcher();
@@ -44,6 +47,14 @@
     ////
     // SETUP
     ////
+
+    function setupDimensionsWatcher() {
+      $scope.$watch('options.dimensions', function () {
+        if (dimensionsCallback) {
+          dimensionsCallback();
+        }
+      }, true);
+    }
 
     function setupChartWatcher() {
       $scope.$watch('options.chart', function () {
@@ -103,7 +114,7 @@
      * start watcher changes in small datasets, compares whole object
      */
     function setupDataSmallWatcher() {
-      return $scope.$watch('options.data', function (newValue, oldValue) {
+      return $scope.$watch('options.data', function () {
         if (dataCallback) {
           dataCallback();
         }
@@ -121,7 +132,7 @@
         } else {
           return 0;
         }
-      }, function (newValue, oldValue) {
+      }, function () {
         if (dataCallback) {
           dataCallback();
         }
@@ -132,6 +143,10 @@
     ////
     // REGISTER
     ////
+
+    function registerDimensionsCallback(callback) {
+      dimensionsCallback = callback;
+    }
 
     function registerChartCallback(callback) {
       chartCallback = callback;

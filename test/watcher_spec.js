@@ -31,6 +31,70 @@ describe('Service: AngularChartWatcher', function () {
   });
 
 
+  // registerDimensionsCallback()
+  describe('call the dimensions callback', function () {
+
+    // setup for all tests in this block
+    var callbacks = {};
+    beforeEach(function () {
+      callbacks = {
+        func: angular.noop
+      };
+      spyOn(callbacks, 'func');
+    });
+
+    it('when dimensions are set.', function () {
+      // setup
+      AngularChartWatcher.init($scope);
+      $scope.$apply();
+      AngularChartWatcher.registerDimensionsCallback(callbacks.func);
+
+      // action
+      $scope.options = {
+        dimensions: {}
+      };
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).toHaveBeenCalled();
+    });
+
+    it('when dimensions are removed.', function () {
+      // setup
+      $scope.options = {
+        dimensions: {}
+      };
+      AngularChartWatcher.init($scope);
+      $scope.$apply();
+      AngularChartWatcher.registerDimensionsCallback(callbacks.func);
+
+      // action
+      $scope.options = {};
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).toHaveBeenCalled();
+    });
+
+    it('not when something else is updated.', function () {
+      // setup
+      AngularChartWatcher.init($scope);
+      $scope.$apply();
+      AngularChartWatcher.registerDimensionsCallback(callbacks.func);
+
+      // action
+      $scope.options = {
+        something: 'else'
+      };
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).not.toHaveBeenCalled();
+    });
+
+  });
+
+
   // registerChartCallback()
   describe('call the chart callback', function () {
 

@@ -37,6 +37,7 @@
      */
     function registerCallbacks() {
       // updateCallback()
+      AngularChartWatcher.registerDimensionsCallback(updateCallback);
       AngularChartWatcher.registerChartCallback(updateCallback);
       AngularChartWatcher.registerDataCallback(updateCallback);
 
