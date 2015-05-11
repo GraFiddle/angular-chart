@@ -236,7 +236,6 @@ describe('Service: AngularChartConverter', function () {
     expectedResult.data.keys.value = ['row1'];
     expectedResult.data.keys.x = 'row1';
     expectedResult.data.x = 'row1';
-    expectedResult.axis.x.type = 'category';
     expectedResult.axis.y.show = false;
     expect(configuration).toEqual(expectedResult);
   });
@@ -260,12 +259,150 @@ describe('Service: AngularChartConverter', function () {
     expectedResult.data.keys.value = ['row1'];
     expectedResult.data.keys.x = 'row1';
     expectedResult.data.x = 'row1';
-    expectedResult.axis.x.type = 'category';
     expectedResult.axis.y.show = false;
     expectedResult.axis.x.tick.format = options.dimensions.row1.displayFormat;
     expect(configuration.data).toEqual(expectedResult.data);
     expect(configuration.axis).toEqual(expectedResult.axis);
     expect(configuration.tooltip.format.value).toBeDefined();
+  });
+
+  it('should set timeseries x-Axis.', function () {
+    // setup
+    var options = {
+      dimensions: {
+        row1: {
+          axis: 'x',
+          dataType: 'datetime'
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartConverter.convertDimensions(options, configuration);
+
+    // result
+    var expectedResult = angular.copy(baseConfiguration);
+    expectedResult.data.keys.value = ['row1'];
+    expectedResult.data.keys.x = 'row1';
+    expectedResult.data.x = 'row1';
+    expectedResult.axis.y.show = false;
+    expectedResult.axis.x.type = 'timeseries';
+    expect(configuration.data).toEqual(expectedResult.data);
+    expect(configuration.axis).toEqual(expectedResult.axis);
+  });
+
+  it('should set timeseries x-Axis with specific data format.', function () {
+    // setup
+    var options = {
+      dimensions: {
+        row1: {
+          axis: 'x',
+          dataType: 'datetime',
+          dataFormat: '%Y-%m-%d'
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartConverter.convertDimensions(options, configuration);
+
+    // result
+    var expectedResult = angular.copy(baseConfiguration);
+    expectedResult.data.keys.value = ['row1'];
+    expectedResult.data.keys.x = 'row1';
+    expectedResult.data.x = 'row1';
+    expectedResult.data.xFormat = options.dimensions.row1.dataFormat;
+    expectedResult.axis.y.show = false;
+    expectedResult.axis.x.type = 'timeseries';
+    expect(configuration.data).toEqual(expectedResult.data);
+    expect(configuration.axis).toEqual(expectedResult.axis);
+  });
+
+  it('should set timeseries x-Axis format if dimension and displayFormat present.', function () {
+    // setup
+    var options = {
+      dimensions: {
+        row1: {
+          axis: 'x',
+          dataType: 'datetime',
+          displayFormat: '%Y'
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartConverter.convertDimensions(options, configuration);
+
+    // result
+    var expectedResult = angular.copy(baseConfiguration);
+    expectedResult.data.keys.value = ['row1'];
+    expectedResult.data.keys.x = 'row1';
+    expectedResult.data.x = 'row1';
+    expectedResult.axis.y.show = false;
+    expectedResult.axis.x.type = 'timeseries';
+    expectedResult.axis.x.tick.format = options.dimensions.row1.displayFormat;
+    expect(configuration.data).toEqual(expectedResult.data);
+    expect(configuration.axis).toEqual(expectedResult.axis);
+    expect(configuration.tooltip.format.value).toBeDefined();
+  });
+
+  it('should set indexed x-Axis.', function () {
+    // setup
+    var options = {
+      dimensions: {
+        row1: {
+          axis: 'x',
+          dataType: 'numeric'
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartConverter.convertDimensions(options, configuration);
+
+    // result
+    var expectedResult = angular.copy(baseConfiguration);
+    expectedResult.axis.y.show = false;
+    expectedResult.axis.x.type = 'indexed';
+    expect(configuration.axis).toEqual(expectedResult.axis);
+  });
+
+  it('should set category x-Axis.', function () {
+    // setup
+    var options = {
+      dimensions: {
+        row1: {
+          axis: 'x',
+          dataType: 'category'
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartConverter.convertDimensions(options, configuration);
+
+    // result
+    var expectedResult = angular.copy(baseConfiguration);
+    expectedResult.axis.y.show = false;
+    expectedResult.axis.x.type = 'category';
+    expect(configuration.axis).toEqual(expectedResult.axis);
+  });
+
+  it('should set automatically category x-Axis.', function () {
+    // setup
+    var options = {
+      data: [{
+        row1: 'first'
+      }],
+      dimensions: {
+        row1: {
+          axis: 'x'
+        }
+      }
+    };
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartConverter.convertDimensions(options, configuration);
+
+    // result
+    var expectedResult = angular.copy(baseConfiguration);
+    expectedResult.axis.y.show = false;
+    expectedResult.axis.x.type = 'category';
+    expect(configuration.axis).toEqual(expectedResult.axis);
   });
 
   it('should add dimension label when true.', function () {

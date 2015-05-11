@@ -91,24 +91,20 @@
         if (dimension.axis === 'x') {
           configuration.data.keys.x = key;
           configuration.data.x = key;
-          configuration.axis.x.type = 'category';
 
-          if (angular.isFunction(displayFormat[key])) {
+          if (angular.isString(displayFormat[key]) || angular.isFunction(displayFormat[key])) {
             configuration.axis.x.tick.format = displayFormat[key];
           }
 
-          if (dimension.dataType === 'datetime') {
+          if (['datetime', 'date', 'timeseries'].indexOf(dimension.dataType) !== -1) {
             configuration.axis.x.type = 'timeseries';
             if (dimension.dataFormat) {
               configuration.data.xFormat = dimension.dataFormat;
-            } else {
-              configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
-              // TODO brute force (and check) right format
             }
-          } else if (dimension.type === 'numeric') {
-            configuration.axis.x.type = 'numeric';
-          } else {
-            // TODO check for optimal type if nothing was provided
+          } else if (['numeric', 'number', 'indexed'].indexOf(dimension.dataType) !== -1) {
+            configuration.axis.x.type = 'indexed';
+          } else if (dimension.dataType === 'category' || (angular.isArray(options.data) && options.data[0] && options.data[0][key] && options.data[0][key] && !angular.isNumber(options.data[0][key]))) {
+            configuration.axis.x.type = 'category';
           }
         }
 

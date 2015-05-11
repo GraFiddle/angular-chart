@@ -7,18 +7,18 @@
 
     vm.options = {
       data: [
-        {temp: -1, rain: 100, sun: 2, month: 'Jan'},
-        {temp: 2, rain: 80, sun: 3, month: 'Feb'},
-        {temp: 7, rain: 90, sun: 5, month: 'Mär'},
-        {temp: 11, rain: 50, sun: 7, month: 'Apr'},
-        {temp: 15, rain: 40, sun: 9, month: 'Mai'},
-        {temp: 22, rain: 15, sun: 12, month: 'Jun'},
-        {temp: 25, rain: 10, sun: 12, month: 'Jul'},
-        {temp: 28, rain: 5, sun: 13, month: 'Aug'},
-        {temp: 27, rain: 30, sun: 2, month: 'Sep'},
-        {temp: 21, rain: 60, sun: 6, month: 'Okt'},
-        {temp: 14, rain: 40, sun: 9, month: 'Nov'},
-        {temp: 5, rain: 80, sun: 5, month: 'Dec'}
+        {temp: -1, rain: 100, sun: 2, month: 'Jan', date: '2014-01-01', num: 13},
+        {temp: 2, rain: 80, sun: 3, month: 'Feb', date: '2014-02-01', num: 14},
+        {temp: 7, rain: 90, sun: 5, month: 'Mär', date: '2014-03-01', num: 15},
+        {temp: 11, rain: 50, sun: 7, month: 'Apr', date: '2014-04-01', num: 16},
+        {temp: 15, rain: 40, sun: 9, month: 'Mai', date: '2014-05-01', num: 17},
+        {temp: 22, rain: 15, sun: 12, month: 'Jun', date: '2014-06-01', num: 18},
+        {temp: 25, rain: 10, sun: 12, month: 'Jul', date: '2014-07-01', num: 19},
+        {temp: 28, rain: 5, sun: 13, month: 'Aug', date: '2014-08-01', num: 20},
+        {temp: 27, rain: 30, sun: 2, month: 'Sep', date: '2014-09-01', num: 21},
+        {temp: 21, rain: 60, sun: 6, month: 'Okt', date: '2014-10-01', num: 22},
+        {temp: 14, rain: 40, sun: 9, month: 'Nov', date: '2014-11-01', num: 23},
+        {temp: 5, rain: 80, sun: 5, month: 'Dec', date: '2014-12-01', num: 24}
       ],
       dimensions: {
         temp: {
@@ -45,9 +45,18 @@
           postfix: 'h',
           name: 'Sonnenstunden'
         },
-        month: {
-          axis: 'x'
-        }
+        date: {
+          axis: 'x',
+          displayFormat: '%Y-%m ',
+          dataType: 'datetime'
+        },
+        //month: {
+        //  axis: 'x'
+        //},
+        //num: {
+        //  axis: 'x',
+        //  dataType: 'numeric'
+        //}
       },
       chart: {
         data: {
