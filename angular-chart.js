@@ -39,6 +39,7 @@
     var $scope;
 
     // callbacks
+    var dimensionsCallback;
     var chartCallback;
     var stateCallback;
     var dataCallback;
@@ -52,6 +53,7 @@
 
     var service = {
       init: init,
+      registerDimensionsCallback: registerDimensionsCallback,
       registerChartCallback: registerChartCallback,
       registerStateCallback: registerStateCallback,
       registerDataCallback: registerDataCallback,
@@ -65,6 +67,7 @@
 
     function init(scope) {
       $scope = scope;
+      setupDimensionsWatcher();
       setupChartWatcher();
       setupStateWatcher();
       setupWatchLimitWatcher();
@@ -74,6 +77,14 @@
     ////
     // SETUP
     ////
+
+    function setupDimensionsWatcher() {
+      $scope.$watch('options.dimensions', function () {
+        if (dimensionsCallback) {
+          dimensionsCallback();
+        }
+      }, true);
+    }
 
     function setupChartWatcher() {
       $scope.$watch('options.chart', function () {
@@ -133,7 +144,7 @@
      * start watcher changes in small datasets, compares whole object
      */
     function setupDataSmallWatcher() {
-      return $scope.$watch('options.data', function (newValue, oldValue) {
+      return $scope.$watch('options.data', function () {
         if (dataCallback) {
           dataCallback();
         }
@@ -151,7 +162,7 @@
         } else {
           return 0;
         }
-      }, function (newValue, oldValue) {
+      }, function () {
         if (dataCallback) {
           dataCallback();
         }
@@ -162,6 +173,10 @@
     ////
     // REGISTER
     ////
+
+    function registerDimensionsCallback(callback) {
+      dimensionsCallback = callback;
+    }
 
     function registerChartCallback(callback) {
       chartCallback = callback;
@@ -457,6 +472,7 @@
     var chart = null;
     var baseConfiguration = {};
     var configuration = {};
+    var scopeReference = null;
     var options = {};
 
     var service = {
@@ -468,9 +484,9 @@
 
     ////////////
 
-    function init(baseConfig, optionsReference) {
+    function init(baseConfig, scope) {
       baseConfiguration = baseConfig;
-      options = optionsReference;
+      scopeReference = scope;
       updateCallback();
 
       // register callbacks after first digest cycle
@@ -482,6 +498,7 @@
      */
     function registerCallbacks() {
       // updateCallback()
+      AngularChartWatcher.registerDimensionsCallback(updateCallback);
       AngularChartWatcher.registerChartCallback(updateCallback);
       AngularChartWatcher.registerDataCallback(updateCallback);
 
@@ -494,6 +511,7 @@
      */
     function updateCallback() {
       configuration = baseConfiguration;
+      buildOptions();
       convertOptions();
       applyChartOptions();
       synchronizeState();
@@ -502,12 +520,18 @@
     }
 
     /**
+     * Build options based on the values provided from scope.
+     */
+    function buildOptions() {
+      options = angular.isObject(scopeReference.options) ? scopeReference.options : {};
+    }
+
+    /**
      * Convert the angular-chart specific options into a c3-configuration.
      */
     function convertOptions() {
       AngularChartConverter.convertData(options, configuration);
       AngularChartConverter.convertDimensions(options, configuration);
-      AngularChartConverter.convertSchema(options, configuration);
     }
 
     /**
@@ -580,8 +604,7 @@
 
     var service = {
       convertData: convertData,
-      convertDimensions: convertDimensions,
-      convertSchema: convertSchema
+      convertDimensions: convertDimensions
     };
 
     return service;
@@ -589,8 +612,8 @@
     ////////////
 
     function convertData(options, configuration) {
-      if (options.data) {
-        // TODO support different data formats
+      // TODO support different data formats
+      if (angular.isArray(options.data)) {
         configuration.data.json = options.data;
       }
     }
@@ -603,9 +626,15 @@
       // only show used axes
       configuration.axis.y.show = false;
 
+      // save displayFormat for reuse
+      var displayFormat = {
+        isUse: false,
+        y: [],
+        y2: []
+      };
 
       // apply all dimensions
-      angular.forEach(options.dimensions, function(dimension, key) {
+      angular.forEach(options.dimensions, function (dimension, key) {
         // TODO only when JSON (array of objects) data
         // set dimensions to show
         if (!angular.isDefined(dimension.show) || dimension.show) {
@@ -631,60 +660,110 @@
         if (dimension.axis === 'y2') {
           configuration.data.axes[key] = 'y2';
           configuration.axis.y2.show = true;
+          displayFormat.y2.push(key);
         } else if (dimension.axis !== 'x') {
           configuration.axis.y.show = true;
+          displayFormat.y.push(key);
         }
 
         // label
-        if (dimension.label === true) {
-          if (angular.isDefined(dimension.displayFormat)) {
-            configuration.data.labels.format[key] = dimension.displayFormat;
-          } else {
-            configuration.data.labels.format[key] = true;
-          }
+        displayFormat[key] = true;
+        if (angular.isDefined(dimension.displayFormat)) {
+          displayFormat.inUse = true;
+          displayFormat[key] = dimension.displayFormat;
+        } else if (angular.isDefined(dimension.prefix) || angular.isDefined(dimension.postfix)) {
+          displayFormat.inUse = true;
+          displayFormat[key] = function (label) {
+            return (dimension.prefix || '') + label + (dimension.postfix || '');
+          };
         }
 
-        // TODO configure http://c3js.org/samples/axes_y_tick_format.html
-        // TODO configure http://c3js.org/samples/tooltip_format.html
-
+        if (dimension.label === true) {
+          configuration.data.labels.format[key] = displayFormat[key];
+        }
 
         // x-Axis
         if (dimension.axis === 'x') {
           configuration.data.keys.x = key;
           configuration.data.x = key;
 
-          if (angular.isDefined(dimension.displayFormat)) {
-            configuration.axis.x.tick.format = dimension.displayFormat;
+          if (angular.isString(displayFormat[key]) || angular.isFunction(displayFormat[key])) {
+            configuration.axis.x.tick.format = displayFormat[key];
+          }
+
+          if (['datetime', 'date', 'timeseries'].indexOf(dimension.dataType) !== -1) {
+            configuration.axis.x.type = 'timeseries';
+            if (dimension.dataFormat) {
+              configuration.data.xFormat = dimension.dataFormat;
+            }
+          } else if (['numeric', 'number', 'indexed'].indexOf(dimension.dataType) !== -1) {
+            configuration.axis.x.type = 'indexed';
+          } else if (dimension.dataType === 'category' || (angular.isArray(options.data) && options.data[0] && options.data[0][key] && options.data[0][key] && !angular.isNumber(options.data[0][key]))) {
+            configuration.axis.x.type = 'category';
           }
         }
 
       });
-    }
 
-    function convertSchema(options, configuration) {
-      // TODO configure
-      //  else if (angular.isObject(options.schema) && angular.isObject(options.schema[key]) && angular.isString(options.schema[key].name)) {
-      //    configuration.data.names[key] = options.schema[key].name;
-      //  }
-      //
-      //  else if (angular.isObject(options.schema) && angular.isObject(options.schema[key]) && angular.isString(options.schema[key].color)) {
-      //    configuration.data.colors[key] = options.schema[key].color;
-      //  }
+      // Tooltips
+      // http://c3js.org/samples/tooltip_format.html
+      if (displayFormat.inUse) {
+        configuration.tooltip = {
+          format: {
+            value: function (value, ratio, id) {
+              if (angular.isFunction(displayFormat[id])) {
+                return displayFormat[id](value);
+              } else {
+                return value;
+              }
+            }
+          }
+        };
+      }
 
-      // TODO apply pre/postfixes
-      //if (dimension.type === 'datetime') {
-      //  configuration.axis.x.type = 'timeseries';
-      //  if (dimension.dataFormat) {
-      //    configuration.data.xFormat = dimension.dataFormat;
-      //  } else {
-      //    configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
-      //    // TODO brute force (and check) right format
-      //  }
-      //} else if (dimension.type === 'numeric') {
-      //  configuration.axis.x.type = 'numeric';
-      //} else {
-      //  // TODO check for optimal type if nothing was provided
-      //}
+      // Y-Axes
+      // http://c3js.org/samples/axes_y_tick_format.html
+      angular.forEach(['y', 'y2'], function (axis) {
+        var format = null;
+        var formatKey = null;
+        angular.forEach(displayFormat[axis], function (key) {
+          if (format === null) {
+            format = displayFormat[key];
+            formatKey = key;
+          } else if (
+            format !== displayFormat[key] && !(
+
+              // not two functuins
+            (!angular.isFunction(options.dimensions[formatKey].displayFormat) && !angular.isFunction(options.dimensions[key].displayFormat)) &&
+
+            (
+
+              // not two prefixes
+            (!angular.isDefined(options.dimensions[formatKey].prefix) && !angular.isDefined(options.dimensions[key].prefix)) ||
+
+              // two same prefixes
+            (angular.isDefined(options.dimensions[formatKey].prefix) &&
+            angular.isDefined(options.dimensions[key].prefix) &&
+            options.dimensions[formatKey].prefix === options.dimensions[key].prefix)
+
+            ) && (
+              // not two postfixes
+            (!angular.isDefined(options.dimensions[formatKey].postfix) && !angular.isDefined(options.dimensions[key].postfix)) ||
+
+              // two same postfixes
+            (angular.isDefined(options.dimensions[formatKey].postfix) &&
+            angular.isDefined(options.dimensions[key].postfix) &&
+            options.dimensions[formatKey].postfix === options.dimensions[key].postfix)
+
+            ))) {
+            format = false;
+          }
+        });
+        if (format !== false && format !== true && format !== null) {
+          configuration.axis[axis].tick.format = format;
+        }
+      });
+
     }
 
   }
@@ -705,7 +784,7 @@
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  function AngularChartController($scope, $element, baseConfiguration, AngularChartWatcher, AngularChartService) {
+  function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartWatcher, AngularChartService) {
     var configuration = baseConfiguration;
 
     activate();
@@ -713,9 +792,14 @@
     ////////////
 
     function activate() {
+      // unwrap promise
+      $q.when($scope.options, function (options) {
+        $scope.options = options;
+      });
+
       addIdentifier();
       AngularChartWatcher.init($scope);
-      AngularChartService.init(configuration, $scope.options);
+      AngularChartService.init(configuration, $scope);
       registerDestroyListener();
     }
 
@@ -737,7 +821,7 @@
     }
 
   }
-  AngularChartController.$inject = ['$scope', '$element', 'baseConfiguration', 'AngularChartWatcher', 'AngularChartService'];
+  AngularChartController.$inject = ['$scope', '$element', '$q', 'baseConfiguration', 'AngularChartWatcher', 'AngularChartService'];
 
   angular
     .module('angularChart')
@@ -754,6 +838,7 @@
 
   var baseConfiguration = {
     data: {
+      json: [],
       keys: {
         value: []
       },
@@ -767,15 +852,21 @@
     },
     axis: {
       y: {
-        show: true
+        show: true,
+        tick: {}
       },
-      y2: {},
+      y2: {
+        tick: {}
+      },
       x: {
         tick: {}
       }
     },
     zoom: {},
-    subchart: {}
+    subchart: {},
+    tooltip: {
+      format: {}
+    }
   };
 
   angular
