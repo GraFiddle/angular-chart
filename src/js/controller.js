@@ -6,7 +6,7 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartWatcher, AngularChartService) {
-    var configuration = baseConfiguration;
+    var configuration = angular.copy(baseConfiguration);
 
     activate();
 
@@ -29,7 +29,7 @@
     function addIdentifier() {
       $scope.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
       angular.element($element).attr('id', $scope.dataAttributeChartID);
-      baseConfiguration.bindto = '#' + $scope.dataAttributeChartID;
+      configuration.bindto = '#' + $scope.dataAttributeChartID;
     }
 
     // remove all references when directive is destroyed

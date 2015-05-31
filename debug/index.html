@@ -21,12 +21,14 @@
 
     <!-- debug app -->
     <script type="text/javascript" src="debug-app.js"></script>
+    <script type="text/javascript" src="debug-data.js"></script>
     <script type="text/javascript" src="debug-controller.js"></script>
 
   </head>
   <body ng-app="AngularChartDebug" ng-controller="DebugController as debug">
 
-    <angular-chart options="debug.options"></angular-chart>
+  <angular-chart options="debug.climateOptions"></angular-chart>
+  <angular-chart options="debug.timestampOptions"></angular-chart>
 
     <button ng-click="debug.updateData()">Update Data</button>
     <button ng-click="debug.updateChart()">Update Chart</button>

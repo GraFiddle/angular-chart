@@ -7,7 +7,10 @@
 
   var angularChart = angular.module('angularChart', []);
 
+  // HTML-Tag: <angular-chart>
   angularChart.directive('angularChart', angularChartDirective);
+  // HTML-Tag <angularchart>
+  angularChart.directive('angularchart', angularChartDirective);
 
   function angularChartDirective() {
     return {

@@ -15,6 +15,7 @@
     var options = {};
 
     var service = {
+      bind: '',
       init: init,
       destroyChart: destroyChart
     };
@@ -25,6 +26,7 @@
 
     function init(baseConfig, scope) {
       baseConfiguration = baseConfig;
+      service.bind = baseConfig.bindto;
       scopeReference = scope;
       updateCallback();
 

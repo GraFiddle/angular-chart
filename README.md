@@ -9,7 +9,7 @@ Everything further down may be outdated.
 ### Changelog 0.2.X to 0.3.0
 
 * use `<angular-chart></angular-chart>` instead of `<angularchart></angularchart>`
-
+* 
 
 ## Usage
 
