@@ -18,7 +18,7 @@
           label: true,
           color: 'orange',
           postfix: '°C',
-          name: 'Temperatur'
+          name: 'temperature'
         },
         rain: {
           axis: 'y2',
@@ -26,7 +26,7 @@
           label: true,
           color: 'lightblue',
           postfix: 'mm',
-          name: 'Regen'
+          name: 'tain'
         },
         sun: {
           axis: 'y',
@@ -34,13 +34,16 @@
           color: 'red',
           label: true,
           postfix: 'h',
-          name: 'Sonnenstunden'
+          name: 'sunshine'
         },
-        date: {
-          axis: 'x',
-          displayFormat: '%Y-%m ',
-          dataType: 'datetime'
+        month: {
+          axis: 'x'
         }
+        //date: {
+        //  axis: 'x',
+        //  displayFormat: '%Y-%m ',
+        //  dataType: 'datetime'
+        //}
       },
       chart: {
         data: {
