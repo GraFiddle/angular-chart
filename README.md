@@ -2,7 +2,7 @@
 
 > adjustable dynamically updating stateful charts for [AngularJS](https://github.com/angular/angular.js)
 
-![angular-chart](debug/angular-chart.png)
+![angular-chart](debug/angular-chart.gif)
 
 angular-chart is a [AngularJS](https://github.com/angular/angular.js) directive, which is build on top of [C3.js](https://github.com/masayuki0812/c3) a [d3](https://github.com/mbostock/d3)-based chart library.
 

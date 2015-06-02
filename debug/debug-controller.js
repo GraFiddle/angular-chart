@@ -26,7 +26,7 @@
           label: true,
           color: 'lightblue',
           postfix: 'mm',
-          name: 'tain'
+          name: 'rain'
         },
         sun: {
           axis: 'y',
