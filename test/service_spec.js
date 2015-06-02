@@ -38,7 +38,7 @@ describe('Service: AngularChartService', function () {
   it('setup the service.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    AngularChartService.init(configuration, $scope);
+    AngularChartService.getInstance(configuration, $scope);
 
     $scope.$apply();
     $timeout.flush();
@@ -49,15 +49,56 @@ describe('Service: AngularChartService', function () {
   it('destroy a created chart.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    AngularChartService.init(configuration, $scope);
+    var chartSerice = AngularChartService.getInstance(configuration, $scope);
 
     $scope.$apply();
 
-    AngularChartService.destroyChart();
+    chartSerice.destroyChart();
   });
 
-  it('call destroy before generating a chart.', function () {
-    AngularChartService.destroyChart();
+  // callbacks
+  it('callback dimensionsCallback.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+
+    $scope.$apply();
+    $timeout.flush();
+
+    chartSerice.watcher.dimensionsCallback();
+  });
+
+  it('callback chartCallback.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+
+    $scope.$apply();
+    $timeout.flush();
+
+    chartSerice.watcher.chartCallback();
+  });
+
+  it('callback dataCallback.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+
+    $scope.$apply();
+    $timeout.flush();
+
+    chartSerice.watcher.dataCallback();
+  });
+
+  it('callback stateCallback.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+
+    $scope.$apply();
+    $timeout.flush();
+
+    chartSerice.watcher.stateCallback();
   });
 
 });

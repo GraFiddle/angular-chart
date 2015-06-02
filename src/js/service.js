@@ -1,4 +1,4 @@
-(function () {
+(function() {
 
   'use strict';
 
@@ -8,120 +8,131 @@
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
   function AngularChartService($timeout, AngularChartWatcher, AngularChartConverter, AngularChartState) {
-    var chart = null;
-    var baseConfiguration = {};
-    var configuration = {};
-    var scopeReference = null;
-    var options = {};
-    var watcher = null;
 
-    var service = {
-      init: init,
-      destroyChart: destroyChart
+    var ChartService = function(baseConfig, scope) {
+      this.chart = null;
+      this.baseConfiguration = {};
+      this.configuration = {};
+      this.scopeReference = null;
+      this.options = {};
+      this.watcher = null;
+
+      this.init(baseConfig, scope);
     };
 
-    return service;
-
-    ////////////
-
-    function init(baseConfig, scope) {
-      watcher = AngularChartWatcher.init(scope);
-      baseConfiguration = baseConfig;
-      scopeReference = scope;
-      updateCallback();
+    ChartService.prototype.init = function(baseConfig, scope) {
+      this.watcher = AngularChartWatcher.init(scope);
+      this.baseConfiguration = baseConfig;
+      this.scopeReference = scope;
+      this.updateCallback();
 
       // register callbacks after first digest cycle
-      $timeout(registerCallbacks);
-    }
+      var chartService = this;
+      $timeout(function() {
+        chartService.registerCallbacks();
+      });
+    };
 
     /**
      * Register callbacks for the watchers.
      */
-    function registerCallbacks() {
-      // updateCallback()
-      watcher.dimensionsCallback = updateCallback;
-      watcher.chartCallback = updateCallback;
-      watcher.dataCallback = updateCallback;
+    ChartService.prototype.registerCallbacks = function() {
+      var chartService = this;
 
-      // stateCallback()
-      watcher.stateCallback = stateCallback;
-    }
+      // updateCallback(), closure to keep reference to chart service
+      this.watcher.dimensionsCallback = function() {
+        chartService.updateCallback();
+      };
+      this.watcher.chartCallback = function() {
+        chartService.updateCallback();
+      };
+      this.watcher.dataCallback = function() {
+        chartService.updateCallback();
+      };
+
+      // stateCallback(), closure to keep reference to chart service
+      this.watcher.stateCallback = function() {
+        chartService.stateCallback();
+      };
+    };
 
     /**
      * Update the configuration and render the chart.
      */
-    function updateCallback() {
-      configuration = baseConfiguration;
-      buildOptions();
-      convertOptions();
-      applyChartOptions();
-      synchronizeState();
-      generateChart();
-      stateCallback();
-    }
+    ChartService.prototype.updateCallback = function() {
+      this.configuration = this.baseConfiguration;
+      this.buildOptions();
+      this.convertOptions();
+      this.applyChartOptions();
+      this.synchronizeState();
+      this.generateChart();
+      this.stateCallback();
+    };
 
     /**
      * Build options based on the values provided from scope.
      */
-    function buildOptions() {
-      options = angular.isObject(scopeReference.options) ? scopeReference.options : {};
-    }
+    ChartService.prototype.buildOptions = function() {
+      this.options = angular.isObject(this.scopeReference.options) ? this.scopeReference.options : {};
+    };
 
     /**
      * Convert the angular-chart specific options into a c3-configuration.
      */
-    function convertOptions() {
-      AngularChartConverter.convertData(options, configuration);
-      AngularChartConverter.convertDimensions(options, configuration);
-    }
+    ChartService.prototype.convertOptions = function() {
+      AngularChartConverter.convertData(this.options, this.configuration);
+      AngularChartConverter.convertDimensions(this.options, this.configuration);
+    };
 
     /**
      * Use the user defined chart configuration to extend and/or overwrite
      * the automatic set configuration.
      */
-    function applyChartOptions() {
+    ChartService.prototype.applyChartOptions = function() {
       angular.merge(
-        configuration,
-        options.chart
+        this.configuration,
+        this.options.chart
       );
-    }
+    };
 
     /**
      * Setup the synchronize from c3 events into the options.
      */
-    function synchronizeState() {
-      AngularChartState.synchronizeZoom(options, configuration, watcher);
-      AngularChartState.synchronizeSelection(options, configuration, watcher);
-    }
+    ChartService.prototype.synchronizeState = function() {
+      AngularChartState.synchronizeZoom(this.options, this.configuration, this.watcher);
+      AngularChartState.synchronizeSelection(this.options, this.configuration, this.watcher);
+    };
 
     /**
      * Render the chart.
      */
-    function generateChart() {
-      window.onresize = null;
-      // TODO add own onresize listener
+    ChartService.prototype.generateChart = function() {
+      // TODO add own onresize listener?
       // TODO regenerate chart only one or two times per second
       // TODO evaluate if it makes sense to destroy the chart first
-      chart = c3.generate(configuration);
-    }
+      this.chart = c3.generate(this.configuration);
+    };
 
     /**
      * Apply state options on the chart.
      */
-    function stateCallback() {
-      AngularChartState.applyZoom(options, chart);
-      AngularChartState.applySelection(options, chart);
-    }
+    ChartService.prototype.stateCallback = function() {
+      AngularChartState.applyZoom(this.options, this.chart);
+      AngularChartState.applySelection(this.options, this.chart);
+    };
 
     /**
      * Destroy the chart if one ist present.
      */
-    function destroyChart() {
-      if (angular.isObject(chart) && angular.isFunction(chart.destroy)) {
-        chart.destroy();
-      }
-    }
+    ChartService.prototype.destroyChart = function() {
+      this.chart.destroy();
+    };
 
+    return {
+      getInstance: function(baseConfig, scope) {
+        return new ChartService(baseConfig, scope);
+      }
+    };
   }
 
   angular

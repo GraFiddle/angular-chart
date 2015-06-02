@@ -7,6 +7,7 @@
 
   function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartService) {
     var configuration = angular.copy(baseConfiguration);
+    var chartService = null;
 
     activate();
 
@@ -15,7 +16,7 @@
     function activate() {
       unwrapPromise();
       addIdentifier();
-      AngularChartService.init(configuration, $scope);
+      chartService = AngularChartService.getInstance(configuration, $scope);
       registerDestroyListener();
     }
 
@@ -42,7 +43,7 @@
      */
     function registerDestroyListener() {
       $scope.$on('$destroy', function () {
-        AngularChartService.destroyChart(configuration);
+        chartService.destroyChart(configuration);
         $element.remove();
       });
     }
