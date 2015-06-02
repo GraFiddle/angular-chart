@@ -45,9 +45,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('when dimensions are set.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDimensionsCallback(callbacks.func);
+      watcher.dimensionsCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -64,9 +64,9 @@ describe('Service: AngularChartWatcher', function () {
       $scope.options = {
         dimensions: {}
       };
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDimensionsCallback(callbacks.func);
+      watcher.dimensionsCallback = callbacks.func;
 
       // action
       $scope.options = {};
@@ -78,9 +78,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('not when something else is updated.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDimensionsCallback(callbacks.func);
+      watcher.dimensionsCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -109,9 +109,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('when chart is set.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerChartCallback(callbacks.func);
+      watcher.chartCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -128,9 +128,9 @@ describe('Service: AngularChartWatcher', function () {
       $scope.options = {
         chart: {}
       };
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerChartCallback(callbacks.func);
+      watcher.chartCallback = callbacks.func;
 
       // action
       $scope.options = {};
@@ -142,9 +142,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('not when something else is updated.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerChartCallback(callbacks.func);
+      watcher.chartCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -173,9 +173,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('when state is set.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerStateCallback(callbacks.func);
+      watcher.stateCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -192,9 +192,9 @@ describe('Service: AngularChartWatcher', function () {
       $scope.options = {
         state: {}
       };
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerStateCallback(callbacks.func);
+      watcher.stateCallback = callbacks.func;
 
       // action
       $scope.options = {};
@@ -206,9 +206,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('not when something else is updated.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerStateCallback(callbacks.func);
+      watcher.stateCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -237,9 +237,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('when data is set.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -256,9 +256,9 @@ describe('Service: AngularChartWatcher', function () {
       $scope.options = {
         data: []
       };
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options = {};
@@ -276,9 +276,9 @@ describe('Service: AngularChartWatcher', function () {
       for (var i = 0; i <= 100; i++) {
         $scope.options.data.push({data: i});
       }
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options = {};
@@ -290,9 +290,9 @@ describe('Service: AngularChartWatcher', function () {
 
     it('not when something else is updated.', function () {
       // setup
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options = {
@@ -311,9 +311,9 @@ describe('Service: AngularChartWatcher', function () {
           data: 1
         }]
       };
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options.data[0].data = 2;
@@ -330,9 +330,9 @@ describe('Service: AngularChartWatcher', function () {
           data: 1
         }]
       };
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options.data.push({data: 2});
@@ -350,9 +350,9 @@ describe('Service: AngularChartWatcher', function () {
       for (var i = 0; i <= 100; i++) {
         $scope.options.data.push({data: i});
       }
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options.data[0].data = 2;
@@ -370,9 +370,9 @@ describe('Service: AngularChartWatcher', function () {
       for (var i = 0; i <= 100; i++) {
         $scope.options.data.push({data: i});
       }
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options.data.push({data: 2});
@@ -390,7 +390,7 @@ describe('Service: AngularChartWatcher', function () {
       for (var i = 0; i < 101; i++) {
         $scope.options.data.push({data: i});
       }
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
 
       // remove to 50 elements
@@ -398,7 +398,7 @@ describe('Service: AngularChartWatcher', function () {
       $scope.$apply();
 
       // register callback
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // change an element in small data
       $scope.options.data[0].data = 2;
@@ -413,7 +413,7 @@ describe('Service: AngularChartWatcher', function () {
       $scope.options = {
         data: []
       };
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
 
       // add 101 elements
@@ -423,7 +423,7 @@ describe('Service: AngularChartWatcher', function () {
       $scope.$apply();
 
       // register callback
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // change an element in small data
       $scope.options.data.push({data: 101});
@@ -446,9 +446,9 @@ describe('Service: AngularChartWatcher', function () {
       for (var i = 0; i < 5; i++) {
         $scope.options.data.push({data: i});
       }
-      AngularChartWatcher.init($scope);
+      var watcher = AngularChartWatcher.init($scope);
       $scope.$apply();
-      AngularChartWatcher.registerDataCallback(callbacks.func);
+      watcher.dataCallback = callbacks.func;
 
       // action
       $scope.options.data[0].data = 2;
@@ -468,12 +468,12 @@ describe('Service: AngularChartWatcher', function () {
       func: angular.noop
     };
     spyOn(callbacks, 'func');
-    AngularChartWatcher.init($scope);
+    var watcher = AngularChartWatcher.init($scope);
     $scope.$apply();
-    AngularChartWatcher.registerStateCallback(callbacks.func);
+    watcher.stateCallback = callbacks.func;
 
     // action
-    AngularChartWatcher.updateState(function () {
+    AngularChartWatcher.updateState(watcher, function () {
       $scope.options = {
         state: {}
       };
@@ -492,11 +492,11 @@ describe('Service: AngularChartWatcher', function () {
       func: angular.noop
     };
     spyOn(callbacks, 'func');
-    AngularChartWatcher.init($scope);
+    var watcher = AngularChartWatcher.init($scope);
     $scope.$apply();
 
     // action
-    AngularChartWatcher.applyFunction(callbacks.func);
+    AngularChartWatcher.applyFunction(watcher, callbacks.func);
 
     // result
     expect(callbacks.func).toHaveBeenCalled();

@@ -37,9 +37,8 @@ describe('Service: AngularChartService', function () {
   // init()
   it('setup the service.', function () {
     // setup
-    var options = {};
     var configuration = angular.copy(baseConfiguration);
-    AngularChartService.init(configuration, options);
+    AngularChartService.init(configuration, $scope);
 
     $scope.$apply();
     $timeout.flush();
@@ -49,9 +48,8 @@ describe('Service: AngularChartService', function () {
   // destroyChart()
   it('destroy a created chart.', function () {
     // setup
-    var options = {};
     var configuration = angular.copy(baseConfiguration);
-    AngularChartService.init(configuration, options);
+    AngularChartService.init(configuration, $scope);
 
     $scope.$apply();
 

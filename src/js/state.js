@@ -49,21 +49,21 @@
     /**
      * Setup zoom event listeners which update the state
      */
-    function synchronizeZoom(options, configuration) {
+    function synchronizeZoom(options, configuration, watcher) {
       if (angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) {
 
         // setup onzoomend listener
         configuration.zoom.onzoomend = function (domain) {
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createZoomRangePath(options);
             options.state.range = domain;
           });
 
           // call user defined callback
           if (angular.isFunction(options.chart.zoom.onzoomend)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.zoom.onzoomend(domain);
             });
           }
@@ -75,14 +75,14 @@
         configuration.subchart.onbrush = function (domain) {
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createZoomRangePath(options);
             options.state.range = domain;
           });
 
           // call user defined callback
           if (angular.isFunction(options.chart.subchart.onbrush)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.subchart.onbrush(domain);
             });
           }
@@ -180,7 +180,7 @@
     /**
      * Listen to chart events to save selections into to state object.
      */
-    function synchronizeSelection(options, configuration) {
+    function synchronizeSelection(options, configuration, watcher) {
       if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
 
         // add onselected listener
@@ -192,14 +192,14 @@
           }
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createSelectionsPath(options);
             options.state.selected.push(data);
           });
 
           // call user defined callback
           if (angular.isFunction(options.chart.data.onselected)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.data.onselected(data, element);
             });
           }
@@ -215,7 +215,7 @@
           }
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createSelectionsPath(options);
             options.state.selected = options.state.selected.filter(function (selected) {
               return selected.id !== data.id || selected.index !== data.index;
@@ -224,7 +224,7 @@
 
           // call user defined callback
           if (angular.isFunction(options.chart.data.onunselected)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.data.onunselected(data, element);
             });
           }

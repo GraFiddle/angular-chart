@@ -13,9 +13,9 @@
     var configuration = {};
     var scopeReference = null;
     var options = {};
+    var watcher = null;
 
     var service = {
-      bind: '',
       init: init,
       destroyChart: destroyChart
     };
@@ -25,8 +25,8 @@
     ////////////
 
     function init(baseConfig, scope) {
+      watcher = AngularChartWatcher.init(scope);
       baseConfiguration = baseConfig;
-      service.bind = baseConfig.bindto;
       scopeReference = scope;
       updateCallback();
 
@@ -39,12 +39,12 @@
      */
     function registerCallbacks() {
       // updateCallback()
-      AngularChartWatcher.registerDimensionsCallback(updateCallback);
-      AngularChartWatcher.registerChartCallback(updateCallback);
-      AngularChartWatcher.registerDataCallback(updateCallback);
+      watcher.dimensionsCallback = updateCallback;
+      watcher.chartCallback = updateCallback;
+      watcher.dataCallback = updateCallback;
 
       // stateCallback()
-      AngularChartWatcher.registerStateCallback(stateCallback);
+      watcher.stateCallback = stateCallback;
     }
 
     /**
@@ -90,8 +90,8 @@
      * Setup the synchronize from c3 events into the options.
      */
     function synchronizeState() {
-      AngularChartState.synchronizeZoom(options, configuration);
-      AngularChartState.synchronizeSelection(options, configuration);
+      AngularChartState.synchronizeZoom(options, configuration, watcher);
+      AngularChartState.synchronizeSelection(options, configuration, watcher);
     }
 
     /**
@@ -126,7 +126,7 @@
 
   angular
     .module('angularChart')
-    .service('AngularChartService', AngularChartService);
+    .factory('AngularChartService', AngularChartService);
 
 })();
 

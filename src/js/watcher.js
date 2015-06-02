@@ -6,27 +6,9 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   function AngularChartWatcher() {
-    var $scope;
-
-    // callbacks
-    var dimensionsCallback;
-    var chartCallback;
-    var stateCallback;
-    var dataCallback;
-
-    // watcher
-    var dataSmallWatcher;
-    var dataBigWatcher;
-
-    // disable
-    var disableStateWatcher = false;
 
     var service = {
       init: init,
-      registerDimensionsCallback: registerDimensionsCallback,
-      registerChartCallback: registerChartCallback,
-      registerStateCallback: registerStateCallback,
-      registerDataCallback: registerDataCallback,
       updateState: updateState,
       applyFunction: applyFunction
     };
@@ -36,76 +18,88 @@
     ////////////
 
     function init(scope) {
-      $scope = scope;
-      setupDimensionsWatcher();
-      setupChartWatcher();
-      setupStateWatcher();
-      setupWatchLimitWatcher();
-      setupDataWatcher();
+      var watcher = {
+        scope: scope,
+        dimensionsCallback: null,
+        chartCallback: null,
+        stateCallback: null,
+        dataCallback: null,
+        dataSmallWatcher: null,
+        dataBigWatcher: null,
+        disableStateWatcher: false
+      };
+
+      setupDimensionsWatcher(watcher);
+      setupChartWatcher(watcher);
+      setupStateWatcher(watcher);
+      setupWatchLimitWatcher(watcher);
+      setupDataWatcher(watcher);
+
+      return watcher;
     }
 
     ////
     // SETUP
     ////
 
-    function setupDimensionsWatcher() {
-      $scope.$watch('options.dimensions', function () {
-        if (dimensionsCallback) {
-          dimensionsCallback();
+    function setupDimensionsWatcher(watcher) {
+      watcher.scope.$watch('options.dimensions', function () {
+        if (angular.isFunction(watcher.dimensionsCallback)) {
+          watcher.dimensionsCallback();
         }
       }, true);
     }
 
-    function setupChartWatcher() {
-      $scope.$watch('options.chart', function () {
-        if (chartCallback) {
-          chartCallback();
+    function setupChartWatcher(watcher) {
+      watcher.scope.$watch('options.chart', function () {
+        if (watcher.chartCallback) {
+          watcher.chartCallback();
         }
       }, true);
     }
 
-    function setupStateWatcher() {
-      $scope.$watch('options.state', function () {
-        if (!disableStateWatcher && stateCallback) {
-          stateCallback();
+    function setupStateWatcher(watcher) {
+      watcher.scope.$watch('options.state', function () {
+        if (!watcher.disableStateWatcher && angular.isFunction(watcher.stateCallback)) {
+          watcher.stateCallback();
         }
       }, true);
     }
 
-    function setupWatchLimitWatcher() {
-      $scope.$watch('options.chart.data.watchLimit', function () {
-        setupDataWatcher();
+    function setupWatchLimitWatcher(watcher) {
+      watcher.scope.$watch('options.chart.data.watchLimit', function () {
+        setupDataWatcher(watcher);
       });
     }
 
-    function setupDataWatcher() {
+    function setupDataWatcher(watcher) {
       // variables
-      var limit = (angular.isObject($scope.options) && angular.isObject($scope.options.chart) && $scope.options.chart.data && angular.isNumber($scope.options.chart.data.watchLimit)) ? $scope.options.chart.data.watchLimit : 100;
+      var limit = (angular.isObject(watcher.scope.options) && angular.isObject(watcher.scope.options.chart) && watcher.scope.options.chart.data && angular.isNumber(watcher.scope.options.chart.data.watchLimit)) ? watcher.scope.options.chart.data.watchLimit : 100;
       var numberOfDataRecords = 0;
-      if (angular.isObject($scope.options) && angular.isArray($scope.options.data)) {
-        numberOfDataRecords = $scope.options.data.length;
+      if (angular.isObject(watcher.scope.options) && angular.isArray(watcher.scope.options.data)) {
+        numberOfDataRecords = watcher.scope.options.data.length;
       }
 
       // choose watcher
       if (numberOfDataRecords < limit) {
         // start small watcher
-        if (!dataSmallWatcher) {
-          dataSmallWatcher = setupDataSmallWatcher();
+        if (!watcher.dataSmallWatcher) {
+          watcher.dataSmallWatcher = setupDataSmallWatcher(watcher);
         }
         // stop big watcher
-        if (dataBigWatcher) {
-          dataBigWatcher();
-          dataBigWatcher = undefined;
+        if (watcher.dataBigWatcher) {
+          watcher.dataBigWatcher();
+          watcher.dataBigWatcher = undefined;
         }
       } else {
         // start big watcher
-        if (!dataBigWatcher) {
-          dataBigWatcher = setupDataBigWatcher();
+        if (!watcher.dataBigWatcher) {
+          watcher.dataBigWatcher = setupDataBigWatcher(watcher);
         }
         // stop small watcher
-        if (dataSmallWatcher) {
-          dataSmallWatcher();
-          dataSmallWatcher = undefined;
+        if (watcher.dataSmallWatcher) {
+          watcher.dataSmallWatcher();
+          watcher.dataSmallWatcher = undefined;
         }
       }
     }
@@ -113,66 +107,45 @@
     /**
      * start watcher changes in small datasets, compares whole object
      */
-    function setupDataSmallWatcher() {
-      return $scope.$watch('options.data', function () {
-        if (dataCallback) {
-          dataCallback();
+    function setupDataSmallWatcher(watcher) {
+      return watcher.scope.$watch('options.data', function () {
+        if (angular.isFunction(watcher.dataCallback)) {
+          watcher.dataCallback();
         }
-        setupDataWatcher();
+        setupDataWatcher(watcher);
       }, true);
     }
 
     /**
      * start watcher changes in big datasets, compares length of records
      */
-    function setupDataBigWatcher() {
-      return $scope.$watch(function () {
-        if ($scope.options.data && angular.isArray($scope.options.data)) {
-          return $scope.options.data.length;
+    function setupDataBigWatcher(watcher) {
+      return watcher.scope.$watch(function () {
+        if (watcher.scope.options.data && angular.isArray(watcher.scope.options.data)) {
+          return watcher.scope.options.data.length;
         } else {
           return 0;
         }
       }, function () {
-        if (dataCallback) {
-          dataCallback();
+        if (angular.isFunction(watcher.dataCallback)) {
+          watcher.dataCallback();
         }
-        setupDataWatcher();
+        setupDataWatcher(watcher);
       });
     }
-
-    ////
-    // REGISTER
-    ////
-
-    function registerDimensionsCallback(callback) {
-      dimensionsCallback = callback;
-    }
-
-    function registerChartCallback(callback) {
-      chartCallback = callback;
-    }
-
-    function registerStateCallback(callback) {
-      stateCallback = callback;
-    }
-
-    function registerDataCallback(callback) {
-      dataCallback = callback;
-    }
-
 
     ////
     // $apply
     ////
 
-    function updateState(func) {
-      disableStateWatcher = true;
-      $scope.$apply(func);
-      disableStateWatcher = false;
+    function updateState(watcher, func) {
+      watcher.disableStateWatcher = true;
+      watcher.scope.$apply(func);
+      watcher.disableStateWatcher = false;
     }
 
-    function applyFunction(func) {
-      $scope.$apply(func);
+    function applyFunction(watcher, func) {
+      watcher.scope.$apply(func);
     }
 
   }

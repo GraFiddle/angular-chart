@@ -4,6 +4,11 @@
 
   function DebugController(DebugData) {
     var vm = this;
+
+    /*
+     * Climate Diagram
+     */
+    // base data
     var dataClimate =  DebugData.climateData;
     var optionsClimate = {
       dimensions: {
@@ -49,9 +54,21 @@
       }
     };
 
+    // add to view
     optionsClimate.data = dataClimate;
     vm.climateOptions = optionsClimate;
 
+    // Update
+    vm.updateClimateDimension = function () {
+      vm.climateOptions.dimensions.temp.type = vm.climateOptions.dimensions.temp.type === 'spline' ? 'area-spline' : 'spline';
+      console.log('new options', vm.climateOptions);
+    };
+
+
+    /*
+     * Climate Diagram
+     */
+    // base data
     var dataTimestamps = DebugData.manyTimestamps;
     var optionsTimestamps = {
       dimensions: {
@@ -98,30 +115,14 @@
       }
     };
 
+    // add to view
     optionsTimestamps.data = dataTimestamps;
     vm.timestampOptions = optionsTimestamps;
 
-    vm.updateChart = function () {
-      vm.climateOptions = optionsClimate;
-      console.log('new options', vm.climateOptions);
-      //vm.options.data = data;
-      //vm.options.chart.size = {
-      //  height: 300 + Math.random() * 100
-      //};
-    };
-
-    vm.updateData = function () {
-      vm.climateOptions.data = dataClimate;
-      //vm.options.data.push({data1: Math.random() * 100});
-    };
-
-    vm.updateState = function () {
-      vm.climateOptions.state = {
-        selected: [{
-          id: 'value',
-          index: 0
-        }]
-      };
+    // Update
+    vm.updateTimestampDimension = function () {
+      vm.timestampOptions.dimensions.n.type = vm.timestampOptions.dimensions.n.type === 'scatter' ? 'line' : 'scatter';
+      console.log('new options', vm.timestampOptions);
     };
 
   }

@@ -17,11 +17,11 @@ describe('Service: AngularChartConverter', function () {
   beforeEach(inject(function (_AngularChartWatcher_) {
     AngularChartWatcher = _AngularChartWatcher_;
     spyOn(AngularChartWatcher, 'updateState')
-      .and.callFake(function (func) {
+      .and.callFake(function (watcher, func) {
         func();
       });
     spyOn(AngularChartWatcher, 'applyFunction')
-      .and.callFake(function (func) {
+      .and.callFake(function (watcher, func) {
         func();
       });
   }));
@@ -49,7 +49,8 @@ describe('Service: AngularChartConverter', function () {
     // setup
     var options = {};
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeZoom(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
 
     // result
     expect(configuration).toEqual(baseConfiguration);
@@ -81,7 +82,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeZoom(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
 
     // event
     var range = [0, 1];
@@ -102,9 +104,10 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeZoom(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
     spyOn(options.chart.zoom, 'onzoomend');
-    AngularChartState.synchronizeZoom(options, configuration);
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
 
     // event
     var range = [0, 1];
@@ -125,7 +128,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeZoom(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
 
     // result
     expect(configuration.subchart.onbrush).toBeDefined();
@@ -141,8 +145,9 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeZoom(options, configuration);
-    AngularChartState.synchronizeZoom(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
 
     // event
     var range = [0, 1];
@@ -166,7 +171,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeZoom(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeZoom(options, configuration, watcher);
     spyOn(options.chart.subchart, 'onbrush');
 
     // event
@@ -301,7 +307,8 @@ describe('Service: AngularChartConverter', function () {
     // setup
     var options = {};
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
 
     // result
     expect(configuration).toEqual(baseConfiguration);
@@ -319,7 +326,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
 
     // result
     expect(configuration.data.onselected).toBeDefined();
@@ -337,7 +345,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
 
     // result
     expect(configuration.data.onunselected).toBeDefined();
@@ -356,7 +365,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
 
     // event
     configuration.data.onselected(pointSelection);
@@ -381,7 +391,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
 
     // event
     configuration.data.onunselected(pointSelection);
@@ -402,7 +413,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
 
     // event
     AngularChartState.disableSelectionListener = true;
@@ -427,7 +439,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
 
     // event
     AngularChartState.disableSelectionListener = true;
@@ -450,7 +463,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
     spyOn(options.chart.data, 'onselected');
 
     // event
@@ -478,7 +492,8 @@ describe('Service: AngularChartConverter', function () {
       }
     };
     var configuration = angular.copy(baseConfiguration);
-    AngularChartState.synchronizeSelection(options, configuration);
+    var watcher = {};
+    AngularChartState.synchronizeSelection(options, configuration, watcher);
     spyOn(options.chart.data, 'onunselected');
 
     // event
