@@ -1,0 +1,17 @@
+{
+  "files": [
+    "bower_components/c3/c3.css",
+    "css/angular-chart.css",
+
+    "bower_components/angular/angular.js",
+    "bower_components/angular-mocks/angular-mocks.js",
+    "bower_components/d3/d3.js",
+    "bower_components/c3/c3.js",
+
+    "src/js/directive.js",
+    "src/js/**/*.js"
+  ],
+  "tests": [
+    "test/**/*_spec.js"
+  ]
+}
