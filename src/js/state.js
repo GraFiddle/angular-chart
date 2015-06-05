@@ -25,8 +25,8 @@
       if ((angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) ||
         (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true)) {
 
-        if (angular.isObject(options.state) && angular.isObject(options.state.zoom) && angular.isArray(options.state.zoom.range)) {
-          chart.zoom(options.state.zoom.range);
+        if (angular.isObject(options.state) && angular.isObject(options.state) && angular.isArray(options.state.range)) {
+          chart.zoom(options.state.range);
         } else {
           chart.unzoom();
         }

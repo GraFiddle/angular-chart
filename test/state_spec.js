@@ -254,9 +254,7 @@ describe('Service: AngularChartConverter', function () {
         }
       },
       state: {
-        zoom: {
-          range: [0, 1]
-        }
+        range: [0, 1]
       }
     };
     var chart = {
@@ -282,9 +280,7 @@ describe('Service: AngularChartConverter', function () {
         }
       },
       state: {
-        zoom: {
-          range: [0, 1]
-        }
+        range: [0, 1]
       }
     };
     var chart = {
