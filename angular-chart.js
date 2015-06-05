@@ -7,7 +7,10 @@
 
   var angularChart = angular.module('angularChart', []);
 
+  // HTML-Tag: <angular-chart>
   angularChart.directive('angularChart', angularChartDirective);
+  // HTML-Tag <angularchart>
+  angularChart.directive('angularchart', angularChartDirective);
 
   function angularChartDirective() {
     return {
@@ -36,27 +39,9 @@
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   function AngularChartWatcher() {
-    var $scope;
-
-    // callbacks
-    var dimensionsCallback;
-    var chartCallback;
-    var stateCallback;
-    var dataCallback;
-
-    // watcher
-    var dataSmallWatcher;
-    var dataBigWatcher;
-
-    // disable
-    var disableStateWatcher = false;
 
     var service = {
       init: init,
-      registerDimensionsCallback: registerDimensionsCallback,
-      registerChartCallback: registerChartCallback,
-      registerStateCallback: registerStateCallback,
-      registerDataCallback: registerDataCallback,
       updateState: updateState,
       applyFunction: applyFunction
     };
@@ -66,76 +51,88 @@
     ////////////
 
     function init(scope) {
-      $scope = scope;
-      setupDimensionsWatcher();
-      setupChartWatcher();
-      setupStateWatcher();
-      setupWatchLimitWatcher();
-      setupDataWatcher();
+      var watcher = {
+        scope: scope,
+        dimensionsCallback: null,
+        chartCallback: null,
+        stateCallback: null,
+        dataCallback: null,
+        dataSmallWatcher: null,
+        dataBigWatcher: null,
+        disableStateWatcher: false
+      };
+
+      setupDimensionsWatcher(watcher);
+      setupChartWatcher(watcher);
+      setupStateWatcher(watcher);
+      setupWatchLimitWatcher(watcher);
+      setupDataWatcher(watcher);
+
+      return watcher;
     }
 
     ////
     // SETUP
     ////
 
-    function setupDimensionsWatcher() {
-      $scope.$watch('options.dimensions', function () {
-        if (dimensionsCallback) {
-          dimensionsCallback();
+    function setupDimensionsWatcher(watcher) {
+      watcher.scope.$watch('options.dimensions', function () {
+        if (angular.isFunction(watcher.dimensionsCallback)) {
+          watcher.dimensionsCallback();
         }
       }, true);
     }
 
-    function setupChartWatcher() {
-      $scope.$watch('options.chart', function () {
-        if (chartCallback) {
-          chartCallback();
+    function setupChartWatcher(watcher) {
+      watcher.scope.$watch('options.chart', function () {
+        if (watcher.chartCallback) {
+          watcher.chartCallback();
         }
       }, true);
     }
 
-    function setupStateWatcher() {
-      $scope.$watch('options.state', function () {
-        if (!disableStateWatcher && stateCallback) {
-          stateCallback();
+    function setupStateWatcher(watcher) {
+      watcher.scope.$watch('options.state', function () {
+        if (!watcher.disableStateWatcher && angular.isFunction(watcher.stateCallback)) {
+          watcher.stateCallback();
         }
       }, true);
     }
 
-    function setupWatchLimitWatcher() {
-      $scope.$watch('options.chart.data.watchLimit', function () {
-        setupDataWatcher();
+    function setupWatchLimitWatcher(watcher) {
+      watcher.scope.$watch('options.chart.data.watchLimit', function () {
+        setupDataWatcher(watcher);
       });
     }
 
-    function setupDataWatcher() {
+    function setupDataWatcher(watcher) {
       // variables
-      var limit = (angular.isObject($scope.options) && angular.isObject($scope.options.chart) && $scope.options.chart.data && angular.isNumber($scope.options.chart.data.watchLimit)) ? $scope.options.chart.data.watchLimit : 100;
+      var limit = (angular.isObject(watcher.scope.options) && angular.isObject(watcher.scope.options.chart) && watcher.scope.options.chart.data && angular.isNumber(watcher.scope.options.chart.data.watchLimit)) ? watcher.scope.options.chart.data.watchLimit : 100;
       var numberOfDataRecords = 0;
-      if (angular.isObject($scope.options) && angular.isArray($scope.options.data)) {
-        numberOfDataRecords = $scope.options.data.length;
+      if (angular.isObject(watcher.scope.options) && angular.isArray(watcher.scope.options.data)) {
+        numberOfDataRecords = watcher.scope.options.data.length;
       }
 
       // choose watcher
       if (numberOfDataRecords < limit) {
         // start small watcher
-        if (!dataSmallWatcher) {
-          dataSmallWatcher = setupDataSmallWatcher();
+        if (!watcher.dataSmallWatcher) {
+          watcher.dataSmallWatcher = setupDataSmallWatcher(watcher);
         }
         // stop big watcher
-        if (dataBigWatcher) {
-          dataBigWatcher();
-          dataBigWatcher = undefined;
+        if (watcher.dataBigWatcher) {
+          watcher.dataBigWatcher();
+          watcher.dataBigWatcher = undefined;
         }
       } else {
         // start big watcher
-        if (!dataBigWatcher) {
-          dataBigWatcher = setupDataBigWatcher();
+        if (!watcher.dataBigWatcher) {
+          watcher.dataBigWatcher = setupDataBigWatcher(watcher);
         }
         // stop small watcher
-        if (dataSmallWatcher) {
-          dataSmallWatcher();
-          dataSmallWatcher = undefined;
+        if (watcher.dataSmallWatcher) {
+          watcher.dataSmallWatcher();
+          watcher.dataSmallWatcher = undefined;
         }
       }
     }
@@ -143,66 +140,45 @@
     /**
      * start watcher changes in small datasets, compares whole object
      */
-    function setupDataSmallWatcher() {
-      return $scope.$watch('options.data', function () {
-        if (dataCallback) {
-          dataCallback();
+    function setupDataSmallWatcher(watcher) {
+      return watcher.scope.$watch('options.data', function () {
+        if (angular.isFunction(watcher.dataCallback)) {
+          watcher.dataCallback();
         }
-        setupDataWatcher();
+        setupDataWatcher(watcher);
       }, true);
     }
 
     /**
      * start watcher changes in big datasets, compares length of records
      */
-    function setupDataBigWatcher() {
-      return $scope.$watch(function () {
-        if ($scope.options.data && angular.isArray($scope.options.data)) {
-          return $scope.options.data.length;
+    function setupDataBigWatcher(watcher) {
+      return watcher.scope.$watch(function () {
+        if (watcher.scope.options.data && angular.isArray(watcher.scope.options.data)) {
+          return watcher.scope.options.data.length;
         } else {
           return 0;
         }
       }, function () {
-        if (dataCallback) {
-          dataCallback();
+        if (angular.isFunction(watcher.dataCallback)) {
+          watcher.dataCallback();
         }
-        setupDataWatcher();
+        setupDataWatcher(watcher);
       });
     }
-
-    ////
-    // REGISTER
-    ////
-
-    function registerDimensionsCallback(callback) {
-      dimensionsCallback = callback;
-    }
-
-    function registerChartCallback(callback) {
-      chartCallback = callback;
-    }
-
-    function registerStateCallback(callback) {
-      stateCallback = callback;
-    }
-
-    function registerDataCallback(callback) {
-      dataCallback = callback;
-    }
-
 
     ////
     // $apply
     ////
 
-    function updateState(func) {
-      disableStateWatcher = true;
-      $scope.$apply(func);
-      disableStateWatcher = false;
+    function updateState(watcher, func) {
+      watcher.disableStateWatcher = true;
+      watcher.scope.$apply(func);
+      watcher.disableStateWatcher = false;
     }
 
-    function applyFunction(func) {
-      $scope.$apply(func);
+    function applyFunction(watcher, func) {
+      watcher.scope.$apply(func);
     }
 
   }
@@ -240,8 +216,8 @@
       if ((angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) ||
         (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true)) {
 
-        if (angular.isObject(options.state) && angular.isObject(options.state.zoom) && angular.isArray(options.state.zoom.range)) {
-          chart.zoom(options.state.zoom.range);
+        if (angular.isObject(options.state) && angular.isObject(options.state) && angular.isArray(options.state.range)) {
+          chart.zoom(options.state.range);
         } else {
           chart.unzoom();
         }
@@ -264,21 +240,21 @@
     /**
      * Setup zoom event listeners which update the state
      */
-    function synchronizeZoom(options, configuration) {
+    function synchronizeZoom(options, configuration, watcher) {
       if (angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) {
 
         // setup onzoomend listener
         configuration.zoom.onzoomend = function (domain) {
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createZoomRangePath(options);
             options.state.range = domain;
           });
 
           // call user defined callback
           if (angular.isFunction(options.chart.zoom.onzoomend)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.zoom.onzoomend(domain);
             });
           }
@@ -290,14 +266,14 @@
         configuration.subchart.onbrush = function (domain) {
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createZoomRangePath(options);
             options.state.range = domain;
           });
 
           // call user defined callback
           if (angular.isFunction(options.chart.subchart.onbrush)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.subchart.onbrush(domain);
             });
           }
@@ -395,7 +371,7 @@
     /**
      * Listen to chart events to save selections into to state object.
      */
-    function synchronizeSelection(options, configuration) {
+    function synchronizeSelection(options, configuration, watcher) {
       if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
 
         // add onselected listener
@@ -407,14 +383,14 @@
           }
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createSelectionsPath(options);
             options.state.selected.push(data);
           });
 
           // call user defined callback
           if (angular.isFunction(options.chart.data.onselected)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.data.onselected(data, element);
             });
           }
@@ -430,7 +406,7 @@
           }
 
           // update state
-          AngularChartWatcher.updateState(function () {
+          AngularChartWatcher.updateState(watcher, function () {
             createSelectionsPath(options);
             options.state.selected = options.state.selected.filter(function (selected) {
               return selected.id !== data.id || selected.index !== data.index;
@@ -439,7 +415,7 @@
 
           // call user defined callback
           if (angular.isFunction(options.chart.data.onunselected)) {
-            AngularChartWatcher.applyFunction(function () {
+            AngularChartWatcher.applyFunction(watcher, function () {
               options.chart.data.onunselected(data, element);
             });
           }
@@ -459,7 +435,7 @@
 })();
 
 
-(function () {
+(function() {
 
   'use strict';
 
@@ -469,124 +445,137 @@
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
   function AngularChartService($timeout, AngularChartWatcher, AngularChartConverter, AngularChartState) {
-    var chart = null;
-    var baseConfiguration = {};
-    var configuration = {};
-    var scopeReference = null;
-    var options = {};
 
-    var service = {
-      init: init,
-      destroyChart: destroyChart
+    var ChartService = function(baseConfig, scope) {
+      this.chart = null;
+      this.baseConfiguration = {};
+      this.configuration = {};
+      this.scopeReference = null;
+      this.options = {};
+      this.watcher = null;
+
+      this.init(baseConfig, scope);
     };
 
-    return service;
-
-    ////////////
-
-    function init(baseConfig, scope) {
-      baseConfiguration = baseConfig;
-      scopeReference = scope;
-      updateCallback();
+    ChartService.prototype.init = function(baseConfig, scope) {
+      this.watcher = AngularChartWatcher.init(scope);
+      this.baseConfiguration = baseConfig;
+      this.scopeReference = scope;
+      this.updateCallback();
 
       // register callbacks after first digest cycle
-      $timeout(registerCallbacks);
-    }
+      var chartService = this;
+      $timeout(function() {
+        chartService.registerCallbacks();
+      });
+    };
 
     /**
      * Register callbacks for the watchers.
      */
-    function registerCallbacks() {
-      // updateCallback()
-      AngularChartWatcher.registerDimensionsCallback(updateCallback);
-      AngularChartWatcher.registerChartCallback(updateCallback);
-      AngularChartWatcher.registerDataCallback(updateCallback);
+    ChartService.prototype.registerCallbacks = function() {
+      var chartService = this;
 
-      // stateCallback()
-      AngularChartWatcher.registerStateCallback(stateCallback);
-    }
+      // updateCallback(), closure to keep reference to chart service
+      this.watcher.dimensionsCallback = function() {
+        chartService.updateCallback();
+      };
+      this.watcher.chartCallback = function() {
+        chartService.updateCallback();
+      };
+      this.watcher.dataCallback = function() {
+        chartService.updateCallback();
+      };
+
+      // stateCallback(), closure to keep reference to chart service
+      this.watcher.stateCallback = function() {
+        chartService.stateCallback();
+      };
+    };
 
     /**
      * Update the configuration and render the chart.
      */
-    function updateCallback() {
-      configuration = baseConfiguration;
-      buildOptions();
-      convertOptions();
-      applyChartOptions();
-      synchronizeState();
-      generateChart();
-      stateCallback();
-    }
+    ChartService.prototype.updateCallback = function() {
+      this.configuration = this.baseConfiguration;
+      this.buildOptions();
+      this.convertOptions();
+      this.applyChartOptions();
+      this.synchronizeState();
+      this.generateChart();
+      this.stateCallback();
+    };
 
     /**
      * Build options based on the values provided from scope.
      */
-    function buildOptions() {
-      options = angular.isObject(scopeReference.options) ? scopeReference.options : {};
-    }
+    ChartService.prototype.buildOptions = function() {
+      this.options = angular.isObject(this.scopeReference.options) ? this.scopeReference.options : {};
+    };
 
     /**
      * Convert the angular-chart specific options into a c3-configuration.
      */
-    function convertOptions() {
-      AngularChartConverter.convertData(options, configuration);
-      AngularChartConverter.convertDimensions(options, configuration);
-    }
+    ChartService.prototype.convertOptions = function() {
+      AngularChartConverter.convertData(this.options, this.configuration);
+      AngularChartConverter.convertDimensions(this.options, this.configuration);
+    };
 
     /**
      * Use the user defined chart configuration to extend and/or overwrite
      * the automatic set configuration.
      */
-    function applyChartOptions() {
+    ChartService.prototype.applyChartOptions = function() {
       angular.merge(
-        configuration,
-        options.chart
+        this.configuration,
+        this.options.chart
       );
-    }
+    };
 
     /**
      * Setup the synchronize from c3 events into the options.
      */
-    function synchronizeState() {
-      AngularChartState.synchronizeZoom(options, configuration);
-      AngularChartState.synchronizeSelection(options, configuration);
-    }
+    ChartService.prototype.synchronizeState = function() {
+      AngularChartState.synchronizeZoom(this.options, this.configuration, this.watcher);
+      AngularChartState.synchronizeSelection(this.options, this.configuration, this.watcher);
+    };
 
     /**
      * Render the chart.
      */
-    function generateChart() {
-      window.onresize = null;
-      // TODO add own onresize listener
+    ChartService.prototype.generateChart = function() {
+      // TODO add own onresize listener?
       // TODO regenerate chart only one or two times per second
       // TODO evaluate if it makes sense to destroy the chart first
-      chart = c3.generate(configuration);
-    }
+      this.chart = c3.generate(this.configuration);
+    };
 
     /**
      * Apply state options on the chart.
      */
-    function stateCallback() {
-      AngularChartState.applyZoom(options, chart);
-      AngularChartState.applySelection(options, chart);
-    }
+    ChartService.prototype.stateCallback = function() {
+      AngularChartState.applyZoom(this.options, this.chart);
+      AngularChartState.applySelection(this.options, this.chart);
+    };
 
     /**
      * Destroy the chart if one ist present.
      */
-    function destroyChart() {
-      if (angular.isObject(chart) && angular.isFunction(chart.destroy)) {
-        chart.destroy();
-      }
-    }
+    ChartService.prototype.destroyChart = function() {
+      this.chart.destroy();
+    };
 
+    return {
+      getInstance: function(baseConfig, scope) {
+        return new ChartService(baseConfig, scope);
+      }
+    };
   }
   AngularChartService.$inject = ['$timeout', 'AngularChartWatcher', 'AngularChartConverter', 'AngularChartState'];
 
   angular
     .module('angularChart')
-    .service('AngularChartService', AngularChartService);
+    .factory('AngularChartService', AngularChartService);
 
 })();
 
@@ -784,44 +773,59 @@
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartWatcher, AngularChartService) {
-    var configuration = baseConfiguration;
+  function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartService) {
+    var configuration = angular.copy(baseConfiguration);
+    var chartService = null;
 
     activate();
 
     ////////////
 
     function activate() {
-      // unwrap promise
-      $q.when($scope.options, function (options) {
-        $scope.options = options;
-      });
-
+      unwrapPromise();
       addIdentifier();
-      AngularChartWatcher.init($scope);
-      AngularChartService.init(configuration, $scope);
+      addInlineStyle();
+      chartService = AngularChartService.getInstance(configuration, $scope);
       registerDestroyListener();
     }
 
-    // add unique identifier for each chart
-    //
+    /**
+     * Unwrap a options promise if onw exists
+     */
+    function unwrapPromise() {
+      $q.when($scope.options, function (options) {
+        $scope.options = options;
+      });
+    }
+
+    /**
+     * Add unique identifier for each chart
+     */
     function addIdentifier() {
       $scope.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
       angular.element($element).attr('id', $scope.dataAttributeChartID);
-      baseConfiguration.bindto = '#' + $scope.dataAttributeChartID;
+      configuration.bindto = '#' + $scope.dataAttributeChartID;
     }
 
-    // remove all references when directive is destroyed
-    //
+    /**
+     * Add inline style to avoid additional css file
+     */
+    function addInlineStyle() {
+      angular.element($element).css('display', 'block');
+    }
+
+    /**
+     * Remove all references when directive is destroyed
+     */
     function registerDestroyListener() {
       $scope.$on('$destroy', function () {
-        AngularChartService.destroyChart();
+        chartService.destroyChart(configuration);
         $element.remove();
       });
     }
 
   }
-  AngularChartController.$inject = ['$scope', '$element', '$q', 'baseConfiguration', 'AngularChartWatcher', 'AngularChartService'];
+  AngularChartController.$inject = ['$scope', '$element', '$q', 'baseConfiguration', 'AngularChartService'];
 
   angular
     .module('angularChart')
