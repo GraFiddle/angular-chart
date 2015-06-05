@@ -20,6 +20,12 @@
   "devel": true,
   "predef": [
     "angular",
-    "expect"
+    "expect",
+    "it",
+    "describe",
+    "beforeEach",
+    "inject",
+    "spyOn",
+    "define"
   ]
 }

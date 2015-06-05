@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- dependencies -->
+    <link rel="stylesheet" type="text/css" href="../bower_components/c3/c3.css" />
+    <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
+    <script type="text/javascript" src="../bower_components/c3/c3.js"></script>
+    <script type="text/javascript" src="../src/js/directive.js"></script>
+    <script type="text/javascript" src="../src/js/baseConfiguration.js"></script>
+    <script type="text/javascript" src="../src/js/controller.js"></script>
+    <script type="text/javascript" src="../src/js/service.js"></script>
+    <script type="text/javascript" src="../src/js/watcher.js"></script>
+    <script type="text/javascript" src="../src/js/converter.js"></script>
+    <script type="text/javascript" src="../src/js/state.js"></script>
+
+    <!-- debug app -->
+    <script type="text/javascript" src="debug-app.js"></script>
+    <script type="text/javascript" src="debug-data.js"></script>
+    <script type="text/javascript" src="debug-controller.js"></script>
+
+  </head>
+  <body ng-app="AngularChartDebug" ng-controller="DebugController as debug">
+
+  <angular-chart options="debug.climateOptions"></angular-chart>
+    <button ng-click="debug.updateClimateDimension()">Change Dimension</button>
+    Zoom: <input type="number" ng-model="debug.climateOptions.state.range[0]"> <input type="number" ng-model="debug.climateOptions.state.range[1]">
+
+
+    <angular-chart options="debug.timestampOptions"></angular-chart>
+    <button ng-click="debug.updateTimestampDimension()">Change Dimension</button>
+    Zoom: {{debug.timestampOptions.state.range}}
+
+  </body>
+</html>

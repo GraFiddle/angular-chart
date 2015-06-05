@@ -2,52 +2,31 @@
 
   'use strict';
 
-  /*global define, module, exports, require */
-
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  var circular = angular.module('angularCircularNavigation', [])
-    .directive('circular', ['$compile', function ($compile) {
+  var angularChart = angular.module('angularChart', []);
 
-      return {
-        restrict: 'EA',
-        scope: {
-          options: '='
-        },
-        template: '<div class="cn-wrapper {{options.size}} items-{{options.items.length}}" ng-class="{\'opened-nav\': options.isOpen}"><ul>' +
-          '<li ng-repeat="item in options.items">' +
-          '<a ng-hide="item.empty" ng-click="perform(options, item)" ng-class="{\'is-active\': item.isActive}" class="{{item.cssClass}}" title="{{item.title}}" style="background: {{item.background ? item.background : options.background}}; color: {{item.color ? item.color : options.color}};">' +
-          '<span>{{item.content}}</span>' +
-          '</a></li></ul></div>' +
-          '<button ng-click="toggleMenu()" class="cn-button {{options.button.size}}" ng-class="options.button.cssClass" style="background: {{options.button.background ? options.button.background : options.background}}; color: {{options.button.color ? options.button.color :options.color}};">{{options.content}}</button>',
-        controller: ['$scope', '$element', '$attrs',
-          function ($scope, $element, $attrs) {
+  // HTML-Tag: <angular-chart>
+  angularChart.directive('angularChart', angularChartDirective);
+  // HTML-Tag <angularchart>
+  angularChart.directive('angularchart', angularChartDirective);
 
-            $scope.toggleMenu = function () {
-              $scope.options.isOpen = !$scope.options.isOpen;
-            };
-
-            $scope.perform = function (options, item) {
-              if (typeof item.onclick === 'function') {
-                item.onclick(options, item);
-              }
-
-              if ($scope.options.toggleOnClick) {
-                $scope.toggleMenu();
-              }
-            };
-
-          }
-        ]
-      };
-    }]);
+  function angularChartDirective() {
+    return {
+      restrict: 'EA',
+      scope: {
+        options: '='
+      },
+      controller: 'AngularChartController'
+    };
+  }
 
   /* istanbul ignore next */
   if (typeof define === 'function' && define.amd) {
-    define('circular', ['../../bower_components/angular/angular'], circular);
+    define('angularChart', ['c3', 'angular'], angularChart);
   } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-    module.exports = circular;
+    module.exports = angularChart;
   }
 
 })();
@@ -56,893 +35,849 @@
 
   'use strict';
 
-  /*global define, module, exports, require */
+  /* istanbul ignore next */
+  var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
+
+  function AngularChartWatcher() {
+
+    var service = {
+      init: init,
+      updateState: updateState,
+      applyFunction: applyFunction
+    };
+
+    return service;
+
+    ////////////
+
+    function init(scope) {
+      var watcher = {
+        scope: scope,
+        dimensionsCallback: null,
+        chartCallback: null,
+        stateCallback: null,
+        dataCallback: null,
+        dataSmallWatcher: null,
+        dataBigWatcher: null,
+        disableStateWatcher: false
+      };
+
+      setupDimensionsWatcher(watcher);
+      setupChartWatcher(watcher);
+      setupStateWatcher(watcher);
+      setupWatchLimitWatcher(watcher);
+      setupDataWatcher(watcher);
+
+      return watcher;
+    }
+
+    ////
+    // SETUP
+    ////
+
+    function setupDimensionsWatcher(watcher) {
+      watcher.scope.$watch('options.dimensions', function () {
+        if (angular.isFunction(watcher.dimensionsCallback)) {
+          watcher.dimensionsCallback();
+        }
+      }, true);
+    }
+
+    function setupChartWatcher(watcher) {
+      watcher.scope.$watch('options.chart', function () {
+        if (watcher.chartCallback) {
+          watcher.chartCallback();
+        }
+      }, true);
+    }
+
+    function setupStateWatcher(watcher) {
+      watcher.scope.$watch('options.state', function () {
+        if (!watcher.disableStateWatcher && angular.isFunction(watcher.stateCallback)) {
+          watcher.stateCallback();
+        }
+      }, true);
+    }
+
+    function setupWatchLimitWatcher(watcher) {
+      watcher.scope.$watch('options.chart.data.watchLimit', function () {
+        setupDataWatcher(watcher);
+      });
+    }
+
+    function setupDataWatcher(watcher) {
+      // variables
+      var limit = (angular.isObject(watcher.scope.options) && angular.isObject(watcher.scope.options.chart) && watcher.scope.options.chart.data && angular.isNumber(watcher.scope.options.chart.data.watchLimit)) ? watcher.scope.options.chart.data.watchLimit : 100;
+      var numberOfDataRecords = 0;
+      if (angular.isObject(watcher.scope.options) && angular.isArray(watcher.scope.options.data)) {
+        numberOfDataRecords = watcher.scope.options.data.length;
+      }
+
+      // choose watcher
+      if (numberOfDataRecords < limit) {
+        // start small watcher
+        if (!watcher.dataSmallWatcher) {
+          watcher.dataSmallWatcher = setupDataSmallWatcher(watcher);
+        }
+        // stop big watcher
+        if (watcher.dataBigWatcher) {
+          watcher.dataBigWatcher();
+          watcher.dataBigWatcher = undefined;
+        }
+      } else {
+        // start big watcher
+        if (!watcher.dataBigWatcher) {
+          watcher.dataBigWatcher = setupDataBigWatcher(watcher);
+        }
+        // stop small watcher
+        if (watcher.dataSmallWatcher) {
+          watcher.dataSmallWatcher();
+          watcher.dataSmallWatcher = undefined;
+        }
+      }
+    }
+
+    /**
+     * start watcher changes in small datasets, compares whole object
+     */
+    function setupDataSmallWatcher(watcher) {
+      return watcher.scope.$watch('options.data', function () {
+        if (angular.isFunction(watcher.dataCallback)) {
+          watcher.dataCallback();
+        }
+        setupDataWatcher(watcher);
+      }, true);
+    }
+
+    /**
+     * start watcher changes in big datasets, compares length of records
+     */
+    function setupDataBigWatcher(watcher) {
+      return watcher.scope.$watch(function () {
+        if (watcher.scope.options.data && angular.isArray(watcher.scope.options.data)) {
+          return watcher.scope.options.data.length;
+        } else {
+          return 0;
+        }
+      }, function () {
+        if (angular.isFunction(watcher.dataCallback)) {
+          watcher.dataCallback();
+        }
+        setupDataWatcher(watcher);
+      });
+    }
+
+    ////
+    // $apply
+    ////
+
+    function updateState(watcher, func) {
+      watcher.disableStateWatcher = true;
+      watcher.scope.$apply(func);
+      watcher.disableStateWatcher = false;
+    }
+
+    function applyFunction(watcher, func) {
+      watcher.scope.$apply(func);
+    }
+
+  }
+
+  angular
+    .module('angularChart')
+    .service('AngularChartWatcher', AngularChartWatcher);
+
+})();
+
+(function () {
+
+  'use strict';
 
   /* istanbul ignore next */
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
-  var angularChart = angular.module('angularChart', ['angularCircularNavigation'])
-    .directive('angularchart', ['$compile', '$q', function ($compile, $q) {
-
-      var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
-      var d3 = window.d3 ? window.d3 : 'undefined' !== typeof require ? require('d3') : undefined;
-
-      return {
-        restrict: 'EA',
-        scope: {
-          dataset: '=',
-          options: '=',
-          schema: '='
-        },
-
-        link: function (scope, element, attrs) {
-
-          scope.options = scope.options ? scope.options : {};
-
-          scope.chart = null;
-          scope.configuration = {
-            data: {
-              x: '',
-              keys: {
-                value: [],
-                x: ''
-              },
-              types: {},
-              names: [],
-              colors: {},
-              selection: {},
-              groups: [],
-              axes: {},
-              onselected: function (d, element) {
-                scope.selections.addSelected(d);
-              },
-              onunselected: function (d, element) {
-                scope.selections.removeSelected(d);
-              },
-              onclick: angular.noop
-            },
-            axis: {
-              x: {
-                label: '',
-                tick: {}
-              },
-              y: {
-                label: '',
-                min: null,
-                max: null,
-                tick: {}
-              },
-              y2: {
-                label: '',
-                min: null,
-                max: null,
-                tick: {}
-              }
-            },
-            tooltip: {
-              format: {}
-            },
-            legend: {
-              show: true
-            },
-            subchart: {
-              show: false
-            },
-            zoom: {
-              enabled: false
-            },
-            grid: {
-              x: {
-                lines: []
-              },
-              y: {
-                lines: []
-              }
-            }
-          };
-
-          // add unique identifier for each chart
-          //
-          scope.addIdentifier = function () {
-            scope.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
-            angular.element(element).attr('id', scope.dataAttributeChartID);
-            scope.configuration.bindto = '#' + scope.dataAttributeChartID;
-          };
-
-          // update the options by applying the changes to the scope,
-          // but avoid triggering the charts options watcher
-          //
-          scope.updateOptions = function (func) {
-            scope.disableOptionsWatcher = true;
-            scope.$apply(func);
-            scope.disableOptionsWatcher = false;
-          };
-
-          // generate or update chart with options
-          //
-          scope.updateChart = function () {
-            // Add data
-            delete scope.configuration.data.columns;
-            delete scope.configuration.data.rows;
-            delete scope.configuration.data.json;
-
-            var data = scope.dataset;
-            if (!angular.isArray(data)) {
-              data = [];
-            }
-
-            if (scope.options.data && scope.options.data.orientation === 'columns') {
-              scope.configuration.data.columns = data;
-            } else if (scope.options.data && scope.options.data.orientation === 'rows') {
-              scope.configuration.data.rows = data;
-            } else {
-              scope.configuration.data.json = data;
-            }
-
-            // Chart type
-            //
-            scope.configuration.data.type = scope.options.type;
-
-            // Add lines
-            //
-            scope.configuration.axis.y.show = false;
-            scope.configuration.axis.y2.show = false;
-            scope.configuration.data.keys.value = [];
-            if (angular.isArray(scope.options.rows)) {
-              scope.options.rows.forEach(function (element) {
-                if (element.show === undefined || element.show) {
-                  scope.configuration.data.keys.value.push(element.key);
-                }
-
-                // data name
-                if (element.name) {
-                  scope.configuration.data.names[element.key] = element.name;
-                } else if (scope.schema && scope.schema[element.key] && scope.schema[element.key].name) {
-                  scope.configuration.data.names[element.key] = scope.schema[element.key].name;
-                }
-
-                // chart type
-                if (!element.type) {
-                  element.type = scope.options.type;
-                }
-
-                scope.configuration.data.types[element.key] = element.type;
-
-                // color
-                if (element.color) {
-                  scope.configuration.data.colors[element.key] = element.color;
-                }
-
-                // axis
-                if (element.axis) {
-                  scope.configuration.data.axes[element.key] = element.axis;
-                  scope.configuration.axis[element.axis].show = true;
-                } else {
-                  scope.configuration.axis.y.show = true;
-                }
-              });
-
-            }
-
-
-            // Selection
-            //
-            if (scope.options.selection && scope.options.selection.enabled) {
-              scope.configuration.data.selection.enabled = scope.options.selection.enabled;
-              scope.configuration.data.selection.multiple = scope.options.selection.multiple;
-            }
-            //if (scope.options.selection && scope.options.xAxis && scope.options.xAxis.key) {
-            //  // key selection changed?
-            //  if (scope.configuration.data.keys.x && scope.configuration.data.keys.x !== scope.options.xAxis.key) {
-            //    scope.options.selection.selected = [];
-            //  }
-            //}
-
-
-            // Add x-axis
-            //
-            scope.configuration.data.keys.x = '';
-            scope.configuration.data.x = '';
-            scope.configuration.axis.x.type = 'category';
-            scope.configuration.axis.x.tick.format = undefined;
-            if (scope.options.xAxis && scope.options.xAxis.key) {
-
-              // set x Axis
-              scope.configuration.data.keys.x = scope.options.xAxis.key;
-              scope.configuration.data.x = scope.options.xAxis.key;
-
-              // add specific display Format
-              if (scope.options.xAxis.displayFormat) {
-                scope.configuration.axis.x.tick.format = scope.options.xAxis.displayFormat;
-              }
-
-              // is xAxis type specified?
-              if (scope.schema && scope.schema[scope.options.xAxis.key]) {
-                var columne = scope.schema[scope.options.xAxis.key];
-
-                // prefix / postfix
-                if (columne.prefix || columne.postfix) {
-                  scope.configuration.axis.x.tick.format = function (number) {
-                    if (columne.prefix) {
-                      number = columne.prefix + ' ' + number;
-                    }
-                    if (columne.postfix) {
-                      number = number + columne.postfix;
-                    }
-                    return number;
-                  };
-                }
-
-                // type
-                if (columne.type && columne.type === 'datetime') {
-                  scope.configuration.axis.x.type = 'timeseries';
-                  if (columne.format) {
-                    scope.configuration.data.xFormat = columne.format;
-                  } else {
-                    scope.configuration.data.xFormat = '%Y-%m-%dT%H:%M:%S'; // default
-                  }
-                } else if (columne.type === 'numeric') {
-                  scope.configuration.axis.x.type = 'numeric';
-
-                }
-              }
-            }
-
-            // xAxis Label
-            //
-            if (scope.options.xAxis && scope.options.xAxis.label) {
-              scope.configuration.axis.x.label = scope.options.xAxis.label;
-            } else {
-              scope.configuration.axis.x.label = '';
-            }
-
-            // Groups
-            //
-            if (scope.options.groups) {
-              scope.configuration.data.groups = scope.options.groups;
-            } else {
-              scope.configuration.data.groups = [];
-            }
-
-            // onclick
-            //
-            if (angular.isFunction(scope.options.onclick)) {
-              scope.configuration.data.onclick = scope.options.onclick;
-            } else {
-              scope.configuration.data.onclick = angular.noop;
-            }
-
-            // SubChart
-            //
-            if (scope.options.subchart) {
-              scope.configuration.subchart.show = scope.options.subchart.show;
-            } else {
-              scope.configuration.subchart.show = false;
-            }
-
-            // Y settings
-            //
-            scope.configuration.axis.y.label = '';
-            scope.configuration.axis.y.max = null;
-            scope.configuration.axis.y.min = null;
-            scope.configuration.axis.y.tick.format = undefined;
-            if (angular.isObject(scope.options.yAxis)) {
-              // label
-              if (angular.isDefined(scope.options.yAxis.label)) {
-                scope.configuration.axis.y.label = scope.options.yAxis.label;
-              }
-
-              // max value
-              if (angular.isDefined(scope.options.yAxis.max)) {
-                scope.configuration.axis.y.max = scope.options.yAxis.max;
-              }
-
-              // min value
-              if (angular.isDefined(scope.options.yAxis.min)) {
-                scope.configuration.axis.y.min = scope.options.yAxis.min;
-              }
-
-              // format
-              if (angular.isDefined(scope.options.yAxis.displayFormat)) {
-                scope.configuration.axis.y.tick.format = scope.options.yAxis.displayFormat;
-              }
-            }
-
-            // Y2 settings
-            //
-            if (angular.isObject(scope.options.y2Axis)) {
-              //label
-              if (!angular.isUndefined(scope.options.y2Axis.label)) {
-                scope.configuration.axis.y2.label = scope.options.y2Axis.label;
-              } else {
-                scope.configuration.axis.y2.label = '';
-              }
-
-              //max value
-              if (!angular.isUndefined(scope.options.y2Axis.max)) {
-                scope.configuration.axis.y2.max = scope.options.y2Axis.max;
-              } else {
-                scope.configuration.axis.y2.max = null;
-              }
-
-              //min value
-              if (!angular.isUndefined(scope.options.y2Axis.min)) {
-                scope.configuration.axis.y2.min = scope.options.y2Axis.min;
-              } else {
-                scope.configuration.axis.y2.min = null;
-              }
-
-              //format
-              if (!angular.isUndefined(scope.options.y2Axis.displayFormat)) {
-                scope.configuration.axis.y2.tick.format = scope.options.y2Axis.displayFormat;
-              } else {
-                scope.configuration.axis.y2.tick.format = null;
-              }
-            }
-
-            // Tooltip
-            //
-            scope.configuration.tooltip.format = {};
-            if (scope.options.tooltip) {
-              if (scope.options.tooltip.displayFormat) {
-                scope.configuration.tooltip.format.value = scope.options.tooltip.displayFormat;
-              }
-            }
-
-            // Legend
-            //
-            if (scope.options.legend) {
-              if (scope.options.legend.selector === undefined) {
-                scope.configuration.legend.show = scope.options.legend.show;
-              } else {
-                scope.configuration.legend.show = !scope.options.legend.selector;
-              }
-            } else {
-              scope.configuration.legend.show = true;
-            }
-
-            // Annotation
-            //
-            scope.configuration.grid.y.lines = [];
-            scope.configuration.grid.x.lines = [];
-
-            if (scope.options.annotation && scope.options.type !== 'pie' && scope.options.type !== 'donut') {
-              scope.options.annotation.forEach(function (annotation) {
-                switch (annotation.axis) {
-                  case 'x':
-                    scope.configuration.grid.x.lines.push({
-                      text: annotation.label,
-                      value: annotation.value
-                    });
-                    break;
-
-                  case 'y':
-                    scope.configuration.grid.y.lines.push({
-                      text: annotation.label,
-                      value: annotation.value
-                    });
-                    break;
-
-                  case 'y2':
-                    scope.configuration.grid.y.lines.push({
-                      text: annotation.label,
-                      value: annotation.value,
-                      axis: 'y2'
-                    });
-                    break;
-                }
-              });
-            }
-
-            // Size
-            //
-            if (scope.options.size) {
-              scope.configuration.size = scope.options.size;
-            } else {
-              scope.configuration.size = {};
-            }
-
-            // Zoom
-            //
-            if (scope.options.zoom) {
-              scope.configuration.zoom.enabled = scope.options.zoom.enabled;
-            }
-
-            // callback for onzoom
-            scope.configuration.zoom.onzoomend = function (domain) {
-              scope.updateOptions(function () {
-                scope.options.zoom.range = domain;
-              });
-
-              if (scope.options.zoom.onzoom) {
-                scope.options.zoom.onzoom();
-              }
-            };
-
-            // callback for onbrush
-            scope.configuration.subchart.onbrush = function (domain) {
-              scope.updateOptions(function () {
-                scope.options.zoom.range = domain;
-              });
-
-              if (scope.options.zoom.onzoom) {
-                scope.options.zoom.onzoom();
-              }
-            };
-
-            // Donut Options
-            //
-            if (scope.options.donut) {
-              scope.configuration.donut = scope.options.donut;
-            }
-
-            // Remove onresize listeners of the old chart
-            //
-            window.onresize = null;
-
-            // Draw chart
-            //
-            scope.chart = c3.generate(scope.configuration);
-
-            // In-place editing
-            //
-            scope.chooseXAxis();
-            scope.customLegend();
-            scope.chooseChartType();
-            scope.toggleSubchartLink();
-
-            // Remove the max-height set by c3.js
-            angular.element(element).removeAttr('style');
-
-            // Apply earlier zoom
-            //
-            if (scope.options.zoom && scope.options.zoom.range) {
-              scope.chart.zoom(scope.options.zoom.range);
-            }
-          };
-
-
-          // Choose x-axis
-          //
-          scope.chooseXAxis = function () {
-            if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.xAxis || !scope.options.xAxis.selector) {
-              return;
-            }
-            var el = angular.element('<span class="chooseXAxis"/>');
-            el.append('<select ng-hide="options.type === \'pie\' || options.type === \'donut\'" ng-model="options.xAxis.key" class="form-control"><option ng-repeat="col in schema" value="{{col.id}}" ng-selected="col.id===options.xAxis.key">{{col.name ? col.name : col.id}}</option></select>');
-            $compile(el)(scope);
-            element.append(el);
-          };
-
-          // Choose chart-type
-          //
-          scope.chooseChartType = function () {
-            if (scope.options.typeSelector) {
-              var el = angular.element('<div class="chooseChartType btn-group">');
-              el.append('<button ng-click="changeChartType(\'scatter\')" ng-class="{\'active\': options.type === \'scatter\'}" class="btn btn-default">Scatter</button>');
-              el.append('<button ng-click="changeChartType(\'bar\')" ng-class="{\'active\': options.type === \'bar\'}" class="btn btn-default">Bar</button>');
-              el.append('<button ng-click="changeChartType(\'line\')" ng-class="{\'active\': options.type === \'line\'}" class="btn btn-default">Line</button>');
-              el.append('<button ng-click="changeChartType(\'pie\')" ng-class="{\'active\': options.type === \'pie\'}" class="btn btn-default">Pie</button>');
-              $compile(el)(scope);
-              element.prepend(el);
-            }
-          };
-          // called function
-          scope.changeChartType = function (type) {
-            scope.options.type = type;
-            scope.options.rows.forEach(function (element) {
-              element.type = type;
-            });
-          };
-
-          // Toggle Subchart
-          //
-          scope.toggleSubchart = function () {
-            scope.options.subchart.show = !scope.options.subchart.show;
-            if (scope.options.zoom && scope.options.zoom.range) {
-              delete scope.options.zoom.range;
-            }
-          };
-
-          // Add Toggle Subchart Links
-          //
-          scope.toggleSubchartLink = function () {
-            if (scope.options.type === 'pie' || scope.options.type === 'donut' || !scope.options.subchart || !scope.options.subchart.selector) {
-              return;
-            }
-            var el = angular.element('<span class="toggleSubchart"/>');
-            if (scope.options.subchart.show) {
-              // hide subchart
-              el.append('<a title="hide navigation subchart" ng-click="toggleSubchart()"><i class="flaticon-hide"></i> hide navigator</a>');
-            } else {
-              // show subchart
-              el.append('<a title="show navigation subchart" ng-click="toggleSubchart()"><i class="flaticon-show"></i> show navigator</a>');
-            }
-            $compile(el)(scope);
-            element.append(el);
-
-          };
-
-          // Add custom Legend
-          //
-          scope.customLegend = function () {
-            if (!scope.options.legend || !scope.options.legend.selector) {
-              return;
-            }
-
-            var legend = angular.element('<div class="customLegend"><span ng-repeat="row in options.rows" ng-if="row.key !== options.xAxis.key" class="customLegend-item" ><circular options="rowEdit[$index]"></circular><span class="customLegend-label" data-id="{{row.name}}">{{(schema[row.key] && schema[row.key].name) ? schema[row.key].name : (row.name ? row.name : row.key)}}</span></span></div>');
-            $compile(legend)(scope);
-            element.prepend(legend);
-
-            // d3.selectAll('.customLegend span')
-            //   .each(function () {
-            //     var id = d3.select(this).attr('data-id');
-            //     d3.select(this).style('background-color', scope.chart.color(id));
-            //   })
-            //   .on('mouseover', function () {
-            //     var id = d3.select(this).attr('data-id');
-            //     scope.chart.focus(id);
-            //   })
-            //   .on('mouseout', function () {
-            //     var id = d3.select(this).attr('data-id');
-            //     scope.chart.revert();
-            //   })
-            //   .on('click', function () {
-            //     var id = d3.select(this).attr('data-id');
-            //     scope.chart.toggle(id);
-            //   });
-
-            var typeIcons = {
-              'line': 'flaticon-line',
-              'spline': 'flaticon-line',
-              'area': 'flaticon-area',
-              'area-spline': 'flaticon-area',
-              'scatter': 'flaticon-scatter',
-              'bar': 'flaticon-bar',
-              'pie': 'flaticon-pie',
-              'donut': 'flaticon-pie',
-              'step': 'flaticon-line',
-              'area-step': 'flaticon-area'
-            };
-
-            // onClick functions
-            //
-            scope.switchAxis = function (options, clicked) {
-              scope.options.rows[options.index].axis = clicked.axis;
-              scope.options.rows[options.index].show = true;
-            };
-            scope.switchType = function (options, clicked) {
-              scope.options.rows[options.index].type = clicked.type;
-              scope.options.rows[options.index].show = true;
-            };
-            scope.switchShow = function (options, clicked) {
-              scope.options.rows[options.index].show = clicked.show;
-            };
-
-            // generate circular options
-            //
-            scope.rowEdit = [];
-            for (var index in scope.options.rows) {
-
-              // hide current x-axis
-              //
-              if (scope.options.xAxis && scope.options.xAxis.key === scope.options.rows[index].key) {
-                continue;
-              }
-
-              var show = scope.options.rows[index].show === undefined || scope.options.rows[index].show === true;
-
-              scope.rowEdit[index] = {
-                row: 'sales',
-                index: index,
-                isOpen: false,
-                toggleOnClick: true,
-                background: show ? scope.options.rows[index].color || scope.chart.color(scope.options.rows[index].key) : 'gray',
-                color: 'white',
-                size: '',
-                button: {
-                  content: '',
-                  cssClass: typeIcons[scope.options.rows[index].type] || typeIcons.spline,
-                  background: show ? scope.options.rows[index].color || scope.chart.color(scope.options.rows[index].key) : 'gray',
-                  color: 'white',
-                  size: 'small'
-                },
-                items: [{
-                  title: 'plot data on right axis',
-                  axis: 'y2',
-                  onclick: scope.switchAxis,
-                  isActive: scope.options.rows[index].axis === 'y2',
-                  cssClass: 'flaticon-right'
-                }, {
-                  title: 'plot data on left axis',
-                  axis: 'y',
-                  onclick: scope.switchAxis,
-                  isActive: scope.options.rows[index].axis === 'y',
-                  cssClass: 'flaticon-left'
-                }, {
-                  empty: true
-                }, {
-                  title: 'display data as line chart',
-                  type: 'spline',
-                  onclick: scope.switchType,
-                  isActive: scope.options.rows[index].type === 'spline' || scope.options.rows[index].type === 'line',
-                  cssClass: typeIcons.spline
-                }, {
-                  title: 'display data as area chart',
-                  type: 'area-spline',
-                  onclick: scope.switchType,
-                  isActive: scope.options.rows[index].type === 'area' || scope.options.rows[index].type === 'area-spline',
-                  cssClass: typeIcons['area-spline']
-                }, {
-                  title: 'display data as bar chart',
-                  type: 'bar',
-                  onclick: scope.switchType,
-                  isActive: scope.options.rows[index].type === 'bar',
-                  cssClass: typeIcons.bar
-                }, {
-                  title: 'display data as scatter plot',
-                  type: 'scatter',
-                  onclick: scope.switchType,
-                  isActive: scope.options.rows[index].type === 'scatter',
-                  cssClass: typeIcons.scatter
-                }, {
-                  empty: true
-                }, {
-                  title: 'show this data',
-                  show: true,
-                  onclick: scope.switchShow,
-                  isActive: show,
-                  cssClass: 'flaticon-show'
-                }, {
-                  title: 'hide this data',
-                  show: false,
-                  onclick: scope.switchShow,
-                  isActive: !show,
-                  cssClass: 'flaticon-hide'
-                }]
-              };
-            }
-
-          };
-
-          // Selections
-          //
-          scope.selections = {
-            avoidSelections: false,
-
-            // handle chart event onselection
-            addSelected: function (selection) {
-              if (!this.avoidSelections) {
-                if (!angular.isObject(scope.options.selection)) {
-                  scope.options.selection = {};
-                }
-                if (!angular.isArray(scope.options.selection.selected)) {
-                  scope.options.selection.selected = [];
-                }
-
-                scope.$apply(function() {
-                  scope.options.selection.selected.push(selection);
-                });
-                if (scope.options.selection.onselected) {
-                  scope.$apply(function(){
-                    scope.options.selection.onselected();
-                  });
-                }
-              }
-            },
-
-            // handle chart event onunselection
-            removeSelected: function (selection) {
-              if (!this.avoidSelections && angular.isObject(scope.options.selection) && angular.isArray(scope.options.selection.selected)) {
-                scope.$apply(
-                  scope.options.selection.selected = scope.options.selection.selected.filter(function (selected) {
-                    return selected.id !== selection.id || selected.index !== selection.index;
-                  })
-                );
-                if (scope.options.selection.onunselected) {
-                  scope.$apply(function(){
-                    scope.options.selection.onunselected();
-                  });
-                }
-              }
-            },
-
-            // select elements inside the chart
-            performSelections: function (selections) {
-              this.avoidSelections = true;
-              selections.forEach(function (selection) {
-                scope.chart.select([selection.id], [selection.index]);
-              });
-              this.avoidSelections = false;
-            },
-
-            // unselect elements inside the chart
-            performUnselections: function (selections) {
-              this.avoidSelections = true;
-              selections.forEach(function (selection) {
-                scope.chart.unselect([selection.id], [selection.index]);
-              });
-              this.avoidSelections = false;
-            },
-
-            // search options for added or removed selections
-            watchOptions: function (newValue, oldValue) {
-              var oldSelections = oldValue.selection && oldValue.selection.selected ? oldValue.selection.selected : [];
-              var newSelections = newValue.selection && newValue.selection.selected ? newValue.selection.selected : [];
-
-              // addedSelections
-              var addedSelections = newSelections.filter(function (elm) {
-                var isNew = true;
-                oldSelections.forEach(function (old) {
-                  if (old.id === elm.id && old.index === elm.index) {
-                    isNew = false;
-                    return isNew;
-                  }
-                });
-                return isNew;
-              });
-
-              // removedSelections
-              var removedSelections = oldSelections.filter(function (elm) {
-                var isOld = true;
-                newSelections.forEach(function (old) {
-                  if (old.id === elm.id && old.index === elm.index) {
-                    isOld = false;
-                    return isOld;
-                  }
-                });
-                return isOld;
-              });
-
-              //do actual removal /adding of selections and return if something happened.
-              var didSomething = false;
-              if (addedSelections.length > 0) {
-                this.performSelections(addedSelections);
-                didSomething = true;
-              }
-
-              if (removedSelections.length > 0) {
-                this.performUnselections(removedSelections);
-                didSomething = true;
-              }
-
-              return didSomething;
-            }
-          };
-
-          // watcher of changes in options
-          //
-          scope.startOptionsWatcher = function () {
-
-            scope.$watch('options', function (newValue, oldValue) {
-              if (scope.disableOptionsWatcher) {
-                return;
-              }
-
-              if (scope.selections.watchOptions(newValue, oldValue)) {
-                return;
-              }
-
-              // change whole chart type
-              if (oldValue.type !== newValue.type) {
-                scope.chart.transform(newValue.type);
-                if (['pie', 'donut'].indexOf(newValue.type) >= 0) {
-                  scope.options.rows.forEach(function (row) {
-                    // if (['pie', 'donut'].indexOf(row.type) < 0) {
-                    delete row.type;
-                    // }
-                  });
-                }
-              }
-
-              // data watchLimit
-              if (angular.isObject(newValue.data) && !angular.isObject(oldValue.data) || !angular.equals(newValue.data, oldValue.data)) {
-                scope.startDatasetWatcher();
-              }
-
-              scope.updateChart();
-            }, true); // checks for changes inside options
-          };
-
-          scope.smallWatcher = undefined;
-          scope.bigWatcher = undefined;
-
-          // start watcher changes in small datasets, compares whole object
-          //
-          scope.startSmallDatasetWatcher = function () {
-            return scope.$watchCollection('dataset', function (newValue, oldValue) {
-              if (!angular.equals(newValue, oldValue)) {
-                scope.updateChart();
-                scope.startDatasetWatcher();
-              }
-            });
-          };
-
-          // start watcher changes in big datasets, compares length of records
-          //
-          scope.startBigDatasetWatcher = function () {
-            return scope.$watch(function () {
-              return scope.dataset.length;
-            }, function (newValue, oldValue) {
-              if (!angular.equals(newValue, oldValue)) {
-                scope.updateChart();
-                scope.startDatasetWatcher();
-              }
-            });
-          };
-
-          // choose watcher for changes in datasets
-          //
-          scope.startDatasetWatcher = function () {
-            if (angular.isArray(scope.dataset)) {
-              scope.chooseDatasetWatcher();
-            }
-          };
-
-          scope.chooseDatasetWatcher = function () {
-            var limit = (scope.options.data && scope.options.data.watchLimit) ? scope.options.data.watchLimit : 100;
-            if (scope.dataset.length < limit) {
-              // start small watcher
-              if (!scope.smallWatcher) {
-                scope.smallWatcher = scope.startSmallDatasetWatcher();
-              }
-              // stop big watcher
-              if (scope.bigWatcher) {
-                scope.bigWatcher();
-                scope.bigWatcher = undefined;
-              }
-            } else {
-              // start big watcher
-              if (!scope.bigWatcher) {
-                scope.bigWatcher = scope.startBigDatasetWatcher();
-              }
-              // stop small watcher
-              if (scope.smallWatcher) {
-                scope.smallWatcher();
-                scope.smallWatcher = undefined;
-              }
-            }
-          };
-
-          // Registers a $destroy listeners for cleanup purposes
-          //
-          scope.registerDestroyListener = function () {
-            scope.$on('$destroy', function () {
-              scope.chart.destroy();
-              element.remove();
-            });
-          };
-
-          // startup
-          scope.addIdentifier();
-
-          $q.all([
-            $q.when(scope.dataset).then(function(data) {
-              scope.dataset = data;
-            }),
-            $q.when(scope.options).then(function(options) {
-              scope.options = options;
-            }),
-            $q.when(scope.schema).then(function(schema) {
-              scope.schema = schema;
-            })
-          ]).then(function(){
-            //if (angular.isObject(scope.options.selection)) {
-            //  scope.selections.performSelections(scope.options.selection.selected);
-            //}
-            scope.startOptionsWatcher();
-            scope.startDatasetWatcher();
-            scope.registerDestroyListener();
-          });
+  function AngularChartState(AngularChartWatcher) {
+    var service = {
+      disableSelectionListener: false,
+      synchronizeZoom: synchronizeZoom,
+      applyZoom: applyZoom,
+      synchronizeSelection: synchronizeSelection,
+      applySelection: applySelection
+    };
+
+    return service;
+
+    ////////////
+
+    /**
+     * Apply earlier zoom
+     */
+    function applyZoom(options, chart) {
+      if ((angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) ||
+        (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true)) {
+
+        if (angular.isObject(options.state) && angular.isObject(options.state) && angular.isArray(options.state.range)) {
+          chart.zoom(options.state.range);
+        } else {
+          chart.unzoom();
         }
-      };
-    }]);
 
-  /* istanbul ignore next */
-  if (typeof define === 'function' && define.amd) {
-    define('angularChart', ['../../bower_components/c3/c3', 'angular'], angularChart);
-  } else if ('undefined' !== typeof exports && 'undefined' !== typeof module) {
-    module.exports = angularChart;
+      }
+    }
+
+    /**
+     * Create nested options objects.
+     */
+    function createZoomRangePath(options) {
+      if (!angular.isObject(options.state)) {
+        options.state = {};
+      }
+      if (!angular.isObject(options.state.range)) {
+        options.state.range = [];
+      }
+    }
+
+    /**
+     * Setup zoom event listeners which update the state
+     */
+    function synchronizeZoom(options, configuration, watcher) {
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) {
+
+        // setup onzoomend listener
+        configuration.zoom.onzoomend = function (domain) {
+
+          // update state
+          AngularChartWatcher.updateState(watcher, function () {
+            createZoomRangePath(options);
+            options.state.range = domain;
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.zoom.onzoomend)) {
+            AngularChartWatcher.applyFunction(watcher, function () {
+              options.chart.zoom.onzoomend(domain);
+            });
+          }
+        };
+      }
+
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true) {
+        // setup onbrush listener
+        configuration.subchart.onbrush = function (domain) {
+
+          // update state
+          AngularChartWatcher.updateState(watcher, function () {
+            createZoomRangePath(options);
+            options.state.range = domain;
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.subchart.onbrush)) {
+            AngularChartWatcher.applyFunction(watcher, function () {
+              options.chart.subchart.onbrush(domain);
+            });
+          }
+        };
+      }
+    }
+
+    /**
+     * Add passed selection to the chart.
+     */
+    function addSelections(chart, selections) {
+      service.disableSelectionListener = true;
+      selections.forEach(function (selection) {
+        chart.select([selection.id], [selection.index]);
+      });
+      service.disableSelectionListener = false;
+    }
+
+    /**
+     * Remove passed selections from the chart.
+     */
+    //function removeSelections(chart, selections) {
+    //  disableSelectionListener = true;
+    //  selections.forEach(function (selection) {
+    //    chart.unselect([selection.id], [selection.index]);
+    //  });
+    //  disableSelectionListener = false;
+    //}
+
+    /**
+     * Remove all selections present in the chart.
+     */
+    function removeAllSelections(chart) {
+      service.disableSelectionListener = true;
+      chart.unselect();
+      service.disableSelectionListener = false;
+    }
+
+    /**
+     * Apply earlier selections.
+     */
+    function applySelection(options, chart) {
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
+
+        if (angular.isObject(options.state) && angular.isArray(options.state.selected)) {
+          // TODO: get new selections
+          // TODO: get removed selections
+          // var chartSelections = chart.selected();
+          //    // addedSelections
+          //    var addedSelections = newSelections.filter(function (elm) {
+          //      var isNew = true;
+          //      oldSelections.forEach(function (old) {
+          //        if (old.id === elm.id && old.index === elm.index) {
+          //          isNew = false;
+          //          return isNew;
+          //        }
+          //      });
+          //      return isNew;
+          //    });
+          //
+          //    // removedSelections
+          //    var removedSelections = oldSelections.filter(function (elm) {
+          //      var isOld = true;
+          //      newSelections.forEach(function (old) {
+          //        if (old.id === elm.id && old.index === elm.index) {
+          //          isOld = false;
+          //          return isOld;
+          //        }
+          //      });
+          //      return isOld;
+          //    });
+
+          // alternative: deselect all and select again
+          //removeAllSelections(chart);
+          addSelections(chart, options.state.selected);
+
+        } else {
+          removeAllSelections(chart);
+        }
+      }
+    }
+
+    /**
+     * Create nested options object.
+     */
+    function createSelectionsPath(options) {
+      if (!angular.isObject(options.state)) {
+        options.state = {};
+      }
+      if (!angular.isArray(options.state.selected)) {
+        options.state.selected = [];
+      }
+    }
+
+    /**
+     * Listen to chart events to save selections into to state object.
+     */
+    function synchronizeSelection(options, configuration, watcher) {
+      if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
+
+        // add onselected listener
+        configuration.data.onselected = function (data, element) {
+
+          // check if listener is disabled currently
+          if (service.disableSelectionListener) {
+            return;
+          }
+
+          // update state
+          AngularChartWatcher.updateState(watcher, function () {
+            createSelectionsPath(options);
+            options.state.selected.push(data);
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.data.onselected)) {
+            AngularChartWatcher.applyFunction(watcher, function () {
+              options.chart.data.onselected(data, element);
+            });
+          }
+
+        };
+
+        // add onunselection listener
+        configuration.data.onunselected = function (data, element) {
+
+          // check if listener is disabled currently
+          if (service.disableSelectionListener) {
+            return;
+          }
+
+          // update state
+          AngularChartWatcher.updateState(watcher, function () {
+            createSelectionsPath(options);
+            options.state.selected = options.state.selected.filter(function (selected) {
+              return selected.id !== data.id || selected.index !== data.index;
+            });
+          });
+
+          // call user defined callback
+          if (angular.isFunction(options.chart.data.onunselected)) {
+            AngularChartWatcher.applyFunction(watcher, function () {
+              options.chart.data.onunselected(data, element);
+            });
+          }
+
+        };
+
+      }
+    }
+
   }
+  AngularChartState.$inject = ['AngularChartWatcher'];
+
+  angular
+    .module('angularChart')
+    .service('AngularChartState', AngularChartState);
 
 })();
+
+
+(function() {
+
+  'use strict';
+
+  /* istanbul ignore next */
+  var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
+  /* istanbul ignore next */
+  var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
+
+  function AngularChartService($timeout, AngularChartWatcher, AngularChartConverter, AngularChartState) {
+
+    var ChartService = function(baseConfig, scope) {
+      this.chart = null;
+      this.baseConfiguration = {};
+      this.configuration = {};
+      this.scopeReference = null;
+      this.options = {};
+      this.watcher = null;
+
+      this.init(baseConfig, scope);
+    };
+
+    ChartService.prototype.init = function(baseConfig, scope) {
+      this.watcher = AngularChartWatcher.init(scope);
+      this.baseConfiguration = baseConfig;
+      this.scopeReference = scope;
+      this.updateCallback();
+
+      // register callbacks after first digest cycle
+      var chartService = this;
+      $timeout(function() {
+        chartService.registerCallbacks();
+      });
+    };
+
+    /**
+     * Register callbacks for the watchers.
+     */
+    ChartService.prototype.registerCallbacks = function() {
+      var chartService = this;
+
+      // updateCallback(), closure to keep reference to chart service
+      this.watcher.dimensionsCallback = function() {
+        chartService.updateCallback();
+      };
+      this.watcher.chartCallback = function() {
+        chartService.updateCallback();
+      };
+      this.watcher.dataCallback = function() {
+        chartService.updateCallback();
+      };
+
+      // stateCallback(), closure to keep reference to chart service
+      this.watcher.stateCallback = function() {
+        chartService.stateCallback();
+      };
+    };
+
+    /**
+     * Update the configuration and render the chart.
+     */
+    ChartService.prototype.updateCallback = function() {
+      this.configuration = this.baseConfiguration;
+      this.buildOptions();
+      this.convertOptions();
+      this.applyChartOptions();
+      this.synchronizeState();
+      this.generateChart();
+      this.stateCallback();
+    };
+
+    /**
+     * Build options based on the values provided from scope.
+     */
+    ChartService.prototype.buildOptions = function() {
+      this.options = angular.isObject(this.scopeReference.options) ? this.scopeReference.options : {};
+    };
+
+    /**
+     * Convert the angular-chart specific options into a c3-configuration.
+     */
+    ChartService.prototype.convertOptions = function() {
+      AngularChartConverter.convertData(this.options, this.configuration);
+      AngularChartConverter.convertDimensions(this.options, this.configuration);
+    };
+
+    /**
+     * Use the user defined chart configuration to extend and/or overwrite
+     * the automatic set configuration.
+     */
+    ChartService.prototype.applyChartOptions = function() {
+      angular.merge(
+        this.configuration,
+        this.options.chart
+      );
+    };
+
+    /**
+     * Setup the synchronize from c3 events into the options.
+     */
+    ChartService.prototype.synchronizeState = function() {
+      AngularChartState.synchronizeZoom(this.options, this.configuration, this.watcher);
+      AngularChartState.synchronizeSelection(this.options, this.configuration, this.watcher);
+    };
+
+    /**
+     * Render the chart.
+     */
+    ChartService.prototype.generateChart = function() {
+      // TODO add own onresize listener?
+      // TODO regenerate chart only one or two times per second
+      // TODO evaluate if it makes sense to destroy the chart first
+      this.chart = c3.generate(this.configuration);
+    };
+
+    /**
+     * Apply state options on the chart.
+     */
+    ChartService.prototype.stateCallback = function() {
+      AngularChartState.applyZoom(this.options, this.chart);
+      AngularChartState.applySelection(this.options, this.chart);
+    };
+
+    /**
+     * Destroy the chart if one ist present.
+     */
+    ChartService.prototype.destroyChart = function() {
+      this.chart.destroy();
+    };
+
+    return {
+      getInstance: function(baseConfig, scope) {
+        return new ChartService(baseConfig, scope);
+      }
+    };
+  }
+  AngularChartService.$inject = ['$timeout', 'AngularChartWatcher', 'AngularChartConverter', 'AngularChartState'];
+
+  angular
+    .module('angularChart')
+    .factory('AngularChartService', AngularChartService);
+
+})();
+
+
+
+
+(function () {
+
+  'use strict';
+
+  /* istanbul ignore next */
+  var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
+
+  function AngularChartConverter() {
+
+    var service = {
+      convertData: convertData,
+      convertDimensions: convertDimensions
+    };
+
+    return service;
+
+    ////////////
+
+    function convertData(options, configuration) {
+      // TODO support different data formats
+      if (angular.isArray(options.data)) {
+        configuration.data.json = options.data;
+      }
+    }
+
+    function convertDimensions(options, configuration) {
+      if (!angular.isObject(options.dimensions)) {
+        return;
+      }
+
+      // only show used axes
+      configuration.axis.y.show = false;
+
+      // save displayFormat for reuse
+      var displayFormat = {
+        isUse: false,
+        y: [],
+        y2: []
+      };
+
+      // apply all dimensions
+      angular.forEach(options.dimensions, function (dimension, key) {
+        // TODO only when JSON (array of objects) data
+        // set dimensions to show
+        if (!angular.isDefined(dimension.show) || dimension.show) {
+          configuration.data.keys.value.push(key);
+        }
+
+        // set name
+        if (angular.isString(dimension.name)) {
+          configuration.data.names[key] = dimension.name;
+        }
+
+        // set type
+        if (angular.isDefined(dimension.type)) {
+          configuration.data.types[key] = dimension.type;
+        }
+
+        // set color
+        if (angular.isString(dimension.color)) {
+          configuration.data.colors[key] = dimension.color;
+        }
+
+        // axis
+        if (dimension.axis === 'y2') {
+          configuration.data.axes[key] = 'y2';
+          configuration.axis.y2.show = true;
+          displayFormat.y2.push(key);
+        } else if (dimension.axis !== 'x') {
+          configuration.axis.y.show = true;
+          displayFormat.y.push(key);
+        }
+
+        // label
+        displayFormat[key] = true;
+        if (angular.isDefined(dimension.displayFormat)) {
+          displayFormat.inUse = true;
+          displayFormat[key] = dimension.displayFormat;
+        } else if (angular.isDefined(dimension.prefix) || angular.isDefined(dimension.postfix)) {
+          displayFormat.inUse = true;
+          displayFormat[key] = function (label) {
+            return (dimension.prefix || '') + label + (dimension.postfix || '');
+          };
+        }
+
+        if (dimension.label === true) {
+          configuration.data.labels.format[key] = displayFormat[key];
+        }
+
+        // x-Axis
+        if (dimension.axis === 'x') {
+          configuration.data.keys.x = key;
+          configuration.data.x = key;
+
+          if (angular.isString(displayFormat[key]) || angular.isFunction(displayFormat[key])) {
+            configuration.axis.x.tick.format = displayFormat[key];
+          }
+
+          if (['datetime', 'date', 'timeseries'].indexOf(dimension.dataType) !== -1) {
+            configuration.axis.x.type = 'timeseries';
+            if (dimension.dataFormat) {
+              configuration.data.xFormat = dimension.dataFormat;
+            }
+          } else if (['numeric', 'number', 'indexed'].indexOf(dimension.dataType) !== -1) {
+            configuration.axis.x.type = 'indexed';
+          } else if (dimension.dataType === 'category' || (angular.isArray(options.data) && options.data[0] && options.data[0][key] && options.data[0][key] && !angular.isNumber(options.data[0][key]))) {
+            configuration.axis.x.type = 'category';
+          }
+        }
+
+      });
+
+      // Tooltips
+      // http://c3js.org/samples/tooltip_format.html
+      if (displayFormat.inUse) {
+        configuration.tooltip = {
+          format: {
+            value: function (value, ratio, id) {
+              if (angular.isFunction(displayFormat[id])) {
+                return displayFormat[id](value);
+              } else {
+                return value;
+              }
+            }
+          }
+        };
+      }
+
+      // Y-Axes
+      // http://c3js.org/samples/axes_y_tick_format.html
+      angular.forEach(['y', 'y2'], function (axis) {
+        var format = null;
+        var formatKey = null;
+        angular.forEach(displayFormat[axis], function (key) {
+          if (format === null) {
+            format = displayFormat[key];
+            formatKey = key;
+          } else if (
+            format !== displayFormat[key] && !(
+
+              // not two functuins
+            (!angular.isFunction(options.dimensions[formatKey].displayFormat) && !angular.isFunction(options.dimensions[key].displayFormat)) &&
+
+            (
+
+              // not two prefixes
+            (!angular.isDefined(options.dimensions[formatKey].prefix) && !angular.isDefined(options.dimensions[key].prefix)) ||
+
+              // two same prefixes
+            (angular.isDefined(options.dimensions[formatKey].prefix) &&
+            angular.isDefined(options.dimensions[key].prefix) &&
+            options.dimensions[formatKey].prefix === options.dimensions[key].prefix)
+
+            ) && (
+              // not two postfixes
+            (!angular.isDefined(options.dimensions[formatKey].postfix) && !angular.isDefined(options.dimensions[key].postfix)) ||
+
+              // two same postfixes
+            (angular.isDefined(options.dimensions[formatKey].postfix) &&
+            angular.isDefined(options.dimensions[key].postfix) &&
+            options.dimensions[formatKey].postfix === options.dimensions[key].postfix)
+
+            ))) {
+            format = false;
+          }
+        });
+        if (format !== false && format !== true && format !== null) {
+          configuration.axis[axis].tick.format = format;
+        }
+      });
+
+    }
+
+  }
+
+  angular
+    .module('angularChart')
+    .service('AngularChartConverter', AngularChartConverter);
+
+})();
+
+
+
+
+(function () {
+
+  'use strict';
+
+  /* istanbul ignore next */
+  var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
+
+  function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartService) {
+    var configuration = angular.copy(baseConfiguration);
+    var chartService = null;
+
+    activate();
+
+    ////////////
+
+    function activate() {
+      unwrapPromise();
+      addIdentifier();
+      addInlineStyle();
+      chartService = AngularChartService.getInstance(configuration, $scope);
+      registerDestroyListener();
+    }
+
+    /**
+     * Unwrap a options promise if onw exists
+     */
+    function unwrapPromise() {
+      $q.when($scope.options, function (options) {
+        $scope.options = options;
+      });
+    }
+
+    /**
+     * Add unique identifier for each chart
+     */
+    function addIdentifier() {
+      $scope.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
+      angular.element($element).attr('id', $scope.dataAttributeChartID);
+      configuration.bindto = '#' + $scope.dataAttributeChartID;
+    }
+
+    /**
+     * Add inline style to avoid additional css file
+     */
+    function addInlineStyle() {
+      angular.element($element).css('display', 'block');
+    }
+
+    /**
+     * Remove all references when directive is destroyed
+     */
+    function registerDestroyListener() {
+      $scope.$on('$destroy', function () {
+        chartService.destroyChart(configuration);
+        $element.remove();
+      });
+    }
+
+  }
+  AngularChartController.$inject = ['$scope', '$element', '$q', 'baseConfiguration', 'AngularChartService'];
+
+  angular
+    .module('angularChart')
+    .controller('AngularChartController', AngularChartController);
+
+})();
+
+(function () {
+
+  'use strict';
+
+  /* istanbul ignore next */
+  var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
+
+  var baseConfiguration = {
+    data: {
+      json: [],
+      keys: {
+        value: []
+      },
+      names: {},
+      types: {},
+      colors: {},
+      axes: {},
+      labels: {
+        format: {}
+      }
+    },
+    axis: {
+      y: {
+        show: true,
+        tick: {}
+      },
+      y2: {
+        tick: {}
+      },
+      x: {
+        tick: {}
+      }
+    },
+    zoom: {},
+    subchart: {},
+    tooltip: {
+      format: {}
+    }
+  };
+
+  angular
+    .module('angularChart')
+    .value('baseConfiguration', baseConfiguration);
+
+})();
+
+
+
