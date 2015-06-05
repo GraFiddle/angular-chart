@@ -17,7 +17,6 @@ bower install angular-chart --save
 Add everything to your index.html:
 ```html
 <link rel="stylesheet" href="bower_components/c3/c3.css" />
-<link rel="stylesheet" href="bower_components/angular-chart/css/angular-chart.css">
 
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/d3/d3.js"></script>

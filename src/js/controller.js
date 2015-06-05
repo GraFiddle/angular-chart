@@ -16,6 +16,7 @@
     function activate() {
       unwrapPromise();
       addIdentifier();
+      addInlineStyle();
       chartService = AngularChartService.getInstance(configuration, $scope);
       registerDestroyListener();
     }
@@ -36,6 +37,13 @@
       $scope.dataAttributeChartID = 'chartid' + Math.floor(Math.random() * 1000000001);
       angular.element($element).attr('id', $scope.dataAttributeChartID);
       configuration.bindto = '#' + $scope.dataAttributeChartID;
+    }
+
+    /**
+     * Add inline style to avoid additional css file
+     */
+    function addInlineStyle() {
+      angular.element($element).css('display', 'block');
     }
 
     /**

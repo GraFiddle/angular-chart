@@ -4,7 +4,7 @@ var gulp = require('gulp');
 
 
 gulp.task('default', ['jshint', 'test', 'build']);
-gulp.task('build', ['scripts', 'styles']);
+gulp.task('build', ['scripts']);
 
 
 // CODE FORMATTING
@@ -56,23 +56,4 @@ gulp.task('scripts', function () {
     .pipe(uglify())
     .pipe(concat('angular-chart.min.js'))
     .pipe(gulp.dest(''));
-});
-
-
-// STYLESHEETS PROCESSING
-//
-var compass = require('gulp-compass');
-var rename = require('gulp-rename');
-var minifyCSS = require('gulp-minify-css');
-gulp.task('styles', function () {
-  return gulp.src('./src/scss/angular-chart.scss')
-    .pipe(compass({
-      sass: './src/scss',
-      css: './css'
-    }))
-    .pipe(minifyCSS())
-    .pipe(rename({
-      extname: '.min.css'
-    }))
-    .pipe(gulp.dest('css'));
 });

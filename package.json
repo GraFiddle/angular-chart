@@ -24,13 +24,12 @@
     "url": "https://github.com/maxklenk/angular-chart/issues"
   },
   "dependencies": {
-    "angular": "~1.3.0",
-    "c3": "~0"
+    "angular": "~1.4.x",
+    "c3": "~0.4.x"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-angular-filesort": "^1.1.1",
-    "gulp-compass": "^2.0.4",
     "gulp-concat": "^2.5.2",
     "gulp-jshint": "^1.10.0",
     "gulp-minify-css": "^1.1.1",

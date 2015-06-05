@@ -21,7 +21,7 @@ describe('Integration: angularChart', function () {
 
   var chartContainer, chartElement;
   beforeEach(function () {
-    chartContainer = d3.select('body').append('div').attr('class', 'testContainer');
+    chartContainer = window.d3.select('body').append('div').attr('class', 'testContainer');
     // add directive to DOM
     chartContainer.append('angular-chart')
       .attr('options', 'options');

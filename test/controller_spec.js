@@ -23,7 +23,9 @@ describe('Controller: AngularChartController', function() {
   beforeEach(function() {
     $element = {
       setAttribute: angular.noop,
-      remove: angular.noop
+      remove: angular.noop,
+      style: angular.noop,
+
     };
   });
 
