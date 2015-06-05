@@ -35,27 +35,38 @@ angular.module('myApp', ['angularChart'])
 
 Add the corresponding data in your controller:
 ```javascript
-$scope.options = {
-  data: [
-    {
-      sales: 130,
-      income: 250
-    }
-  ],
-  dimensions: {
-    sales: {},
-    income: {}
-  }
-};
+angular
+  .module('myApp')
+  .controller('Controller', function($scope) {
+
+    $scope.options = {
+      data: [
+        {
+          sales: 130,
+          income: 250
+        }
+      ],
+      dimensions: {
+        sales: {
+          type: 'bar'
+        },
+        income: {
+          axis: 'y2'
+        }
+      }
+    };
+    
+  });
 ```
 
 Then you are ready to use the directive in your view:
 ```html
 <div ng-controller="Controller">
-  <angular-chart options="options"></angularchart>
+  <angular-chart options="options"></angular-chart>
 </div>
 ```
 
+[learn how to upgrade from v0.2.x](#upgrade-02x-to-030)
 
 ## API
 
@@ -84,56 +95,59 @@ $scope.options = {
 ### dimensions
 Specifies which and how the data dimensions will be plotted.
 
-#### dimension.type : String
+##### dimension.type : String
 Possible values: `line, spline, bar, scatter, area, area-spline, step, area-step, step`
 
----
-#### dimension.axis : String
+--
+##### dimension.axis : String
 Possible values: `x, y, y2`
 Defines the axis the row is linked.
 
----
-#### dimension.name : String
+--
+##### dimension.name : String
 Optional name for the row.
 
----
-#### dimension.show : String
+--
+##### dimension.show : String
 Defines if the row should be rendered in the chart.
 
----
-#### dimension.color : String
+--
+##### dimension.color : String
 Defines the color for this row.
 
----
-#### dimension.label : boolean
+--
+##### dimension.label : boolean
 Defines if labels are shown or not (default: `false`)
 
----
-#### dimension.dataType : String
-Possible values: `numeric, indexed, category`
+--
+##### dimension.dataType : String
+Possible values: `numeric, indexed, category, datetime`
 
----
-#### dimension.dataFormat : String | Function
+--
+##### dimension.dataFormat : String | Function
 The dataFormat is used convert timestamps in in Date objects, it uses the [D3 Time Formatting](https://github.com/mbostock/d3/wiki/Time-Formatting).
 Sample:`%Y-%m-%dT%H:%M:%S`
 
----
-#### dimension.displayFormat : String | Function
+--
+##### dimension.displayFormat : String | Function
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
 
-### Chart 
-Access to the full API of [C3.js](http://c3js.org/examples.html) to style your visualization.
+### chart 
+Access to the full API of [C3.js](http://c3js.org/examples.html) to customize your visualization.
+
+##### chart.data.watchLimit
+The `watchLimit` key is added in addition to the c3-API. Add a custom limit to define when to stop watching for changes inside of data and only watch for changes in the number of items the data array contains. Default: 100
 
 
-### State
+### state
 Current state of interactions with the chart.
 
 ##### state.range : Array ```[a, b]```
 The current zoomed in range can get and set here. Works also for the subchart.
 
----
+--
 ##### state.selected : Array
 Contains an array with all selected points of the chart:
 
@@ -154,12 +168,84 @@ Pie-, Donut chart: _(Currently adding a selection in the Array will not add the 
 }
 ```
 
+## custom Style
+The whole chart is based on SVG, which allows you to stlye most parts using CSS.
+The documentation of c3.js provides a few [examples](http://c3js.org/examples.html#style) on how to style your chart.
 
+## Upgrade 0.2.x to 0.3.0
 
-## Changelog 0.2.X to 0.3.0
+* `<angular-chart></angular-chart>` should be used instead of `<angularchart></angularchart>`
+* the `dataset` now lives inside the options you pass to angular-chart:
+```javascript
+// old
+$scope.dataset = [...];
+$scope.options = {};
 
-* `<angular-chart></angular-chart>`(preferred) and `<angularchart></angularchart>` can be used
-* orientation, watchLimit
+// new
+$scope.options = {
+  data: [...],
+  dimensions: {},
+  chart: {},
+  state: {}
+};
+```
+* integrate the `schema` object into the `dimensions`:
+```javascript
+// old
+$scope.schema = {
+  day: {
+    type: 'datetime',
+    format: '%Y-%m-%d_%H:%M:%S',
+    name: 'Date'
+  }
+};
+
+// new
+$scope.options = {
+  dimensions: {
+    day: {
+      dataType: 'datetime',
+      dataFormat: '%Y-%m-%d_%H:%M:%S',
+      name: 'Date'
+    }
+  }
+};
+```
+* the `options.rows` and `options.xAxis` are now integrated in the `dimensions`:
+```javascript
+// old
+$scope.options = {
+  rows: [{
+    key: 'income',
+    type: 'bar'
+  }, {
+    key: 'sales'
+  }],
+  xAxis: {
+    key: 'day',
+    displayFormat: '%Y-%m-%d %H:%M:%S'
+  }
+};
+
+// new
+$scope.options = {
+  dimensions: {
+    income: {
+      axis: 'y',
+      type: 'bar'
+    },
+    sales: { // all visible dimensions have to be defined here
+    },       // leave the object empty to add a line to the y-Axis
+    day: {
+      axis: 'x',
+      displayFormat: '%Y-%m-%d %H:%M:%S'
+    }
+  }
+};
+```
+* `data.watchLimit` can now be set at `options.chart.data.watchLimit`
+* `data.orientation` is currently not supported, please stick to json data
+* the in-place editor features `typeSelector`, `xAxis.selector`, `subchart.selector` and `legend.selector` are no longer part of the main project. An additional plugin will make them available again soon.
 
 
 ## Development [![Stories in Ready](https://badge.waffle.io/maxklenk/angular-chart.png?label=ready&title=Ready)](https://waffle.io/maxklenk/angular-chart) [![Gitter chat](https://badges.gitter.im/maxklenk/angular-chart.png)](https://gitter.im/maxklenk/angular-chart)
@@ -175,7 +261,7 @@ gulp
 
 ## Contributing
 
-Please submit all pull requests the against develop branch. Make sure it passes the CI [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=develop)](https://travis-ci.org/maxklenk/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop). Thanks!
+Please submit all pull requests the against **develop branch**. Make sure it passes the CI [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=develop)](https://travis-ci.org/maxklenk/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop). Thanks!
 
 
 ## Authors
@@ -188,7 +274,7 @@ Please submit all pull requests the against develop branch. Make sure it passes 
 ## Credit
 
 angular-chart was first developed as the technical part of my bachelor thesis "Real-time collaborative Visual Analytics with AngularJS and D3.js".
-The thesis was written at the [Professorship of Media Computer Science](http://www.fim.uni-passau.de/en/media-computer-science/) ([Prof. Dr. Michael Granitzer](https://github.com/mgrani)) of the [University of Passau](http://www.uni-passau.de/en/) and in cooperation with @ONE-LOGIC.
+The thesis was written at the [Professorship of Media Computer Science](http://www.fim.uni-passau.de/en/media-computer-science/) ([Prof. Dr. Michael Granitzer](https://github.com/mgrani)) of the [University of Passau](http://www.uni-passau.de/en/) and in cooperation with [ONE LOGIC](https://github.com/one-logic).
 
 
 ## Copyright and license
