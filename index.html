@@ -7,14 +7,163 @@
 
     <!-- dependencies -->
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css" />
-    <link rel="stylesheet" type="text/css" href="angular-chart.min.css" />
+    <style>
+        /* */
+        .angular-chart,.angularchart,angular-chart,angularchart{display:block;position:relative}
+
+        /* custom chart */
+        .c3-line {
+            stroke-width: 2px;
+        }
+
+        /* demo-app */
+        html, body, .page {
+            height: 100%;
+            margin: 0;
+        }
+        html {
+            background-color: rgb(240, 240, 240);
+            overflow-y: scroll;
+            font-family: arial, helvetica, serif;
+        }
+        body {
+            text-align: center;
+            max-width: 1000px;
+            padding: 5px;
+            margin: auto;
+        }
+        .content {
+            position: relative;
+            top: 45%;
+            transform: translateY(-50%);
+        }
+        .chart-container {
+            background-color: white;
+            padding: 20px;
+            max-width: 1000px;
+            min-height: 320px;
+            border-radius: 10px;
+            margin: auto;
+        }
+        h1 {
+
+            font-size: 90px;
+            color: rgb(176, 176, 176);
+            margin-top: 0;
+            margin-bottom: 0.5em;
+        }
+        h2 {
+
+            font-size: 40px;
+            color: rgb(176, 176, 176);
+            margin-top: 0;
+            margin-bottom: 0.5em;
+        }
+        .chart-info {
+            margin-top: 10px;
+        }
+        #stateful {
+            margin-bottom: 40px;
+        }
+        .stateful {
+            color: rgb(38, 180, 226);
+        }
+        .month {
+            display: inline-block;
+            width: 30px;
+            color: rgb(38, 180, 226);
+            font-weight: bold;
+        }
+        input {
+            border: none;
+            background-color: rgb(224, 224, 224);
+            padding: 5px;
+            border-radius: 5px;
+            width: 60px;
+        }
+        .left {
+            width: 49%;
+            display: inline-block;
+        }
+        .right {
+            width: 49%;
+            display: inline-block;
+        }
+        a {
+            color: rgb(176, 176, 176);
+            text-decoration: none;
+        }
+        a:hover {
+              color: rgb(38, 180, 226);
+          }
+        .learnMore {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+        }
+        #github {
+            background-color: rgb(22, 68, 119);
+            padding: 5px;
+            border-radius: 5px;
+            position: fixed;
+            top: 5px;
+            right: 5px;
+        }
+        angular-chart {
+            text-align: left;
+        }
+    </style>
 
 </head>
 <body ng-app="AngularChartDemo" ng-controller="DemoController as demo">
 
-    <angular-chart options="demo.climateOptions"></angular-chart>
-    <angular-chart options="demo.timestampOptions"></angular-chart>
+    <div class="first-page page">
+        <div class="content">
+            <h1>angular-chart</h1>
+            <div class="chart-container">
+                <angular-chart options="demo.indexOptions"></angular-chart>
+            </div>
+        </div>
+        <a href="#stateful" class="learnMore">Learn more</a>
+    </div>
 
+    <!-- stateful -->
+    <div id="stateful" class="">
+        <div class="">
+            <h2>angular-chart is <em class="stateful">stateful</em></h2>
+            <p>All interactions with the chart are saved to options to create a sharable state of the chart</p>
+            <div class="chart-container">
+                <angular-chart options="demo.statefulOptions"></angular-chart>
+
+                <div class="chart-info">
+                    from <input ng-model="demo.statefulOptions.state.range[0]" type="number" class="form-control" id="inputFrom" placeholder="From">
+                    (<span class="hidden-xs">first visible month:</span> <em class="month">{{ demo.statefulOptions.data[ (demo.statefulOptions.state.range[0] | number:0) ].month }}</em> )
+
+                    to <input ng-model="demo.statefulOptions.state.range[1]" type="number" class="form-control" id="inputTo" placeholder="To">
+                    (<span class="hidden-xs">last visible month:</span> <em class="month">{{ demo.statefulOptions.data[ (demo.statefulOptions.state.range[1] | number:0) - 1 ].month }}</em> )
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- syncable
+    <div class="">
+        <div class="">
+            <h2>angular-chart is <em class="stateful">syncable</em></h2>
+            <p>All interactions with the chart are saved to options to create a sharable state of the chart</p>
+            <div class="chart-container">
+                <div class="left">
+                    <angular-chart options="demo.syncOptions"></angular-chart>
+                </div>
+                <div class="right">
+                    <angular-chart options="demo.syncOptions"></angular-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+    -->
+
+    <a id="github"href="https://github.com/maxklenk/angular-chart">Download from Github</a>
 
     <!-- dependencies -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular.min.js"></script>

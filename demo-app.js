@@ -45,94 +45,28 @@
                 month: {
                     axis: 'x'
                 }
-                //date: {
-                //  axis: 'x',
-                //  displayFormat: '%Y-%m ',
-                //  dataType: 'datetime'
-                //}
-            },
-            chart: {
-                data: {
-                    selection: {
-                        enabled: true
-                    }
-                },
-                zoom: {
-                    enabled: true
-                }
             }
         };
 
-        // add to view
-        optionsClimate.data = dataClimate;
-        vm.climateOptions = optionsClimate;
+        // index
+        vm.indexOptions = angular.copy(optionsClimate);
+        vm.indexOptions.data = dataClimate;
 
-        // Update
-        vm.updateClimateDimension = function () {
-            vm.climateOptions.dimensions.temp.type = vm.climateOptions.dimensions.temp.type === 'spline' ? 'area-spline' : 'spline';
-            console.log('new options', vm.climateOptions);
-        };
-
-
-        /*
-         * Climate Diagram
-         */
-        // base data
-        var dataTimestamps = DemoData.manyTimestamps;
-        var optionsTimestamps = {
-            dimensions: {
-                n: {
-                    axis: 'y',
-                    type: 'scatter',
-                    name: '# wishes'
-                },
-                r: {
-                    axis: 'y',
-                    type: 'scatter',
-                    name: '# reactions'
-                },
-                created_at: {
-                    axis: 'x',
-                    dataFormat: '%Y-%m-%d %H:%M:%S',
-                    displayFormat: '%Y-%m-%d',
-                    dataType: 'datetime'
-                }
-            },
-            chart: {
-                axis: {
-                    x: {
-                        tick: {
-                            count: 8,
-                            fit: true,
-                        }
-                    },
-                    y: {
-                        min: 0,
-                        padding: {
-                            bottom: 0
-                        }
-                    }
-                },
-                data: {
-                    selection: {
-                        enabled: true
-                    }
-                },
-                zoom: {
-                    enabled: true
-                }
+        // stateful
+        vm.statefulOptions = angular.copy(optionsClimate);
+        vm.statefulOptions.data = dataClimate;
+        vm.statefulOptions.chart = {
+            subchart: {
+                show: true
             }
         };
-
-        // add to view
-        optionsTimestamps.data = dataTimestamps;
-        vm.timestampOptions = optionsTimestamps;
-
-        // Update
-        vm.updateTimestampDimension = function () {
-            vm.timestampOptions.dimensions.n.type = vm.timestampOptions.dimensions.n.type === 'scatter' ? 'line' : 'scatter';
-            console.log('new options', vm.timestampOptions);
+        vm.statefulOptions.state = {
+            range: [3, 9]
         };
+
+        // syncable
+        vm.syncOptions = angular.copy(optionsClimate);
+        vm.syncOptions.data = dataClimate;
 
     }
 
