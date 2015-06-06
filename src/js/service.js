@@ -60,7 +60,7 @@
      * Update the configuration and render the chart.
      */
     ChartService.prototype.updateCallback = function() {
-      this.configuration = this.baseConfiguration;
+      this.configuration = angular.copy(this.baseConfiguration);
       this.buildOptions();
       this.convertOptions();
       this.applyChartOptions();
