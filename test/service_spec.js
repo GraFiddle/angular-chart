@@ -101,4 +101,19 @@ describe('Service: AngularChartService', function () {
     chartSerice.watcher.stateCallback();
   });
 
+  it('merge configuration.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+
+    chartSerice.configuration.data = {};
+    chartSerice.options.chart = {
+      data: {
+        groups: []
+      },
+      value: 'test'
+    };
+    chartSerice.applyChartOptions();
+  });
+
 });

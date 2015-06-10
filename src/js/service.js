@@ -60,7 +60,7 @@
      * Update the configuration and render the chart.
      */
     ChartService.prototype.updateCallback = function() {
-      this.configuration = this.baseConfiguration;
+      this.configuration = angular.copy(this.baseConfiguration);
       this.buildOptions();
       this.convertOptions();
       this.applyChartOptions();
@@ -89,7 +89,7 @@
      * the automatic set configuration.
      */
     ChartService.prototype.applyChartOptions = function() {
-      angular.merge(
+      this.merge(
         this.configuration,
         this.options.chart
       );
@@ -127,6 +127,26 @@
     ChartService.prototype.destroyChart = function() {
       this.chart.destroy();
     };
+
+    ChartService.prototype.merge = angular.merge || deepMerge;
+
+    function deepMerge(target, src) {
+      src = src || {};
+
+      Object.keys(src).forEach(function (key) {
+        if (!angular.isObject(src[key]) || !src[key]) {
+          target[key] = src[key];
+        } else {
+          if (!target[key]) {
+            target[key] = src[key];
+          } else {
+            target[key] = deepMerge(target[key], src[key]);
+          }
+        }
+      });
+
+      return target;
+    }
 
     return {
       getInstance: function(baseConfig, scope) {
