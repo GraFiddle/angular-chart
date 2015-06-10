@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function DebugController(DebugData) {
+  function DebugController($q, $timeout, DebugData) {
     var vm = this;
 
     /*
@@ -120,7 +120,11 @@
 
     // add to view
     optionsTimestamps.data = dataTimestamps;
-    vm.timestampOptions = optionsTimestamps;
+    vm.timestampOptions = $q(function(resolve) {
+      $timeout(function() {
+          resolve(optionsTimestamps);
+      }, 500);
+    });
 
     // Update
     vm.updateTimestampDimension = function () {
