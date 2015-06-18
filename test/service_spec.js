@@ -68,6 +68,17 @@ describe('Service: AngularChartService', function () {
     chartSerice.watcher.dimensionsCallback();
   });
 
+  it('callback dimensionsTypeCallback.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+
+    $scope.$apply();
+    $timeout.flush();
+
+    chartSerice.watcher.dimensionsTypeCallback();
+  });
+
   it('callback chartCallback.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
@@ -101,19 +112,29 @@ describe('Service: AngularChartService', function () {
     chartSerice.watcher.stateCallback();
   });
 
+  it('transform types.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+
+    chartService.options.dimensions = {
+      one: {}
+    };
+    chartService.transformCallback();
+  });
+
   it('merge configuration.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
 
-    chartSerice.configuration.data = {};
-    chartSerice.options.chart = {
+    chartService.options.chart = {
       data: {
         groups: []
       },
       value: 'test'
     };
-    chartSerice.applyChartOptions();
+    chartService.applyChartOptions();
   });
 
 });

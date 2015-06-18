@@ -21,6 +21,7 @@
       var watcher = {
         scope: scope,
         dimensionsCallback: null,
+        dimensionsTypeCallback: null,
         chartCallback: null,
         stateCallback: null,
         dataCallback: null,
@@ -30,6 +31,7 @@
       };
 
       setupDimensionsWatcher(watcher);
+      setupDimensionsTypeWatcher(watcher);
       setupChartWatcher(watcher);
       setupStateWatcher(watcher);
       setupWatchLimitWatcher(watcher);
@@ -43,9 +45,42 @@
     ////
 
     function setupDimensionsWatcher(watcher) {
-      watcher.scope.$watch('options.dimensions', function () {
+      watcher.scope.$watch(function () {
+        var check = watcher.scope.options && watcher.scope.options.dimensions;
+
+        // remove types from copy to check only other changes
+        if (angular.isObject(check)) {
+          check = angular.copy(check);
+          angular.forEach(check, function (dimension) {
+            if (dimension.type) {
+              delete dimension.type;
+            }
+          });
+        }
+
+        return check;
+      }, function () {
         if (angular.isFunction(watcher.dimensionsCallback)) {
           watcher.dimensionsCallback();
+        }
+      }, true);
+    }
+
+    function setupDimensionsTypeWatcher(watcher) {
+      watcher.scope.$watch(function () {
+        var check = {};
+
+        // extract only dimension types
+        if (watcher.scope.options && watcher.scope.options.dimensions) {
+          angular.forEach(watcher.scope.options.dimensions, function (dimension, key) {
+            check[key] = dimension.type;
+          });
+        }
+
+        return check;
+      }, function () {
+        if (angular.isFunction(watcher.dimensionsTypeCallback)) {
+          watcher.dimensionsTypeCallback();
         }
       }, true);
     }

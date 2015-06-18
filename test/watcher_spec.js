@@ -92,6 +92,119 @@ describe('Service: AngularChartWatcher', function () {
       expect(callbacks.func).not.toHaveBeenCalled();
     });
 
+    it('not when only dimension.type is updated.', function () {
+      // setup
+      $scope.options = {
+        dimensions: {
+          one: {}
+        }
+      };
+      var watcher = AngularChartWatcher.init($scope);
+      $scope.$apply();
+      watcher.dimensionsCallback = callbacks.func;
+
+      // action
+      $scope.options = {
+        dimensions: {
+          one: {
+            type: 'line'
+          }
+        }
+      };
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).not.toHaveBeenCalled();
+    });
+
+  });
+
+  // registerDimensionsTypeCallback()
+  describe('call the dimensionsType callback', function () {
+
+    // setup for all tests in this block
+    var callbacks = {};
+    beforeEach(function () {
+      callbacks = {
+        func: angular.noop
+      };
+      spyOn(callbacks, 'func');
+    });
+
+    it('not when dimensions without type are set.', function () {
+      // setup
+      var watcher = AngularChartWatcher.init($scope);
+      $scope.$apply();
+      watcher.dimensionsTypeCallback = callbacks.func;
+
+      // action
+      $scope.options = {
+        dimensions: {}
+      };
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).not.toHaveBeenCalled();
+    });
+
+    it('not when dimensions without type are removed.', function () {
+      // setup
+      $scope.options = {
+        dimensions: {}
+      };
+      var watcher = AngularChartWatcher.init($scope);
+      $scope.$apply();
+      watcher.dimensionsTypeCallback = callbacks.func;
+
+      // action
+      $scope.options = {};
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).not.toHaveBeenCalled();
+    });
+
+    it('not when something else is updated.', function () {
+      // setup
+      var watcher = AngularChartWatcher.init($scope);
+      $scope.$apply();
+      watcher.dimensionsTypeCallback = callbacks.func;
+
+      // action
+      $scope.options = {
+        something: 'else'
+      };
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).not.toHaveBeenCalled();
+    });
+
+    it('when only dimension.type is updated.', function () {
+      // setup
+      $scope.options = {
+        dimensions: {
+          one: {}
+        }
+      };
+      var watcher = AngularChartWatcher.init($scope);
+      $scope.$apply();
+      watcher.dimensionsTypeCallback = callbacks.func;
+
+      // action
+      $scope.options = {
+        dimensions: {
+          one: {
+            type: 'line'
+          }
+        }
+      };
+      $scope.$apply();
+
+      // result
+      expect(callbacks.func).toHaveBeenCalled();
+    });
+
   });
 
 
