@@ -116,7 +116,8 @@ Defines the color for this row.
 
 --
 ##### dimension.label : boolean
-Defines if labels are shown or not (default: `false`)
+Defines if data labels inside the chart are shown or not (default: `false`).
+To define axis labels specify [chart.axis.y.label](http://c3js.org/samples/axes_label.html).
 
 --
 ##### dimension.dataType : String
