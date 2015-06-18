@@ -50,10 +50,9 @@
           selection: {
             enabled: true
           }
-        },
-        zoom: {
-          enabled: true
         }
+      },
+      state: {
       }
     };
 
