@@ -133,6 +133,16 @@ Sample:`%Y-%m-%dT%H:%M:%S`
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
 
+--
+##### dimension.prefix : String
+To specify the appearance of your data in tooltips, labels and in the axis ticks you can add a prefix.
+Sample: `$`
+
+--
+##### dimension.postfix : String
+To specify the appearance of your data in tooltips, labels and in the axis ticks you can add a postfix.
+Sample: `€`
+
 
 ### chart 
 Access to the full API of [C3.js](http://c3js.org/examples.html) to customize your visualization.
