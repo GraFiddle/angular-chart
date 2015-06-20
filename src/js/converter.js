@@ -71,7 +71,7 @@
           displayFormat.y.push(key);
         }
 
-        // label
+        // get displayFormats
         displayFormat[key] = true;
         if (angular.isDefined(dimension.displayFormat)) {
           displayFormat.inUse = true;
@@ -83,6 +83,7 @@
           };
         }
 
+        // data label
         if (dimension.label === true) {
           configuration.data.labels.format[key] = displayFormat[key];
         }

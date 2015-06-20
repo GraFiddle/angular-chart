@@ -22,15 +22,10 @@
      * Apply earlier zoom
      */
     function applyZoom(options, chart) {
-      if ((angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) ||
-        (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true)) {
-
-        if (angular.isObject(options.state) && angular.isObject(options.state) && angular.isArray(options.state.range)) {
-          chart.zoom(options.state.range);
-        } else {
-          chart.unzoom();
-        }
-
+      if (angular.isObject(options.state) && angular.isObject(options.state) && angular.isArray(options.state.range)) {
+        chart.zoom(options.state.range);
+      } else {
+        chart.unzoom();
       }
     }
 
@@ -125,43 +120,40 @@
      * Apply earlier selections.
      */
     function applySelection(options, chart) {
-      if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
+      if (angular.isObject(options.state) && angular.isArray(options.state.selected)) {
+        // TODO: get new selections
+        // TODO: get removed selections
+        // var chartSelections = chart.selected();
+        //    // addedSelections
+        //    var addedSelections = newSelections.filter(function (elm) {
+        //      var isNew = true;
+        //      oldSelections.forEach(function (old) {
+        //        if (old.id === elm.id && old.index === elm.index) {
+        //          isNew = false;
+        //          return isNew;
+        //        }
+        //      });
+        //      return isNew;
+        //    });
+        //
+        //    // removedSelections
+        //    var removedSelections = oldSelections.filter(function (elm) {
+        //      var isOld = true;
+        //      newSelections.forEach(function (old) {
+        //        if (old.id === elm.id && old.index === elm.index) {
+        //          isOld = false;
+        //          return isOld;
+        //        }
+        //      });
+        //      return isOld;
+        //    });
 
-        if (angular.isObject(options.state) && angular.isArray(options.state.selected)) {
-          // TODO: get new selections
-          // TODO: get removed selections
-          // var chartSelections = chart.selected();
-          //    // addedSelections
-          //    var addedSelections = newSelections.filter(function (elm) {
-          //      var isNew = true;
-          //      oldSelections.forEach(function (old) {
-          //        if (old.id === elm.id && old.index === elm.index) {
-          //          isNew = false;
-          //          return isNew;
-          //        }
-          //      });
-          //      return isNew;
-          //    });
-          //
-          //    // removedSelections
-          //    var removedSelections = oldSelections.filter(function (elm) {
-          //      var isOld = true;
-          //      newSelections.forEach(function (old) {
-          //        if (old.id === elm.id && old.index === elm.index) {
-          //          isOld = false;
-          //          return isOld;
-          //        }
-          //      });
-          //      return isOld;
-          //    });
+        // alternative: deselect all and select again
+        //removeAllSelections(chart);
+        addSelections(chart, options.state.selected);
 
-          // alternative: deselect all and select again
-          //removeAllSelections(chart);
-          addSelections(chart, options.state.selected);
-
-        } else {
-          removeAllSelections(chart);
-        }
+      } else {
+        removeAllSelections(chart);
       }
     }
 

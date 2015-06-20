@@ -45,7 +45,7 @@ describe('Service: AngularChartConverter', function () {
   //////////////////////////////////
 
   // synchronizeZoom()
-  it('should do nothing when zoom is not enabled.', function () {
+  it('should do nothing when zoom is not enabled and no range is set.', function () {
     // setup
     var options = {};
     var configuration = angular.copy(baseConfiguration);
@@ -186,51 +186,9 @@ describe('Service: AngularChartConverter', function () {
 
 
   // applyZoom()
-  it('should do nothing if neither zoom nor subchart is enabled.', function () {
+  it('should reset zoom if non is present.', function () {
     // setup
     var options = {};
-    var chart = {
-      zoom: angular.noop
-    };
-    AngularChartState.applyZoom(options, chart);
-    spyOn(chart, 'zoom');
-
-    // result
-    expect(chart.zoom).not.toHaveBeenCalled();
-  });
-
-  it('should reset the zoom if none is set and zoom is enabled.', function () {
-    // setup
-    var options = {
-      chart: {
-        zoom: {
-          enabled: true
-        }
-      }
-    };
-    var chart = {
-      zoom: angular.noop,
-      unzoom: angular.noop
-    };
-    AngularChartState.applyZoom(options, chart);
-    spyOn(chart, 'zoom');
-    spyOn(chart, 'unzoom');
-
-    // result
-    expect(chart.zoom).not.toHaveBeenCalled();
-    // TODO spy does not work?!
-    //expect(chart.unzoom).toHaveBeenCalled();
-  });
-
-  it('should reset the zoom if none is set and subchart is shown.', function () {
-    // setup
-    var options = {
-      chart: {
-        subchart: {
-          show: true
-        }
-      }
-    };
     var chart = {
       zoom: angular.noop,
       unzoom: angular.noop
@@ -502,17 +460,18 @@ describe('Service: AngularChartConverter', function () {
 
 
   // applySelection()
-  it('should not apply selections if selections are not enabled.', function () {
+  it('should  reset selections if none provided and selections are not enabled.', function () {
     // setup
     var options = {};
     var chart = {
-      select: angular.noop
+      unselect: angular.noop
     };
     AngularChartState.applySelection(options, chart);
-    spyOn(chart, 'select');
+    spyOn(chart, 'unselect');
 
     // result
-    expect(chart.select).not.toHaveBeenCalled();
+    // TODO spy doesn't work
+    //expect(chart.unselect).toHaveBeenCalled();
   });
 
   it('should reset selections if none provided and selections are enabled.', function () {

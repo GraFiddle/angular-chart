@@ -49,71 +49,99 @@ describe('Service: AngularChartService', function () {
   it('destroy a created chart.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
 
     $scope.$apply();
 
-    chartSerice.destroyChart();
+    chartService.destroyChart();
   });
 
   // callbacks
   it('callback dimensionsCallback.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
 
-    chartSerice.watcher.dimensionsCallback();
+    chartService.watcher.dimensionsCallback();
+  });
+
+  it('callback dimensionsTypeCallback.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+    spyOn(chartService, 'generateChart');
+
+    $scope.$apply();
+    $timeout.flush();
+
+    chartService.watcher.dimensionsTypeCallback();
   });
 
   it('callback chartCallback.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
 
-    chartSerice.watcher.chartCallback();
+    chartService.watcher.chartCallback();
   });
 
   it('callback dataCallback.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
 
-    chartSerice.watcher.dataCallback();
+    chartService.watcher.dataCallback();
   });
 
   it('callback stateCallback.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
 
-    chartSerice.watcher.stateCallback();
+    chartService.watcher.stateCallback();
+  });
+
+  it('transform types.', function () {
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+    spyOn(chartService, 'generateChart');
+
+    chartService.options.dimensions = {
+      one: {}
+    };
+    chartService.transformCallback();
   });
 
   it('merge configuration.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
-    var chartSerice = AngularChartService.getInstance(configuration, $scope);
+    var chartService = AngularChartService.getInstance(configuration, $scope);
+    spyOn(chartService, 'generateChart');
 
-    chartSerice.configuration.data = {};
-    chartSerice.options.chart = {
+    chartService.options.chart = {
       data: {
         groups: []
       },
       value: 'test'
     };
-    chartSerice.applyChartOptions();
+    chartService.applyChartOptions();
   });
 
 });

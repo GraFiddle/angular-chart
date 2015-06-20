@@ -116,7 +116,8 @@ Defines the color for this row.
 
 --
 ##### dimension.label : boolean
-Defines if labels are shown or not (default: `false`)
+Defines if data labels inside the chart are shown or not (default: `false`).
+To define axis labels specify [chart.axis.y.label](http://c3js.org/samples/axes_label.html).
 
 --
 ##### dimension.dataType : String
@@ -131,6 +132,16 @@ Sample:`%Y-%m-%dT%H:%M:%S`
 ##### dimension.displayFormat : String | Function
 If the xAxis displays a timestamp the format of if can be defined by passing a String which follows the [Time Formatting of D3](https://github.com/mbostock/d3/wiki/Time-Formatting). Alternatively a custom function can be passed.
 Sample: `function (x) { return x.getFullYear(); }`
+
+--
+##### dimension.prefix : String
+To specify the appearance of your data in tooltips, labels and in the axis ticks you can add a prefix.
+Sample: `$`
+
+--
+##### dimension.postfix : String
+To specify the appearance of your data in tooltips, labels and in the axis ticks you can add a postfix.
+Sample: `€`
 
 
 ### chart 
@@ -249,13 +260,20 @@ $scope.options = {
 
 ## Development [![Stories in Ready](https://badge.waffle.io/maxklenk/angular-chart.png?label=ready&title=Ready)](https://waffle.io/maxklenk/angular-chart) [![Gitter chat](https://badges.gitter.im/maxklenk/angular-chart.png)](https://gitter.im/maxklenk/angular-chart)
 
-
-We use Karma and jshint to ensure the quality of the code. The easiest way to run these checks is to use grunt:
+We use Karma and jshint to ensure the quality of the code. The easiest way to run these checks is to use gulp:
 ```sh
 npm install -g bower gulp
 npm install
+bower install
 gulp
 ```
+
+
+## More about the project
+
+This [presentation](http://maxklenk.github.io/angular-chart-presentation) gives some insights to understand the motivation behind angular-chart:
+
+http://maxklenk.github.io/angular-chart-presentation
 
 
 ## Contributing

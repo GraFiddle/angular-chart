@@ -50,6 +50,11 @@
         chartService.updateCallback();
       };
 
+      // transformCallback(), closure to keep reference to chart service
+      this.watcher.dimensionsTypeCallback = function() {
+        chartService.transformCallback();
+      };
+
       // stateCallback(), closure to keep reference to chart service
       this.watcher.stateCallback = function() {
         chartService.stateCallback();
@@ -67,6 +72,18 @@
       this.synchronizeState();
       this.generateChart();
       this.stateCallback();
+    };
+
+    /**
+     * Pushes type changes using transform to update the chart without a full render.
+     */
+    ChartService.prototype.transformCallback = function() {
+      var chartService = this;
+      if (chartService.options && chartService.options.dimensions) {
+        angular.forEach(chartService.options.dimensions, function(dimension, key) {
+          chartService.chart.transform(dimension.type, key);
+        });
+      }
     };
 
     /**

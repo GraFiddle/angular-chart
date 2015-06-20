@@ -50,10 +50,9 @@
           selection: {
             enabled: true
           }
-        },
-        zoom: {
-          enabled: true
         }
+      },
+      state: {
       }
     };
 
@@ -63,7 +62,7 @@
 
     // Update
     vm.updateClimateDimension = function () {
-      vm.climateOptions.dimensions.temp.type = vm.climateOptions.dimensions.temp.type === 'spline' ? 'area-spline' : 'spline';
+      vm.climateOptions.dimensions.temp.type = vm.climateOptions.dimensions.temp.type === 'spline' ? 'bar' : 'spline';
       console.log('new options', vm.climateOptions);
     };
 
