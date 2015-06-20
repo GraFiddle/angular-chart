@@ -54,6 +54,7 @@
       var watcher = {
         scope: scope,
         dimensionsCallback: null,
+        dimensionsTypeCallback: null,
         chartCallback: null,
         stateCallback: null,
         dataCallback: null,
@@ -63,6 +64,7 @@
       };
 
       setupDimensionsWatcher(watcher);
+      setupDimensionsTypeWatcher(watcher);
       setupChartWatcher(watcher);
       setupStateWatcher(watcher);
       setupWatchLimitWatcher(watcher);
@@ -76,9 +78,42 @@
     ////
 
     function setupDimensionsWatcher(watcher) {
-      watcher.scope.$watch('options.dimensions', function () {
+      watcher.scope.$watch(function () {
+        var check = watcher.scope.options && watcher.scope.options.dimensions;
+
+        // remove types from copy to check only other changes
+        if (angular.isObject(check)) {
+          check = angular.copy(check);
+          angular.forEach(check, function (dimension) {
+            if (dimension.type) {
+              delete dimension.type;
+            }
+          });
+        }
+
+        return check;
+      }, function () {
         if (angular.isFunction(watcher.dimensionsCallback)) {
           watcher.dimensionsCallback();
+        }
+      }, true);
+    }
+
+    function setupDimensionsTypeWatcher(watcher) {
+      watcher.scope.$watch(function () {
+        var check = {};
+
+        // extract only dimension types
+        if (watcher.scope.options && watcher.scope.options.dimensions) {
+          angular.forEach(watcher.scope.options.dimensions, function (dimension, key) {
+            check[key] = dimension.type;
+          });
+        }
+
+        return check;
+      }, function () {
+        if (angular.isFunction(watcher.dimensionsTypeCallback)) {
+          watcher.dimensionsTypeCallback();
         }
       }, true);
     }
@@ -213,15 +248,10 @@
      * Apply earlier zoom
      */
     function applyZoom(options, chart) {
-      if ((angular.isObject(options.chart) && angular.isObject(options.chart.zoom) && options.chart.zoom.enabled === true) ||
-        (angular.isObject(options.chart) && angular.isObject(options.chart.subchart) && options.chart.subchart.show === true)) {
-
-        if (angular.isObject(options.state) && angular.isObject(options.state) && angular.isArray(options.state.range)) {
-          chart.zoom(options.state.range);
-        } else {
-          chart.unzoom();
-        }
-
+      if (angular.isObject(options.state) && angular.isObject(options.state) && angular.isArray(options.state.range)) {
+        chart.zoom(options.state.range);
+      } else {
+        chart.unzoom();
       }
     }
 
@@ -316,43 +346,40 @@
      * Apply earlier selections.
      */
     function applySelection(options, chart) {
-      if (angular.isObject(options.chart) && angular.isObject(options.chart.data) && angular.isObject(options.chart.data.selection) && options.chart.data.selection.enabled === true) {
+      if (angular.isObject(options.state) && angular.isArray(options.state.selected)) {
+        // TODO: get new selections
+        // TODO: get removed selections
+        // var chartSelections = chart.selected();
+        //    // addedSelections
+        //    var addedSelections = newSelections.filter(function (elm) {
+        //      var isNew = true;
+        //      oldSelections.forEach(function (old) {
+        //        if (old.id === elm.id && old.index === elm.index) {
+        //          isNew = false;
+        //          return isNew;
+        //        }
+        //      });
+        //      return isNew;
+        //    });
+        //
+        //    // removedSelections
+        //    var removedSelections = oldSelections.filter(function (elm) {
+        //      var isOld = true;
+        //      newSelections.forEach(function (old) {
+        //        if (old.id === elm.id && old.index === elm.index) {
+        //          isOld = false;
+        //          return isOld;
+        //        }
+        //      });
+        //      return isOld;
+        //    });
 
-        if (angular.isObject(options.state) && angular.isArray(options.state.selected)) {
-          // TODO: get new selections
-          // TODO: get removed selections
-          // var chartSelections = chart.selected();
-          //    // addedSelections
-          //    var addedSelections = newSelections.filter(function (elm) {
-          //      var isNew = true;
-          //      oldSelections.forEach(function (old) {
-          //        if (old.id === elm.id && old.index === elm.index) {
-          //          isNew = false;
-          //          return isNew;
-          //        }
-          //      });
-          //      return isNew;
-          //    });
-          //
-          //    // removedSelections
-          //    var removedSelections = oldSelections.filter(function (elm) {
-          //      var isOld = true;
-          //      newSelections.forEach(function (old) {
-          //        if (old.id === elm.id && old.index === elm.index) {
-          //          isOld = false;
-          //          return isOld;
-          //        }
-          //      });
-          //      return isOld;
-          //    });
+        // alternative: deselect all and select again
+        //removeAllSelections(chart);
+        addSelections(chart, options.state.selected);
 
-          // alternative: deselect all and select again
-          //removeAllSelections(chart);
-          addSelections(chart, options.state.selected);
-
-        } else {
-          removeAllSelections(chart);
-        }
+      } else {
+        removeAllSelections(chart);
       }
     }
 
@@ -487,6 +514,11 @@
         chartService.updateCallback();
       };
 
+      // transformCallback(), closure to keep reference to chart service
+      this.watcher.dimensionsTypeCallback = function() {
+        chartService.transformCallback();
+      };
+
       // stateCallback(), closure to keep reference to chart service
       this.watcher.stateCallback = function() {
         chartService.stateCallback();
@@ -504,6 +536,18 @@
       this.synchronizeState();
       this.generateChart();
       this.stateCallback();
+    };
+
+    /**
+     * Pushes type changes using transform to update the chart without a full render.
+     */
+    ChartService.prototype.transformCallback = function() {
+      var chartService = this;
+      if (chartService.options && chartService.options.dimensions) {
+        angular.forEach(chartService.options.dimensions, function(dimension, key) {
+          chartService.chart.transform(dimension.type, key);
+        });
+      }
     };
 
     /**
@@ -675,7 +719,7 @@
           displayFormat.y.push(key);
         }
 
-        // label
+        // get displayFormats
         displayFormat[key] = true;
         if (angular.isDefined(dimension.displayFormat)) {
           displayFormat.inUse = true;
@@ -687,6 +731,7 @@
           };
         }
 
+        // data label
         if (dimension.label === true) {
           configuration.data.labels.format[key] = displayFormat[key];
         }
