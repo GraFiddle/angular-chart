@@ -82,7 +82,7 @@
       if (chartService.options && chartService.options.dimensions) {
         angular.forEach(chartService.options.dimensions, function(dimension, key) {
           chartService.chart.transform(dimension.type, key);
-        })
+        });
       }
     };
 
