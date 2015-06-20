@@ -260,7 +260,6 @@ $scope.options = {
 
 ## Development [![Stories in Ready](https://badge.waffle.io/maxklenk/angular-chart.png?label=ready&title=Ready)](https://waffle.io/maxklenk/angular-chart) [![Gitter chat](https://badges.gitter.im/maxklenk/angular-chart.png)](https://gitter.im/maxklenk/angular-chart)
 
-
 We use Karma and jshint to ensure the quality of the code. The easiest way to run these checks is to use gulp:
 ```sh
 npm install -g bower gulp
@@ -268,6 +267,13 @@ npm install
 bower install
 gulp
 ```
+
+
+## More about the project
+
+This [presentation](http://maxklenk.github.io/angular-chart-presentation) gives some insights to understand the motivation behind angular-chart:
+
+http://maxklenk.github.io/angular-chart-presentation
 
 
 ## Contributing
