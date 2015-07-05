@@ -5,7 +5,7 @@
     "Max Klenk <max@klenk.biz>"
   ],
   "description": "AngularJS directive for adjustable dynamically updating c3 charts.",
-  "homepage": "https://maxklenk.github.io/angular-chart",
+  "homepage": "http://grafiddle.github.io/angular-chart/",
   "keywords": [
     "d3",
     "c3",
