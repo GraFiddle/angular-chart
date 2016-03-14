@@ -1,14 +1,14 @@
 {
   "name": "angular-chart",
-  "version": "0.3.3",
   "description": "C3-based reusable chart directive",
   "main": "angular-chart.js",
   "scripts": {
-    "test": ""
+    "test": "",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/grafiddle/angular-chart.git"
+    "url": "https://github.com/grafiddle/angular-chart.git"
   },
   "keywords": [
     "d3",
@@ -28,6 +28,7 @@
     "c3": "~0.4.x"
   },
   "devDependencies": {
+    "cz-conventional-changelog": "^1.1.5",
     "gulp": "^3.8.11",
     "gulp-angular-filesort": "^1.1.1",
     "gulp-concat": "^2.5.2",
@@ -41,6 +42,12 @@
     "karma-coveralls": "^0.1.5",
     "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "^0.3.5",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "semantic-release": "^4.3.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
   }
 }
