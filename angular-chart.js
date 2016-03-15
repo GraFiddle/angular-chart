@@ -229,6 +229,7 @@
   'use strict';
 
   /* istanbul ignore next */
+  AngularChartState.$inject = ['AngularChartWatcher'];
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   function AngularChartState(AngularChartWatcher) {
@@ -453,7 +454,6 @@
     }
 
   }
-  AngularChartState.$inject = ['AngularChartWatcher'];
 
   angular
     .module('angularChart')
@@ -467,6 +467,7 @@
   'use strict';
 
   /* istanbul ignore next */
+  AngularChartService.$inject = ['$timeout', 'AngularChartWatcher', 'AngularChartConverter', 'AngularChartState'];
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
   /* istanbul ignore next */
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
@@ -635,7 +636,6 @@
       }
     };
   }
-  AngularChartService.$inject = ['$timeout', 'AngularChartWatcher', 'AngularChartConverter', 'AngularChartState'];
 
   angular
     .module('angularChart')
@@ -836,6 +836,7 @@
   'use strict';
 
   /* istanbul ignore next */
+  AngularChartController.$inject = ['$scope', '$element', '$q', 'baseConfiguration', 'AngularChartService'];
   var angular = window.angular ? window.angular : 'undefined' !== typeof require ? require('angular') : undefined;
 
   function AngularChartController($scope, $element, $q, baseConfiguration, AngularChartService) {
@@ -890,7 +891,6 @@
     }
 
   }
-  AngularChartController.$inject = ['$scope', '$element', '$q', 'baseConfiguration', 'AngularChartService'];
 
   angular
     .module('angularChart')

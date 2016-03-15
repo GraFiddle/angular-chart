@@ -25,16 +25,13 @@ gulp.task('jshint', function () {
 
 // UNIT TESTS
 //
-var karma = require('karma').server;
+var Server = require('karma').Server;
 gulp.task('test', function (done) {
-  karma.start({
+  new Server({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
-  }, function() {
-    done();
-  });
+  }, done()).start();
 });
-
 
 // JAVASCRIPT PROCESSING
 //
