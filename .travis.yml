@@ -16,7 +16,7 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 
 before_script:
- - curl -Lo travis_after_all.py https://git.io/vLSON
+# - curl -Lo travis_after_all.py https://git.io/vLSON
  - npm prune
  - npm install -g bower gulp
  - npm install -g codeclimate-test-reporter
@@ -31,7 +31,7 @@ after_script:
  - codeclimate < coverage/**/lcov.info
 
 after_success:
- - python travis_after_all.py
+# - python travis_after_all.py
  - npm run semantic-release
 
 addons:
