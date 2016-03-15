@@ -131,6 +131,10 @@
       console.log('new options', vm.timestampOptions);
     };
 
+    vm.printInstance = function() {
+      console.log('instance', vm.instance);
+    };
+
   }
 
   angular

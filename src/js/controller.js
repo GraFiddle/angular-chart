@@ -17,7 +17,7 @@
       unwrapPromise();
       addIdentifier();
       addInlineStyle();
-      chartService = AngularChartService.getInstance(configuration, $scope);
+      getInstance();
       registerDestroyListener();
     }
 
@@ -44,6 +44,11 @@
      */
     function addInlineStyle() {
       angular.element($element).css('display', 'block');
+    }
+
+    function getInstance() {
+      chartService = AngularChartService.getInstance(configuration, $scope);
+      $scope.instance = chartService.chart;
     }
 
     /**

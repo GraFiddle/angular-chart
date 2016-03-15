@@ -52,6 +52,8 @@ describe('Service: AngularChartService', function () {
     var chartService = AngularChartService.getInstance(configuration, $scope);
 
     $scope.$apply();
+    // generate chart
+    $timeout.flush();
 
     chartService.destroyChart();
   });
@@ -61,7 +63,6 @@ describe('Service: AngularChartService', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
     var chartService = AngularChartService.getInstance(configuration, $scope);
-    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
@@ -73,7 +74,6 @@ describe('Service: AngularChartService', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
     var chartService = AngularChartService.getInstance(configuration, $scope);
-    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
@@ -85,7 +85,6 @@ describe('Service: AngularChartService', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
     var chartService = AngularChartService.getInstance(configuration, $scope);
-    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
@@ -97,7 +96,6 @@ describe('Service: AngularChartService', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
     var chartService = AngularChartService.getInstance(configuration, $scope);
-    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
@@ -109,7 +107,6 @@ describe('Service: AngularChartService', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
     var chartService = AngularChartService.getInstance(configuration, $scope);
-    spyOn(chartService, 'generateChart');
 
     $scope.$apply();
     $timeout.flush();
@@ -121,27 +118,73 @@ describe('Service: AngularChartService', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
     var chartService = AngularChartService.getInstance(configuration, $scope);
-    spyOn(chartService, 'generateChart');
 
     chartService.options.dimensions = {
       one: {}
     };
+
+    $scope.$apply();
+    $timeout.flush();
+
     chartService.transformCallback();
   });
 
-  it('merge configuration.', function () {
+});
+
+
+describe('Service: AngularChartService', function () {
+
+  //////////////////////////////////
+  //      SETUP / INJECTION       //
+  //////////////////////////////////
+
+  beforeEach(module('angularChart'));
+
+  // disable angular.merge to be able to test backwards compatibility
+  beforeEach(function() {
+    angular.merge = null;
+  });
+
+  var baseConfiguration;
+  beforeEach(inject(function(_baseConfiguration_) {
+    baseConfiguration = _baseConfiguration_;
+  }));
+
+  var $scope;
+  beforeEach(inject(function(_$rootScope_) {
+    var $rootScope = _$rootScope_;
+    $scope = $rootScope.$new();
+  }));
+
+  var $timeout;
+  beforeEach(inject(function(_$timeout_) {
+    $timeout = _$timeout_;
+  }));
+
+  // get the service to test
+  var AngularChartService;
+  beforeEach(inject(function(_AngularChartService_) {
+    AngularChartService = _AngularChartService_;
+  }));
+
+
+  it('use custom deep merge.', function () {
     // setup
     var configuration = angular.copy(baseConfiguration);
     var chartService = AngularChartService.getInstance(configuration, $scope);
-    spyOn(chartService, 'generateChart');
 
-    chartService.options.chart = {
+    var target = {
       data: {
-        groups: []
-      },
-      value: 'test'
+        test1: true
+      }
     };
-    chartService.applyChartOptions();
+    var src = {
+      data: {
+        test2: false
+      },
+      newData: {}
+    };
+    chartService.merge(target, src);
   });
 
 });

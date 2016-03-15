@@ -26,12 +26,13 @@
   </head>
   <body ng-app="AngularChartDebug" ng-controller="DebugController as debug">
 
-  <angular-chart options="debug.climateOptions"></angular-chart>
+  <angular-chart options="debug.climateOptions" ></angular-chart>
     <button ng-click="debug.updateClimateDimension()">Change Dimension</button>
     Zoom: <input type="number" ng-model="debug.climateOptions.state.range[0]"> <input type="number" ng-model="debug.climateOptions.state.range[1]">
 
 
-    <angular-chart options="debug.timestampOptions"></angular-chart>
+  <angular-chart options="debug.timestampOptions" instance="debug.instance"></angular-chart>
+    <button ng-click="debug.printInstance()">Print Instance</button>
     <button ng-click="debug.updateTimestampDimension()">Change Dimension</button>
     Zoom: {{debug.timestampOptions.state.range}}
 

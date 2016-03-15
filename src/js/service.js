@@ -7,10 +7,11 @@
   /* istanbul ignore next */
   var c3 = window.c3 ? window.c3 : 'undefined' !== typeof require ? require('c3') : undefined;
 
-  function AngularChartService($timeout, AngularChartWatcher, AngularChartConverter, AngularChartState) {
+  function AngularChartService($timeout, $q, AngularChartWatcher, AngularChartConverter, AngularChartState) {
 
     var ChartService = function(baseConfig, scope) {
-      this.chart = null;
+      this.deferredChart = $q.defer();
+      this.chart = this.deferredChart.promise;
       this.baseConfiguration = {};
       this.configuration = {};
       this.scopeReference = null;
@@ -70,8 +71,13 @@
       this.convertOptions();
       this.applyChartOptions();
       this.synchronizeState();
-      this.generateChart();
-      this.stateCallback();
+
+      // call long running generation async
+      var chartService = this;
+      $timeout(function() {
+        chartService.generateChart(chartService);
+        chartService.stateCallback();
+      });
     };
 
     /**
@@ -123,11 +129,15 @@
     /**
      * Render the chart.
      */
-    ChartService.prototype.generateChart = function() {
+    ChartService.prototype.generateChart = function(chartService) {
       // TODO add own onresize listener?
       // TODO regenerate chart only one or two times per second
       // TODO evaluate if it makes sense to destroy the chart first
-      this.chart = c3.generate(this.configuration);
+
+      var chart = c3.generate(chartService.configuration);
+      chartService.deferredChart.resolve(chart);
+      chartService.scopeReference.instance = chart;
+      chartService.chart = chart;
     };
 
     /**
@@ -142,7 +152,9 @@
      * Destroy the chart if one ist present.
      */
     ChartService.prototype.destroyChart = function() {
-      this.chart.destroy();
+      if (this.chart.destroy) {
+        this.chart.destroy();
+      }
     };
 
     ChartService.prototype.merge = angular.merge || deepMerge;

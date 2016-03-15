@@ -16,7 +16,8 @@
     return {
       restrict: 'EA',
       scope: {
-        options: '='
+        options: '=',
+        instance: '=?'
       },
       controller: 'AngularChartController'
     };

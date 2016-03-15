@@ -55,19 +55,22 @@ angular
       }
     };
     
+    // optional (direct access to c3js API http://c3js.org/reference.html#api)
+    $scope.instance = null;
+    
   });
 ```
 
 Then you are ready to use the directive in your view:
 ```html
 <div ng-controller="Controller">
-  <angular-chart options="options"></angular-chart>
+  <angular-chart options="options" instance="instance"></angular-chart>
 </div>
 ```
 
 [learn how to upgrade from v0.2.x](#upgrade-02x-to-030)
 
-## API
+## OPTIONS
 
 The options object can contain four different keys:
 * `data` JSON based data you want to visualize
@@ -177,6 +180,16 @@ Pie-, Donut chart: _(Currently adding a selection in the Array will not add the 
   values: [ALL_COLUMN_VALUES]
 }
 ```
+
+
+## INSTANCE
+
+The `instance` attribute of the directive will be filled with a promise on initialization. 
+The promise will be fulfilled the first time the chart is generated. 
+Every time a new chart instance is created the `instance` of the directive will be updated as well.
+
+You can call all [c3js API calls](http://c3js.org/reference.html#api) such as `flow()`, `resize()`, ... on the chart instance.
+
 
 ## custom Style
 The whole chart is based on SVG, which allows you to stlye most parts using CSS.

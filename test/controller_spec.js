@@ -59,7 +59,7 @@ describe('Controller: AngularChartController', function() {
   });
 
   // destroy
-  it('should instantiate DirectiveCtrl.', function() {
+  it('should destroy DirectiveCtrl.', function() {
     // setup
     $scope.options = {};
     var controller = setUpController();
