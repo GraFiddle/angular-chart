@@ -7,9 +7,6 @@ node_js:
 cache:
   directories: node_modules
 
-notifications:
-  email: false
-
 before_install:
   - npm i -g npm@^2.0.0
   - export DISPLAY=:99.0
@@ -38,5 +35,6 @@ addons:
   code_climate:
     repo_token: d5c5ec4be4b0d4059959998993a111a21b927c9122d87ca0a570d6620019aa27
 notifications:
+  email: false
   slack:
     secure: afwpvThyqnM2tpFmnRF8Mkt2nhIRE55J+ol2ay3JTitQcDeN4ctqB37iym49tx3zsvbGZyzinnuC5940YRB45SQdlRgtX7rm4U+rMGBRrV3Q2bIa3HvM0m1sIAjFxRI6tejqtxET7dO/GPtdlS+0kojvqy/qeudjBl6XK8WIggg=
