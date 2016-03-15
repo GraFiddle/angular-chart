@@ -31,7 +31,8 @@ after_script:
  - codeclimate < coverage/**/lcov.info
 
 after_success:
- - python travis_after_all.py and npm run semantic-release
+ - python travis_after_all.py
+ - npm run semantic-release
 
 addons:
   code_climate:
