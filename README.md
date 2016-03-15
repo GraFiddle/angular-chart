@@ -278,7 +278,8 @@ http://maxklenk.github.io/angular-chart-presentation
 
 ## Contributing
 
-Please submit all pull requests the against **develop branch**. Make sure it passes the CI [![Build Status](https://travis-ci.org/maxklenk/angular-chart.svg?branch=develop)](https://travis-ci.org/maxklenk/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop). Thanks!
+Please submit all pull requests the against **develop branch**. Make sure it passes the CI
+[![Build Status](https://travis-ci.org/GraFiddle/angular-chart.svg?branch=develop)](https://travis-ci.org/GraFiddle/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=develop)](https://coveralls.io/r/maxklenk/angular-chart?branch=develop). Thanks!
 
 
 ## Authors

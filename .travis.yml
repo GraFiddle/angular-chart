@@ -1,19 +1,38 @@
 language: node_js
+sudo: false
+
 node_js:
-- '0.10'
+  - '0.12'
+
+cache:
+  directories: node_modules
+
+notifications:
+  email: false
+
 before_install:
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
+  - npm i -g npm@^2.0.0
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
 before_script:
-- npm install -g bower gulp
-- npm install -g codeclimate-test-reporter
-- npm install
-- bower install
+ - curl -Lo travis_after_all.py https://git.io/vLSON
+ - npm prune
+ - npm install -g bower gulp
+ - npm install -g codeclimate-test-reporter
+ - npm install
+ - bower install
+
 script:
-- gulp jshint --verbose
-- gulp test --verbose
+ - gulp jshint --verbose
+ - gulp test --verbose
+
 after_script:
-- codeclimate < coverage/**/lcov.info
+ - codeclimate < coverage/**/lcov.info
+
+after_success:
+ - python travis_after_all.py and npm run semantic-release
+
 addons:
   code_climate:
     repo_token: d5c5ec4be4b0d4059959998993a111a21b927c9122d87ca0a570d6620019aa27
