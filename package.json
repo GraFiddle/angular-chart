@@ -43,7 +43,7 @@
     "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "^0.3.5",
     "karma-phantomjs-launcher": "^0.1.4",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^6.2.0"
   },
   "config": {
     "commitizen": {
