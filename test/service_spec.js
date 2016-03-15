@@ -44,6 +44,30 @@ describe('Service: AngularChartService', function () {
     $timeout.flush();
   });
 
+  // init()
+  it('emit event on initialization.', function () {
+    // wait for events
+    var eventEmitted = false;
+    var eventConfiguration = {};
+    var eventChartInstance = {};
+    $scope.$on('angular-chart-rendered', function(conf, instance) {
+      eventEmitted = true;
+      eventConfiguration = conf;
+      eventChartInstance = instance;
+    });
+
+    // setup
+    var configuration = angular.copy(baseConfiguration);
+    AngularChartService.getInstance(configuration, $scope);
+    $scope.$apply();
+    $timeout.flush();
+
+    // check result
+    expect(eventEmitted).toBe(true);
+    expect(eventConfiguration).toBeDefined();
+    expect(eventChartInstance).toBeDefined();
+  });
+
 
   // destroyChart()
   it('destroy a created chart.', function () {

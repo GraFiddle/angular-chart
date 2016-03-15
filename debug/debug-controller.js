@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function DebugController($q, $timeout, DebugData) {
+  function DebugController($scope, $q, $timeout, DebugData) {
     var vm = this;
 
     /*
@@ -134,6 +134,11 @@
     vm.printInstance = function() {
       console.log('instance', vm.instance);
     };
+
+    // inform about chart rendering
+    $scope.$on('angular-chart-rendered', function(event, conf, instance) {
+      console.log(conf, instance);
+    });
 
   }
 

@@ -601,9 +601,19 @@
       // TODO evaluate if it makes sense to destroy the chart first
 
       var chart = c3.generate(chartService.configuration);
+
       chartService.deferredChart.resolve(chart);
       chartService.scopeReference.instance = chart;
       chartService.chart = chart;
+
+      /*
+       Custom event: 'angular-chart-rendered'
+       - new chart instance generated
+       - { configuration, chart } - data format
+       - configuration - the options used to generate the chart
+       - chart - the newly created chart instance
+       */
+      this.scopeReference.$emit('angular-chart-rendered', chartService.configuration, chartService.chart);
     };
 
     /**

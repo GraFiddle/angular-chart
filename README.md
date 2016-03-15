@@ -191,9 +191,22 @@ Every time a new chart instance is created the `instance` of the directive will 
 You can call all [c3js API calls](http://c3js.org/reference.html#api) such as `flow()`, `resize()`, ... on the chart instance.
 
 
+## Events
+
+The `angular-chart-rendered` event is emitted every time a chart is generated or regenerated. It gives access to the `options` the chart is generated with and to the newly created chart instance.
+
+```javascript
+$scope.$on('angular-chart-rendered', function(event, options, instance) {
+  console.log(options, instance);
+});
+```
+
+
 ## custom Style
+
 The whole chart is based on SVG, which allows you to stlye most parts using CSS.
 The documentation of c3.js provides a few [examples](http://c3js.org/examples.html#style) on how to style your chart.
+
 
 ## Upgrade 0.2.x to 0.3.0
 
