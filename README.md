@@ -282,6 +282,7 @@ Please submit all pull requests the against **master branch**. Make sure it pass
 [![Build Status](https://travis-ci.org/GraFiddle/angular-chart.svg?branch=master)](https://travis-ci.org/GraFiddle/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=master)](https://coveralls.io/r/maxklenk/angular-chart?branch=master). Thanks!
 
 
+
 ## Authors
 
 **Max Klenk**
