@@ -308,6 +308,44 @@ Please submit all pull requests the against **master branch**. Make sure it pass
 [![Build Status](https://travis-ci.org/GraFiddle/angular-chart.svg?branch=master)](https://travis-ci.org/GraFiddle/angular-chart) and add tests to cover your code [![Coverage Status](https://coveralls.io/repos/maxklenk/angular-chart/badge.png?branch=master)](https://coveralls.io/r/maxklenk/angular-chart?branch=master). Thanks!
 
 
+## Bug reports
+
+A bug is a _demonstrable problem_ that is caused by the code in the repository. Good bug reports are extremely helpful - thank you!
+
+Guidelines for bug reports:
+
+1. **Use the GitHub issue search** &mdash; check if the issue has already been
+   reported.
+
+2. **Check if the issue has been fixed** &mdash; try to reproduce it using the
+   latest `master` branch in the repository.
+
+3. **Isolate the problem** &mdash; create a [reduced test case](http://css-tricks.com/reduced-test-cases/) in a [live example](https://plnkr.co/edit/dBTg36?p=preview). Please use this [plunker](https://plnkr.co/edit/dBTg36?p=preview) to add your configuration which create the bug.
+
+A good bug report shouldn't leave others needing to chase you up for more
+information. Please try to be as detailed as possible in your report. What is
+your environment? What steps will reproduce the issue? What browser(s) and OS
+experience the problem? What would you expect to be the outcome? All these
+details will help people to fix any potential bugs.
+
+Example:
+
+> Short and descriptive example bug report title
+>
+> A summary of the issue and the browser/OS environment in which it occurs. If
+> suitable, include the steps required to reproduce the bug.
+>
+> 1. This is the first step
+> 2. This is the second step
+> 3. Further steps, etc.
+>
+> `<url>` - a link to the reduced test case
+>
+> Any other information you want to share that is relevant to the issue being
+> reported. This might include the lines of code that you have identified as
+> causing the bug, and potential solutions (and your opinions on their
+> merits).
+
 
 ## Authors
 
